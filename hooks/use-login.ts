@@ -50,6 +50,10 @@ export function useLogin() {
         redirect: false,
       });
 
+      // #region agent log
+      (function(){const p={sessionId:'4d1c77',location:'use-login.ts:after signIn',message:'signIn result',data:{hasResult:!!result,ok:!!result?.ok,error:result?.error,keys:result?Object.keys(result):[]},timestamp:Date.now(),hypothesisId:'H1-H5'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+      // #endregion
+
       if (result?.error) {
         setState({
           isLoading:   false,
@@ -60,6 +64,9 @@ export function useLogin() {
       }
 
       if (result?.ok) {
+        // #region agent log
+        (function(){const p={sessionId:'4d1c77',location:'use-login.ts:result.ok branch',message:'calling router.push',data:{redirect},timestamp:Date.now(),hypothesisId:'H5'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+        // #endregion
         setState((s) => ({ ...s, isLoading: false }));
         router.push(redirect);
         router.refresh();
@@ -67,23 +74,36 @@ export function useLogin() {
       }
 
       // signIn() may not return result.ok even when login succeeded (e.g. redirect response). Check session.
+      // #region agent log
+      (function(){const p={sessionId:'4d1c77',location:'use-login.ts:session fallback',message:'fetching session',data:{},timestamp:Date.now(),hypothesisId:'H1'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+      // #endregion
       const sessionRes = await fetch('/api/auth/session');
-      if (sessionRes.ok) {
-        const data = await sessionRes.json();
-        if (data?.user?.id) {
-          setState((s) => ({ ...s, isLoading: false }));
-          router.push(redirect);
-          router.refresh();
-          return;
-        }
+      const data = sessionRes.ok ? await sessionRes.json() : null;
+      // #region agent log
+      (function(){const p={sessionId:'4d1c77',location:'use-login.ts:after session fetch',message:'session response',data:{sessionResOk:sessionRes.ok,hasUser:!!data?.user?.id},timestamp:Date.now(),hypothesisId:'H1-H4'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+      // #endregion
+      if (sessionRes.ok && data?.user?.id) {
+        // #region agent log
+        (function(){const p={sessionId:'4d1c77',location:'use-login.ts:router.push from session',message:'calling router.push',data:{redirect},timestamp:Date.now(),hypothesisId:'H2-H4'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+        // #endregion
+        setState((s) => ({ ...s, isLoading: false }));
+        router.push(redirect);
+        router.refresh();
+        return;
       }
 
+      // #region agent log
+      (function(){const p={sessionId:'4d1c77',location:'use-login.ts:sign-in failed branch',message:'no ok and no session user',data:{},timestamp:Date.now(),hypothesisId:'H1'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+      // #endregion
       setState({
         isLoading:   false,
         fieldErrors: {},
         error:       'Sign-in failed. Please try again.',
       });
-    } catch {
+    } catch (e) {
+      // #region agent log
+      (function(){const p={sessionId:'4d1c77',location:'use-login.ts:catch',message:'login catch',data:{errMsg:e instanceof Error?e.message:String(e)},timestamp:Date.now(),hypothesisId:'H3'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+      // #endregion
       setState({
         isLoading:   false,
         fieldErrors: {},
