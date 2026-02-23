@@ -60,9 +60,22 @@ export function useLogin() {
       }
 
       if (result?.ok) {
+        setState((s) => ({ ...s, isLoading: false }));
         router.push(redirect);
         router.refresh();
         return;
+      }
+
+      // signIn() may not return result.ok even when login succeeded (e.g. redirect response). Check session.
+      const sessionRes = await fetch('/api/auth/session');
+      if (sessionRes.ok) {
+        const data = await sessionRes.json();
+        if (data?.user?.id) {
+          setState((s) => ({ ...s, isLoading: false }));
+          router.push(redirect);
+          router.refresh();
+          return;
+        }
       }
 
       setState({
