@@ -117,7 +117,6 @@ async function run(uri: string) {
       {
         $setOnInsert: def,
         $set: {
-          showFeaturesToUser: rest.showFeaturesToUser,
           limitProjectCreate: rest.limitProjectCreate,
           limitSave: rest.limitSave,
           limitExport: rest.limitExport,
@@ -127,7 +126,7 @@ async function run(uri: string) {
           limitCharacterCreate: rest.limitCharacterCreate,
         },
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
     console.log(`Plan "${def.name}" seeded/updated.`);
   }

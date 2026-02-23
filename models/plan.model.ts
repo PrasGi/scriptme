@@ -53,7 +53,6 @@ const PlanSchema = new Schema<IPlan>(
   { timestamps: true }
 );
 
-PlanSchema.index({ slug: 1 });
 PlanSchema.index({ isActive: 1, order: 1 });
 
 const Plan: Model<IPlan> =
