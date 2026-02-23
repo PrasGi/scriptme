@@ -7,6 +7,7 @@ pipeline {
         APP_NAME = 'script-minder'
         PORT = '3200'                    // Host port for health check; app listens 3000 inside container
         DEPLOY_DIR = '/projects/script-minder'
+        NEXTAUTH_URL = 'https://scriptme.cloud'   // Production URL for NextAuth
     }
 
     stages {
@@ -42,7 +43,9 @@ pipeline {
                     string(credentialsId: 'script-minder-google-oauth-id', variable: 'AUTH_GOOGLE_ID'),
                     string(credentialsId: 'script-minder-google-oauth-secret', variable: 'AUTH_GOOGLE_SECRET'),
                     string(credentialsId: 'script-minder-github-oauth-id', variable: 'AUTH_GITHUB_ID'),
-                    string(credentialsId: 'script-minder-github-oauth-secret', variable: 'AUTH_GITHUB_SECRET')
+                    string(credentialsId: 'script-minder-github-oauth-secret', variable: 'AUTH_GITHUB_SECRET'),
+                    string(credentialsId: 'script-minder-cloudflare-proxy-url', variable: 'CLOUDFLARE_PROXY_URL'),
+                    string(credentialsId: 'script-minder-cloudflare-tiktok-url', variable: 'CLOUDFLARE_TIKTOK_URL')
                 ]) {
                     sh '''
                         cat > ${DEPLOY_DIR}/.env << EOF
@@ -51,11 +54,14 @@ REDIS_URL=redis://redis:6379
 APP_PORT=3200
 NODE_ENV=production
 AUTH_SECRET=${AUTH_SECRET}
+NEXTAUTH_URL=${NEXTAUTH_URL}
 GOOGLE_GENAI_API_KEY=${GOOGLE_GENAI_API_KEY}
 AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
 AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
 AUTH_GITHUB_ID=${AUTH_GITHUB_ID}
 AUTH_GITHUB_SECRET=${AUTH_GITHUB_SECRET}
+CLOUDFLARE_PROXY_URL=${CLOUDFLARE_PROXY_URL}
+CLOUDFLARE_TIKTOK_URL=${CLOUDFLARE_TIKTOK_URL}
 EOF
                     '''
                 }

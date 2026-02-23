@@ -115,14 +115,7 @@ Expected: `{"status":"ok","service":"script-minder",...}`
 
 Nginx runs in Docker on `server-network`. The app container is **`script-minder`** and listens on **3000** inside the container (see docker repo **02-NGINX-FLOW.md**).
 
-1. **Create Nginx config** on the VPS. The **docker** repo has a config for **scriptme.cloud**: `nginx/conf.d/script-minder.conf.example`. Copy it to the active config:
-
-```bash
-cd /docker/nginx/conf.d
-cp script-minder.conf.example script-minder.conf
-```
-
-Then get an SSL certificate and reload Nginx (see docker repo **09-DOMAIN-SETUP-SCRIPTME-CLOUD.md** for full steps). The example already uses `scriptme.cloud` and `www.scriptme.cloud`. If you use a different domain, edit `server_name` and SSL paths. Otherwise use the same pattern as `tenant-store.conf`: upstream **`script-minder:3000`**, then HTTP→HTTPS redirect and HTTPS server block with your domain and SSL paths (e.g. Let’s Encrypt under `/etc/letsencrypt/live/<your-domain>/`). Example:
+1. **Nginx config** for **scriptme.cloud** is in the **docker** repo as `nginx/conf.d/script-minder.conf`. After you pull the docker project on the VPS, the file is at `/docker/nginx/conf.d/script-minder.conf` and Nginx will load it. Get an SSL certificate and reload Nginx (see docker repo **09-DOMAIN-SETUP-SCRIPTME-CLOUD.md**). If you use a different domain, edit `server_name` and SSL paths in that file. Otherwise use the same pattern as `tenant-store.conf`: upstream **`script-minder:3000`**, then HTTP→HTTPS redirect and HTTPS server block with your domain and SSL paths (e.g. Let’s Encrypt under `/etc/letsencrypt/live/<your-domain>/`). Example:
 
 ```nginx
 # Upstream – container name on server-network
@@ -197,6 +190,10 @@ Jenkins runs on the **host** (e.g. `https://jenkins.prasme.id`). The pipeline co
    | `script-minder-google-oauth-secret` | `AUTH_GOOGLE_SECRET` (optional) |
    | `script-minder-github-oauth-id` | `AUTH_GITHUB_ID` (optional) |
    | `script-minder-github-oauth-secret` | `AUTH_GITHUB_SECRET` (optional) |
+   | `script-minder-cloudflare-proxy-url` | `CLOUDFLARE_PROXY_URL` (optional) |
+   | `script-minder-cloudflare-tiktok-url` | `CLOUDFLARE_TIKTOK_URL` (optional) |
+
+   **Note:** `NEXTAUTH_URL` is set in the Jenkinsfile to `https://scriptme.cloud`. To use another domain, edit the pipeline `environment { NEXTAUTH_URL = '...' }`.
 
 2. **Pipeline job:**
    - New Item → **Pipeline** (e.g. name: `script-minder-deployment`).
