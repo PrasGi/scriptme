@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import { unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
-import { checkFeatureAccess, checkTokenLimit, getEffectivePlan } from '@/lib/subscription';
+import { checkFeatureAccess, checkTokenLimit, checkActionLimit, incrementActionUsage, getEffectivePlan } from '@/lib/subscription';
 import Script from '@/models/script.model';
 import Character from '@/models/character.model';
 import { getAnalyzeQueue } from '@/lib/queue';
@@ -37,6 +37,9 @@ export async function POST(req: Request, { params }: Params) {
   const plan = await getEffectivePlan(session.user.id);
   const tokenCheck = await checkTokenLimit(session.user.id, plan, 50_000);
   if (!tokenCheck.allowed) return forbidden('Monthly AI token limit reached. Upgrade or wait until next month.');
+
+  const analyzeLimitCheck = await checkActionLimit(session.user.id, 'analyze');
+  if (!analyzeLimitCheck.allowed) return forbidden('Monthly limit for analyze reached. Upgrade or wait until next month.');
 
   try {
     await connectDB();
@@ -75,6 +78,8 @@ export async function POST(req: Request, { params }: Params) {
       },
       { jobId: `analyze-${sid}-${Date.now()}` }
     );
+
+    await incrementActionUsage(session.user.id, 'analyze');
 
     return Response.json({
       success: true,

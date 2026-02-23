@@ -1,8 +1,9 @@
 import { auth } from '@/auth';
-import { unauthorized, notFound, badRequest, serverError } from '@/lib/response';
+import { unauthorized, notFound, badRequest, forbidden, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Script from '@/models/script.model';
 import Project from '@/models/project.model';
+import { checkActionLimit, incrementActionUsage } from '@/lib/subscription';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from 'docx';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import path from 'path';
@@ -39,6 +40,12 @@ export async function GET(req: Request, { params }: Params) {
 
   try {
     await connectDB();
+
+    const exportCheck = await checkActionLimit(session.user.id, 'export');
+    if (!exportCheck.allowed) {
+      return forbidden('Monthly limit for export reached. Upgrade or wait until next month.');
+    }
+
     const script = await Script.findOne({
       _id:       sid,
       projectId,
@@ -47,6 +54,8 @@ export async function GET(req: Request, { params }: Params) {
     }).lean();
 
     if (!script) return notFound('Script not found');
+
+    await incrementActionUsage(session.user.id, 'export');
 
     const filename = script.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 

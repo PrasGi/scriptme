@@ -50,10 +50,24 @@ export async function POST(req: Request) {
     badge,
     isActive = true,
     order = 0,
+    limitProjectCreate,
+    limitSave,
+    limitExport,
+    limitAnalyze,
+    limitFetch,
+    limitReadMode,
+    limitCharacterCreate,
+    showFeaturesToUser = true,
   } = body as Record<string, unknown>;
 
   if (!name || typeof name !== 'string' || !slug || typeof slug !== 'string' || !cta || typeof cta !== 'string') {
     return badRequest('name, slug, and cta are required');
+  }
+
+  function limitVal(v: unknown): number | null {
+    if (v === null || v === undefined || v === '') return null;
+    const n = Number(v);
+    return Number.isFinite(n) && n > 0 ? n : null;
   }
 
   try {
@@ -71,6 +85,14 @@ export async function POST(req: Request) {
       badge: badge != null ? String(badge) : null,
       isActive: Boolean(isActive),
       order: Number(order) || 0,
+      showFeaturesToUser: Boolean(showFeaturesToUser),
+      limitProjectCreate: limitVal(limitProjectCreate),
+      limitSave: limitVal(limitSave),
+      limitExport: limitVal(limitExport),
+      limitAnalyze: limitVal(limitAnalyze),
+      limitFetch: limitVal(limitFetch),
+      limitReadMode: limitVal(limitReadMode),
+      limitCharacterCreate: limitVal(limitCharacterCreate),
     });
     return created('Plan created', plan.toObject());
   } catch (err) {

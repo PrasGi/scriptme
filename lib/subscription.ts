@@ -6,11 +6,49 @@
 import { Types } from 'mongoose';
 import { connectDB } from '@/lib/db';
 import Plan from '@/models/plan.model';
+import PlanActionUsage from '@/models/plan-action-usage.model';
+import Script from '@/models/script.model';
 import Subscription from '@/models/subscription.model';
 import User from '@/models/user.model';
 import AiChatLog from '@/models/ai-chat-log.model';
 import type { IPlan } from '@/models/plan.model';
 import type { ISubscription } from '@/models/subscription.model';
+
+export type PlanActionName =
+  | 'project_create'
+  | 'save'
+  | 'export'
+  | 'analyze'
+  | 'fetch'
+  | 'read_mode'
+  | 'character_create';
+
+export interface ActionLimitResult {
+  allowed: boolean;
+  used: number;
+  limit: number | null;
+}
+
+const PLAN_LIMIT_KEYS: Record<PlanActionName, keyof IPlan> = {
+  project_create:  'limitProjectCreate',
+  save:             'limitSave',
+  export:           'limitExport',
+  analyze:          'limitAnalyze',
+  fetch:            'limitFetch',
+  read_mode:        'limitReadMode',
+  character_create: 'limitCharacterCreate',
+};
+
+/** Usage doc field names (export is reserved in JS so we use exportCount in schema). */
+const USAGE_FIELDS: Record<PlanActionName, string> = {
+  project_create:  'project_create',
+  save:             'save',
+  export:           'exportCount',
+  analyze:          'analyze',
+  fetch:            'fetch',
+  read_mode:        'read_mode',
+  character_create: 'character_create',
+};
 
 export interface TokenUsageResult {
   allowed: boolean;
@@ -36,9 +74,7 @@ export async function getUserSubscription(userId: string | Types.ObjectId): Prom
 export async function getEffectivePlan(userId: string | Types.ObjectId): Promise<IPlan | null> {
   await connectDB();
   const sub = await getUserSubscription(userId);
-  if (sub?.planId) {
-    return sub.planId as unknown as IPlan;
-  }
+  if (sub?.planId) return sub.planId as unknown as IPlan;
   const user = await User.findById(userId).select('planId').lean();
   if (user?.planId) {
     const plan = await Plan.findById(user.planId).lean();
@@ -83,6 +119,129 @@ export async function checkTokenLimit(
     used,
     limit: plan.tokenLimitMonthly,
   };
+}
+
+/** Current billing period string "YYYY-MM" (UTC). */
+function getPeriodString(): string {
+  const now = new Date();
+  const y = now.getUTCFullYear();
+  const m = String(now.getUTCMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
+
+/** Fallback limits for Starter when DB has null (e.g. plan created before limits existed). */
+const DEFAULT_STARTER_LIMITS: Record<PlanActionName, number> = {
+  project_create:  5,
+  save:            2,
+  export:          10,
+  analyze:         5,
+  fetch:            3,
+  read_mode:       10,
+  character_create: 5,
+};
+
+/** Get plan's limit for an action (null = unlimited). */
+export function getActionLimit(plan: IPlan | null, action: PlanActionName): number | null {
+  if (!plan) return null;
+  const key = PLAN_LIMIT_KEYS[action];
+  const val = (plan as unknown as Record<string, unknown>)[key];
+  if (val != null && typeof val === 'number') return val;
+  if (plan.slug === 'starter') return DEFAULT_STARTER_LIMITS[action];
+  return null;
+}
+
+/** Start/end of month (UTC) from period string "YYYY-MM". */
+function periodToRange(period: string): { start: Date; end: Date } {
+  const [y, m] = period.split('-').map(Number);
+  return {
+    start: new Date(Date.UTC(y, m - 1, 1, 0, 0, 0, 0)),
+    end:   new Date(Date.UTC(y, m, 1, 0, 0, 0, 0)),
+  };
+}
+
+/** Get current usage count for user/period/action. For 'save', returns actual count of non-deleted scripts created this month. */
+export async function getActionUsage(
+  userId: string | Types.ObjectId,
+  period: string,
+  action: PlanActionName
+): Promise<number> {
+  await connectDB();
+  const uid = new Types.ObjectId(userId as string);
+
+  if (action === 'save') {
+    const { start, end } = periodToRange(period);
+    return Script.countDocuments({
+      userId: uid,
+      createdAt: { $gte: start, $lt: end },
+      deletedAt: null,
+    });
+  }
+
+  const doc = await PlanActionUsage.findOne(
+    { userId: uid, period },
+    { [USAGE_FIELDS[action]]: 1 }
+  ).lean();
+  if (!doc) return 0;
+  const field = USAGE_FIELDS[action];
+  const val = (doc as unknown as Record<string, number>)[field];
+  return typeof val === 'number' ? val : 0;
+}
+
+/** Check if user is within plan limit for the action. */
+export async function checkActionLimit(
+  userId: string | Types.ObjectId,
+  action: PlanActionName
+): Promise<ActionLimitResult> {
+  const plan = await getEffectivePlan(userId);
+  const limit = getActionLimit(plan, action);
+  const period = getPeriodString();
+  const used = await getActionUsage(userId, period, action);
+
+  if (limit == null) {
+    return { allowed: true, used, limit: null };
+  }
+  return {
+    allowed: used < limit,
+    used,
+    limit,
+  };
+}
+
+/** Increment usage for user/action in current period (call after successful action). */
+export async function incrementActionUsage(
+  userId: string | Types.ObjectId,
+  action: PlanActionName
+): Promise<void> {
+  await connectDB();
+  const period = getPeriodString();
+  const field = USAGE_FIELDS[action];
+  await PlanActionUsage.findOneAndUpdate(
+    { userId: new Types.ObjectId(userId as string), period },
+    { $inc: { [field]: 1 } },
+    { upsert: true, new: true }
+  );
+}
+
+/** Decrement usage for user/action in current period (e.g. when a script is deleted). Floors at 0. */
+export async function decrementActionUsage(
+  userId: string | Types.ObjectId,
+  action: PlanActionName,
+  amount = 1
+): Promise<void> {
+  if (amount <= 0) return;
+  await connectDB();
+  const period = getPeriodString();
+  const field = USAGE_FIELDS[action];
+  const doc = await PlanActionUsage.findOne({
+    userId: new Types.ObjectId(userId as string),
+    period,
+  }).select(field).lean();
+  const current = (doc as Record<string, number> | null)?.[field] ?? 0;
+  const next = Math.max(0, current - amount);
+  await PlanActionUsage.updateOne(
+    { userId: new Types.ObjectId(userId as string), period },
+    { $set: { [field]: next } }
+  );
 }
 
 /** Feature flags per plan slug. Starter gets basic features, Creator gets all, Enterprise gets all. */

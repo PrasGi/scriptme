@@ -20,6 +20,7 @@ interface Project {
   platform:    ProjectPlatform;
   tags:        string[];
   updatedAt:   string;
+  scriptCount?: number;
   scripts?:    unknown[];
 }
 
@@ -161,7 +162,7 @@ export default function ProjectsPage() {
               title={project.title}
               description={project.description}
               status={project.status}
-              scripts={(project.scripts ?? []).length}
+              scripts={project.scriptCount ?? (project.scripts ?? []).length}
               updatedAt={timeAgo(project.updatedAt)}
               platform={project.platform}
               onClick={() => router.push(`/projects/${project._id}`)}

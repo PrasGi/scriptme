@@ -1,6 +1,7 @@
 import { auth } from '@/auth';
 import { unauthorized, badRequest, notFound, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
+import { decrementActionUsage } from '@/lib/subscription';
 import Project from '@/models/project.model';
 import Script from '@/models/script.model';
 import type { ProjectPlatform, ProjectStatus } from '@/models/project.model';
@@ -105,11 +106,12 @@ export async function DELETE(_req: Request, { params }: Params) {
 
     if (!project) return notFound('Project not found');
 
-    // Soft-delete all scripts in this project
+    const scriptCount = await Script.countDocuments({ projectId: id, deletedAt: null });
     await Script.updateMany(
       { projectId: id, deletedAt: null },
       { $set: { deletedAt: new Date() } }
     );
+    if (scriptCount > 0) await decrementActionUsage(session.user.id, 'save', scriptCount);
 
     return ok('Project deleted');
   } catch (err) {

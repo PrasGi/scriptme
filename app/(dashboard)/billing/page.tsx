@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Check, Zap, BarChart2, ArrowRight, Loader2, FileDown } from 'lucide-react';
+import { getDisplayFeatures } from '@/lib/plan-features';
 
 interface Plan {
   _id: string;
@@ -202,7 +203,7 @@ export default function BillingPage() {
                   {p.priceMonthly != null && p.priceMonthly > 0 && <span className="text-xs text-[#8B949E]">/month</span>}
                 </div>
                 <ul className="space-y-2 mb-5">
-                  {(p.features ?? []).slice(0, 5).map((f) => (
+                  {getDisplayFeatures(p).slice(0, 5).map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs text-[#8B949E]">
                       <Check size={12} style={{ color: accent }} className="flex-shrink-0" />
                       {f}

@@ -62,6 +62,14 @@ export async function PUT(req: Request, { params }: Params) {
         ...(body.badge !== undefined && { badge: body.badge == null ? null : String(body.badge) }),
         ...(body.isActive !== undefined && { isActive: Boolean(body.isActive) }),
         ...(body.order !== undefined && { order: Number(body.order) || 0 }),
+        ...('showFeaturesToUser' in body && { showFeaturesToUser: Boolean(body.showFeaturesToUser) }),
+        ...(body.limitProjectCreate !== undefined && { limitProjectCreate: body.limitProjectCreate === null || body.limitProjectCreate === '' ? null : (Number(body.limitProjectCreate) || null) }),
+        ...(body.limitSave !== undefined && { limitSave: body.limitSave === null || body.limitSave === '' ? null : (Number(body.limitSave) || null) }),
+        ...(body.limitExport !== undefined && { limitExport: body.limitExport === null || body.limitExport === '' ? null : (Number(body.limitExport) || null) }),
+        ...(body.limitAnalyze !== undefined && { limitAnalyze: body.limitAnalyze === null || body.limitAnalyze === '' ? null : (Number(body.limitAnalyze) || null) }),
+        ...(body.limitFetch !== undefined && { limitFetch: body.limitFetch === null || body.limitFetch === '' ? null : (Number(body.limitFetch) || null) }),
+        ...(body.limitReadMode !== undefined && { limitReadMode: body.limitReadMode === null || body.limitReadMode === '' ? null : (Number(body.limitReadMode) || null) }),
+        ...(body.limitCharacterCreate !== undefined && { limitCharacterCreate: body.limitCharacterCreate === null || body.limitCharacterCreate === '' ? null : (Number(body.limitCharacterCreate) || null) }),
       },
       { new: true }
     ).lean();

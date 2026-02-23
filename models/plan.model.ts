@@ -13,6 +13,16 @@ export interface IPlan extends Document {
   badge:             string | null;
   isActive:          boolean;
   order:             number;
+  /** If true (default), features are shown to users on billing/LP. */
+  showFeaturesToUser: boolean;
+  // Action limits per month (null = unlimited)
+  limitProjectCreate:  number | null;
+  limitSave:           number | null;
+  limitExport:         number | null;
+  limitAnalyze:       number | null;
+  limitFetch:         number | null;
+  limitReadMode:      number | null;
+  limitCharacterCreate: number | null;
   createdAt:         Date;
   updatedAt:         Date;
 }
@@ -31,6 +41,14 @@ const PlanSchema = new Schema<IPlan>(
     badge:             { type: String, default: null },
     isActive:          { type: Boolean, default: true },
     order:             { type: Number, default: 0 },
+    showFeaturesToUser: { type: Boolean, default: true },
+    limitProjectCreate:  { type: Number, default: null },
+    limitSave:           { type: Number, default: null },
+    limitExport:         { type: Number, default: null },
+    limitAnalyze:       { type: Number, default: null },
+    limitFetch:         { type: Number, default: null },
+    limitReadMode:      { type: Number, default: null },
+    limitCharacterCreate: { type: Number, default: null },
   },
   { timestamps: true }
 );

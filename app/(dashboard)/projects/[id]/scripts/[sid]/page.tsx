@@ -885,7 +885,26 @@ export default function EditScriptPage({
               </Button>
             </Tooltip>
             <Tooltip content="Read mode" description="Preview your script in a focused reading view" side="bottom">
-              <Button variant="ghost" size="sm" onClick={async () => { await ensureSaved(); setReadModeOpen(true); }} className="gap-1.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={async () => {
+                  await ensureSaved();
+                  const res = await fetch('/api/usage/record', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'read_mode' }),
+                  });
+                  if (res.status === 403) {
+                    const json = await res.json().catch(() => ({}));
+                    setError(json.message ?? 'Monthly limit for read mode reached.');
+                    return;
+                  }
+                  if (!res.ok) return;
+                  setReadModeOpen(true);
+                }}
+                className="gap-1.5"
+              >
                 <BookOpen size={13} />
                 Read mode
               </Button>

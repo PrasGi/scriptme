@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Check, Zap, Loader2 } from 'lucide-react';
+import { getDisplayFeatures } from '@/lib/plan-features';
 
 interface Plan {
   _id: string;
@@ -99,7 +100,7 @@ export function PricingSection() {
                     {period && <span className="text-sm text-[#8B949E]">{period}</span>}
                   </div>
                   <ul className="space-y-2.5">
-                    {(plan.features ?? []).map((feat) => (
+                    {getDisplayFeatures(plan).map((feat) => (
                       <li key={feat} className="flex items-start gap-2.5">
                         <Check size={14} className="text-[#06B6D4] flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-[#8B949E]">{feat}</span>

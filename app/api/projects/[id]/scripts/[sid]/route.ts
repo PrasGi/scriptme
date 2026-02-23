@@ -1,6 +1,7 @@
 import { auth } from '@/auth';
 import { unauthorized, notFound, badRequest, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
+import { decrementActionUsage } from '@/lib/subscription';
 import Script from '@/models/script.model';
 import type { ScriptLine, ScriptStatus } from '@/models/script.model';
 
@@ -99,6 +100,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     ).lean();
 
     if (!script) return notFound('Script not found');
+    await decrementActionUsage(session.user.id, 'save');
     return ok('Script deleted');
   } catch (err) {
     return serverError(err);

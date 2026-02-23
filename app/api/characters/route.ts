@@ -1,7 +1,8 @@
 import { auth } from '@/auth';
-import { unauthorized, badRequest, created, ok, serverError } from '@/lib/response';
+import { unauthorized, badRequest, created, forbidden, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Character from '@/models/character.model';
+import { checkActionLimit, incrementActionUsage } from '@/lib/subscription';
 import type { CharacterPlatform } from '@/models/character.model';
 
 /**
@@ -62,6 +63,11 @@ export async function POST(req: Request) {
     return badRequest('name is required');
   }
 
+  const createCheck = await checkActionLimit(session.user.id, 'character_create');
+  if (!createCheck.allowed) {
+    return forbidden('Monthly limit for create character reached. Upgrade or wait until next month.');
+  }
+
   try {
     await connectDB();
     const character = await Character.create({
@@ -73,6 +79,7 @@ export async function POST(req: Request) {
       accentColor: typeof accentColor === 'string' ? accentColor : '#06B6D4',
     });
 
+    await incrementActionUsage(session.user.id, 'character_create');
     return created('Character created', character.toObject());
   } catch (err) {
     return serverError(err);

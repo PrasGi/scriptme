@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { usePermissions } from '@/hooks/use-permissions';
-import { CreditCard, Plus, Edit2, Trash2, X, AlertTriangle } from 'lucide-react';
+import { CreditCard, Plus, Edit2, Trash2, X, AlertTriangle, Sparkles } from 'lucide-react';
 
 interface Plan {
   _id: string;
@@ -21,7 +21,26 @@ interface Plan {
   badge: string | null;
   isActive: boolean;
   order: number;
+  limitProjectCreate?: number | null;
+  limitSave?: number | null;
+  limitExport?: number | null;
+  limitAnalyze?: number | null;
+  limitFetch?: number | null;
+  limitReadMode?: number | null;
+  limitCharacterCreate?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+const ACTION_LIMIT_KEYS: { key: 'limitProjectCreate' | 'limitSave' | 'limitExport' | 'limitAnalyze' | 'limitFetch' | 'limitReadMode' | 'limitCharacterCreate'; label: string }[] = [
+  { key: 'limitProjectCreate', label: 'Create project' },
+  { key: 'limitSave', label: 'Create script' },
+  { key: 'limitExport', label: 'Export' },
+  { key: 'limitAnalyze', label: 'Analyze' },
+  { key: 'limitFetch', label: 'Fetch TikTok' },
+  { key: 'limitReadMode', label: 'Read mode' },
+  { key: 'limitCharacterCreate', label: 'Create / clone character' },
+];
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
@@ -77,8 +96,15 @@ export default function PlansPage() {
     features: '',
     cta: '',
     badge: '',
-    isActive: true,
-    order: 0,
+  isActive: true,
+  order: 0,
+  limitProjectCreate: '' as '' | number,
+  limitSave: '' as '' | number,
+    limitExport: '' as '' | number,
+    limitAnalyze: '' as '' | number,
+    limitFetch: '' as '' | number,
+    limitReadMode: '' as '' | number,
+  limitCharacterCreate: '' as '' | number,
   });
 
   const fetchPlans = useCallback(async () => {
@@ -92,7 +118,11 @@ export default function PlansPage() {
   useEffect(() => { fetchPlans(); }, [fetchPlans]);
 
   function openCreate() {
-    setForm({ name: '', slug: '', priceMonthly: 0, discount1Month: 0, discount3Months: 0, discount6Months: 0, tokenLimitMonthly: 0, features: '', cta: 'Start Free', badge: '', isActive: true, order: 0 });
+    setForm({
+      name: '', slug: '', priceMonthly: 0, discount1Month: 0, discount3Months: 0, discount6Months: 0,
+      tokenLimitMonthly: 0, features: '', cta: 'Start Free', badge: '', isActive: true, order: 0,
+      limitProjectCreate: '', limitSave: '', limitExport: '', limitAnalyze: '', limitFetch: '', limitReadMode: '', limitCharacterCreate: '',
+    });
     setError('');
     setCreateOpen(true);
   }
@@ -111,9 +141,27 @@ export default function PlansPage() {
       badge: p.badge ?? '',
       isActive: p.isActive ?? true,
       order: p.order ?? 0,
+      limitProjectCreate: p.limitProjectCreate ?? '',
+      limitSave: p.limitSave ?? '',
+      limitExport: p.limitExport ?? '',
+      limitAnalyze: p.limitAnalyze ?? '',
+      limitFetch: p.limitFetch ?? '',
+      limitReadMode: p.limitReadMode ?? '',
+      limitCharacterCreate: p.limitCharacterCreate ?? '',
     });
     setError('');
     setEditTarget(p);
+  }
+
+  /** Generate feature lines from current action limits (number = "X/month", else "Unlimited"). Fills the Features text area; admin can edit before save. */
+  function generateFeaturesFromLimits() {
+    const lines = ACTION_LIMIT_KEYS.map(({ key, label }) => {
+      const v = form[key];
+      const num = typeof v === 'number' ? v : (v === '' ? null : Number(v));
+      const text = num != null && Number.isFinite(num) && num > 0 ? `${label}: ${num}/month` : `${label}: Unlimited`;
+      return text;
+    });
+    setForm((f) => ({ ...f, features: lines.join('\n') }));
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -121,6 +169,7 @@ export default function PlansPage() {
     setError('');
     setSaving(true);
     const features = form.features.split('\n').map((f) => f.trim()).filter(Boolean);
+    const limitVal = (v: '' | number) => (v === '' || v === 0 ? null : Number(v) || null);
     const res = await fetch('/api/admin/plans', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -130,6 +179,13 @@ export default function PlansPage() {
         tokenLimitMonthly: form.tokenLimitMonthly || null,
         features,
         badge: form.badge || null,
+        limitProjectCreate: limitVal(form.limitProjectCreate),
+        limitSave: limitVal(form.limitSave),
+        limitExport: limitVal(form.limitExport),
+        limitAnalyze: limitVal(form.limitAnalyze),
+        limitFetch: limitVal(form.limitFetch),
+        limitReadMode: limitVal(form.limitReadMode),
+        limitCharacterCreate: limitVal(form.limitCharacterCreate),
       }),
     });
     const json = await res.json();
@@ -145,6 +201,7 @@ export default function PlansPage() {
     setError('');
     setSaving(true);
     const features = form.features.split('\n').map((f) => f.trim()).filter(Boolean);
+    const limitVal = (v: '' | number) => (v === '' || v === 0 ? null : Number(v) || null);
     const res = await fetch(`/api/admin/plans/${editTarget._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -154,6 +211,13 @@ export default function PlansPage() {
         tokenLimitMonthly: form.tokenLimitMonthly || null,
         features,
         badge: form.badge || null,
+        limitProjectCreate: limitVal(form.limitProjectCreate),
+        limitSave: limitVal(form.limitSave),
+        limitExport: limitVal(form.limitExport),
+        limitAnalyze: limitVal(form.limitAnalyze),
+        limitFetch: limitVal(form.limitFetch),
+        limitReadMode: limitVal(form.limitReadMode),
+        limitCharacterCreate: limitVal(form.limitCharacterCreate),
       }),
     });
     const json = await res.json();
@@ -250,7 +314,32 @@ export default function PlansPage() {
               <Field label="Discount 6m %"><Input type="number" min={0} max={100} value={form.discount6Months} onChange={(e) => setForm({ ...form, discount6Months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             </div>
             <Field label="Token limit/month (0 = unlimited)"><Input type="number" min={0} value={form.tokenLimitMonthly || ''} onChange={(e) => setForm({ ...form, tokenLimitMonthly: parseInt(e.target.value, 10) || 0 })} placeholder="500000" className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none resize-none" /></Field>
+            <div className="space-y-3">
+              <p className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">Action limits (per month)</p>
+              <p className="text-xs text-[#8B949E]">Leave empty or 0 for unlimited</p>
+              <div className="grid grid-cols-1 gap-2">
+                {ACTION_LIMIT_KEYS.map(({ key, label }) => (
+                  <div key={key} className="flex items-center gap-3">
+                    <label className="text-sm text-white w-40 flex-shrink-0">{label}</label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={form[key] === '' ? '' : form[key]}
+                      onChange={(e) => setForm({ ...form, [key]: e.target.value === '' ? '' : parseInt(e.target.value, 10) || 0 })}
+                      placeholder="Unlimited"
+                      className="bg-[#161B22] border-white/[0.08] max-w-32"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button type="button" variant="secondary" size="sm" onClick={generateFeaturesFromLimits} className="gap-1.5">
+                <Sparkles size={14} />
+                Generate features from limits
+              </Button>
+            </div>
+            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
             <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <Field label="Badge (optional)"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="Most Popular" className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="flex justify-end gap-2 pt-2">
@@ -274,7 +363,32 @@ export default function PlansPage() {
               <Field label="Discount 6m %"><Input type="number" min={0} max={100} value={form.discount6Months} onChange={(e) => setForm({ ...form, discount6Months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             </div>
             <Field label="Token limit/month"><Input type="number" min={0} value={form.tokenLimitMonthly || ''} onChange={(e) => setForm({ ...form, tokenLimitMonthly: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Features"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none resize-none" /></Field>
+            <div className="space-y-3">
+              <p className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">Action limits (per month)</p>
+              <p className="text-xs text-[#8B949E]">Leave empty or 0 for unlimited</p>
+              <div className="grid grid-cols-1 gap-2">
+                {ACTION_LIMIT_KEYS.map(({ key, label }) => (
+                  <div key={key} className="flex items-center gap-3">
+                    <label className="text-sm text-white w-40 flex-shrink-0">{label}</label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={form[key] === '' ? '' : form[key]}
+                      onChange={(e) => setForm({ ...form, [key]: e.target.value === '' ? '' : parseInt(e.target.value, 10) || 0 })}
+                      placeholder="Unlimited"
+                      className="bg-[#161B22] border-white/[0.08] max-w-32"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button type="button" variant="secondary" size="sm" onClick={generateFeaturesFromLimits} className="gap-1.5">
+                <Sparkles size={14} />
+                Generate features from limits
+              </Button>
+            </div>
+            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
             <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <Field label="Badge"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="flex justify-end gap-2 pt-2">

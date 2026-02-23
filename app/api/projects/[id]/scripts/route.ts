@@ -1,8 +1,9 @@
 import { auth } from '@/auth';
-import { unauthorized, badRequest, notFound, created, ok, serverError } from '@/lib/response';
+import { unauthorized, badRequest, notFound, created, forbidden, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Project from '@/models/project.model';
 import Script from '@/models/script.model';
+import { checkActionLimit, incrementActionUsage } from '@/lib/subscription';
 import type { ScriptLine, ScriptSourceType } from '@/models/script.model';
 
 type Params = { params: Promise<{ id: string }> };
@@ -39,6 +40,11 @@ export async function POST(req: Request, { params }: Params) {
   try {
     await connectDB();
 
+    const saveCheck = await checkActionLimit(session.user.id, 'save');
+    if (!saveCheck.allowed) {
+      return forbidden('Monthly limit for creating scripts reached. Upgrade or wait until next month.');
+    }
+
     // Verify project ownership
     const project = await Project.findOne({
       _id:       projectId,
@@ -58,6 +64,7 @@ export async function POST(req: Request, { params }: Params) {
       characterId: characterId ?? null,
     });
 
+    await incrementActionUsage(session.user.id, 'save');
     return created('Script created', script.toObject());
   } catch (err) {
     return serverError(err);

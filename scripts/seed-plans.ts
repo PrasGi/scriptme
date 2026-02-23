@@ -39,6 +39,14 @@ async function run(uri: string) {
       badge:             null,
       isActive:          true,
       order:             0,
+      showFeaturesToUser: true,
+      limitProjectCreate:  5,
+      limitSave:             20,
+      limitExport:           10,
+      limitAnalyze:          5,
+      limitFetch:            3,
+      limitReadMode:         10,
+      limitCharacterCreate:  5,
     },
     {
       name:              'Creator',
@@ -61,6 +69,14 @@ async function run(uri: string) {
       badge:             'Most Popular',
       isActive:          true,
       order:             1,
+      showFeaturesToUser: true,
+      limitProjectCreate:  null,
+      limitSave:             null,
+      limitExport:           null,
+      limitAnalyze:          null,
+      limitFetch:            null,
+      limitReadMode:         null,
+      limitCharacterCreate:  10,
     },
     {
       name:              'Enterprise',
@@ -83,13 +99,34 @@ async function run(uri: string) {
       badge:             null,
       isActive:          true,
       order:             2,
+      showFeaturesToUser: true,
+      limitProjectCreate:  null,
+      limitSave:             null,
+      limitExport:           null,
+      limitAnalyze:          null,
+      limitFetch:            null,
+      limitReadMode:         null,
+      limitCharacterCreate:  null,
     },
   ];
 
   for (const def of planDefs) {
+    const { slug, ...rest } = def;
     await Plan.findOneAndUpdate(
-      { slug: def.slug },
-      { $setOnInsert: def },
+      { slug },
+      {
+        $setOnInsert: def,
+        $set: {
+          showFeaturesToUser: rest.showFeaturesToUser,
+          limitProjectCreate: rest.limitProjectCreate,
+          limitSave: rest.limitSave,
+          limitExport: rest.limitExport,
+          limitAnalyze: rest.limitAnalyze,
+          limitFetch: rest.limitFetch,
+          limitReadMode: rest.limitReadMode,
+          limitCharacterCreate: rest.limitCharacterCreate,
+        },
+      },
       { upsert: true, new: true }
     );
     console.log(`Plan "${def.name}" seeded/updated.`);

@@ -6,7 +6,7 @@ import AiChatLog from '@/models/ai-chat-log.model';
 import { getTikTokTranscript } from '@/lib/tiktok';
 import { runAgent, createAiSession } from '@/lib/ai-agent';
 import { computeUsage } from '@/lib/ai-cost';
-import { checkFeatureAccess, checkTokenLimit, getEffectivePlan } from '@/lib/subscription';
+import { checkFeatureAccess, checkTokenLimit, getEffectivePlan, checkActionLimit, incrementActionUsage } from '@/lib/subscription';
 import { randomUUID } from 'crypto';
 
 /**
@@ -35,6 +35,9 @@ export async function POST(req: Request) {
 
   const hasAccess = await checkFeatureAccess(session.user.id, 'clone');
   if (!hasAccess) return forbidden('Upgrade your plan to use character clone');
+
+  const createLimitCheck = await checkActionLimit(session.user.id, 'character_create');
+  if (!createLimitCheck.allowed) return forbidden('Monthly limit for create character reached. Upgrade or wait until next month.');
 
   const plan = await getEffectivePlan(session.user.id);
   const tokenCheck = await checkTokenLimit(session.user.id, plan, 30_000);
@@ -100,6 +103,8 @@ export async function POST(req: Request) {
       sourceVideoId: result.meta.id,
       accentColor:   '#06B6D4',
     });
+
+    await incrementActionUsage(session.user.id, 'character_create');
 
     return created('Character cloned', character.toObject());
   } catch (err) {

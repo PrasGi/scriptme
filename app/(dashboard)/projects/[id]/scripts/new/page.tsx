@@ -52,6 +52,9 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  // Create-script limit (from plan): when false, disable Save and show message
+  const [createScriptLimit, setCreateScriptLimit] = useState<{ allowed: boolean; used: number; limit: number | null } | null>(null);
+
   // Character
   const [characters, setCharacters] = useState<CharacterOption[]>([]);
   const [characterId, setCharacterId] = useState<string | null>(null);
@@ -78,6 +81,13 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
     fetch('/api/characters')
       .then((r) => r.json())
       .then((j) => { if (j.success && Array.isArray(j.data)) setCharacters(j.data); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/limits')
+      .then((r) => r.json())
+      .then((j) => { if (j.success && j.data?.save) setCreateScriptLimit(j.data.save); })
       .catch(() => {});
   }, []);
 
@@ -331,6 +341,7 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
   }
 
   const canSave = title.trim() && lines.some((l) => l.text.trim());
+  const atCreateScriptLimit = createScriptLimit && !createScriptLimit.allowed;
 
   /** Save first, then redirect to edit page with optional action. Shows error if can't save. */
   async function ensureSavedAndRedirect(action?: string, format?: string) {
@@ -343,6 +354,13 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
 
   return (
     <div className="flex flex-col gap-6 w-full lg:h-[calc(100vh-7rem)] lg:min-h-0">
+      {atCreateScriptLimit && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+          Monthly script limit reached
+          {createScriptLimit.limit != null && ` (${createScriptLimit.used}/${createScriptLimit.limit})`}.
+          Upgrade your plan or try again next month.
+        </div>
+      )}
       {/* Header: full width */}
       <div className="flex items-center justify-between gap-4 shrink-0 flex-wrap">
         <div className="flex items-center gap-3">
@@ -364,7 +382,7 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
           <Button
             variant="secondary"
             size="sm"
-            disabled={!canSave || saving}
+            disabled={!canSave || saving || !!atCreateScriptLimit}
             onClick={() => saveScript()}
             className="gap-1.5"
           >
@@ -377,7 +395,7 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
               size="sm"
               onClick={() => setExportOpen((v) => !v)}
               className="gap-1.5"
-              disabled={saving}
+              disabled={saving || !!atCreateScriptLimit}
             >
               <Download size={13} />
               <ChevronDown size={12} />
@@ -403,7 +421,7 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
             variant="ghost"
             size="sm"
             onClick={() => ensureSavedAndRedirect('analyze')}
-            disabled={!canSave || saving || lines.length === 0}
+            disabled={!canSave || saving || lines.length === 0 || !!atCreateScriptLimit}
             className="gap-1.5"
           >
             <Sparkles size={13} />
@@ -416,7 +434,20 @@ export default function NewScriptPage({ params }: { params: Promise<{ id: string
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setReadModeOpen(true)}
+            onClick={async () => {
+              const res = await fetch('/api/usage/record', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'read_mode' }),
+              });
+              if (res.status === 403) {
+                const json = await res.json().catch(() => ({}));
+                setError(json.message ?? 'Monthly limit for read mode reached.');
+                return;
+              }
+              if (!res.ok) return;
+              setReadModeOpen(true);
+            }}
             disabled={lines.length === 0}
             className="gap-1.5"
           >
