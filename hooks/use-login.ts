@@ -65,11 +65,11 @@ export function useLogin() {
 
       if (result?.ok) {
         // #region agent log
-        (function(){const p={sessionId:'4d1c77',location:'use-login.ts:result.ok branch',message:'calling router.push',data:{redirect},timestamp:Date.now(),hypothesisId:'H5'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+        (function(){const p={sessionId:'4d1c77',location:'use-login.ts:result.ok branch',message:'calling window.location.href (full page nav)',data:{redirect},timestamp:Date.now(),hypothesisId:'H2-H4-fix',runId:'post-fix'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
         // #endregion
         setState((s) => ({ ...s, isLoading: false }));
-        router.push(redirect);
-        router.refresh();
+        // Full page navigation so the first dashboard request sends the session cookie (router.push RSC request was not including it, causing middleware to redirect back to login)
+        window.location.href = redirect;
         return;
       }
 
@@ -84,11 +84,10 @@ export function useLogin() {
       // #endregion
       if (sessionRes.ok && data?.user?.id) {
         // #region agent log
-        (function(){const p={sessionId:'4d1c77',location:'use-login.ts:router.push from session',message:'calling router.push',data:{redirect},timestamp:Date.now(),hypothesisId:'H2-H4'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
+        (function(){const p={sessionId:'4d1c77',location:'use-login.ts:window.location from session',message:'calling window.location.href',data:{redirect},timestamp:Date.now(),hypothesisId:'H2-H4',runId:'post-fix'};console.log('[debug 4d1c77]',p);fetch('http://127.0.0.1:7469/ingest/452e1154-ea43-41e8-a4f1-9e500b19d198',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4d1c77'},body:JSON.stringify(p)}).catch(()=>{});})();
         // #endregion
         setState((s) => ({ ...s, isLoading: false }));
-        router.push(redirect);
-        router.refresh();
+        window.location.href = redirect;
         return;
       }
 
