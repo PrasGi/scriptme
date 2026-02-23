@@ -107,7 +107,10 @@ const config: NextAuthConfig = {
         await connectDB();
 
         const defaultRole = await Role.findOne({ isDefault: true }).lean();
-        if (!defaultRole) return false;
+        if (!defaultRole) {
+          logger.error('OAuth signIn: no default role in DB (run seed?)', { eventType: 'auth.oauth.failed', provider: account?.provider });
+          return false;
+        }
 
         const field = account?.provider === 'google' ? 'googleId' : 'githubId';
 
@@ -128,12 +131,21 @@ const config: NextAuthConfig = {
           });
         }
 
+        // Resolve role from DB (existing users may have non-default role)
+        const roleId = (dbUser as { roleId?: Types.ObjectId }).roleId ?? defaultRole._id;
+        const role = await Role.findById(roleId).lean();
+        if (!role) {
+          logger.error('OAuth signIn: user role not found', { eventType: 'auth.oauth.failed', roleId: String(roleId) });
+          return false;
+        }
+
         // Inject custom fields so jwt callback can read them
-        user.id       = dbUser._id.toString();
-        user.roleId   = defaultRole._id.toString();
-        user.roleName = defaultRole.name;
+        user.id       = (dbUser as { _id: Types.ObjectId })._id.toString();
+        user.roleId   = role._id.toString();
+        user.roleName = role.name;
         return true;
-      } catch {
+      } catch (err) {
+        logger.error('OAuth signIn callback error', { eventType: 'auth.oauth.failed', error: err, provider: account?.provider });
         return false;
       }
     },
