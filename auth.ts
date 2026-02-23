@@ -10,6 +10,7 @@ import { logger } from '@/lib/logger';
 import { Types } from 'mongoose';
 
 const config: NextAuthConfig = {
+  trustHost: true, // required when behind reverse proxy (e.g. Nginx at scriptme.cloud)
   providers: [
     // ─── Credentials (email + password) ─────────────────────────────────────
     Credentials({

@@ -75,6 +75,8 @@ NODE_ENV=production
 
 # Auth (required)
 AUTH_SECRET=<generate with: openssl rand -base64 32>
+# Required when behind Nginx/reverse proxy
+AUTH_TRUST_HOST=true
 
 # Google OAuth (optional)
 AUTH_GOOGLE_ID=
