@@ -110,22 +110,19 @@ async function run(uri: string) {
     },
   ];
 
+  const limitKeys = [
+    'limitProjectCreate', 'limitSave', 'limitExport', 'limitAnalyze',
+    'limitFetch', 'limitReadMode', 'limitCharacterCreate',
+  ] as const;
+
   for (const def of planDefs) {
     const { slug, ...rest } = def;
+    const setValues = Object.fromEntries(limitKeys.map((k) => [k, rest[k]]));
+    const setOnInsertValues = { ...def };
+    for (const k of limitKeys) delete (setOnInsertValues as Record<string, unknown>)[k];
     await Plan.findOneAndUpdate(
       { slug },
-      {
-        $setOnInsert: def,
-        $set: {
-          limitProjectCreate: rest.limitProjectCreate,
-          limitSave: rest.limitSave,
-          limitExport: rest.limitExport,
-          limitAnalyze: rest.limitAnalyze,
-          limitFetch: rest.limitFetch,
-          limitReadMode: rest.limitReadMode,
-          limitCharacterCreate: rest.limitCharacterCreate,
-        },
-      },
+      { $setOnInsert: setOnInsertValues, $set: setValues },
       { upsert: true, returnDocument: 'after' }
     );
     console.log(`Plan "${def.name}" seeded/updated.`);
