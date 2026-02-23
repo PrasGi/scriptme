@@ -28,11 +28,13 @@ export default async function middleware(req: NextRequest) {
 
   if (isPublic) return NextResponse.next();
 
-  // getToken uses Web Crypto API — Edge Runtime compatible; secret must match auth config (paralyze pattern)
+  // getToken must use same cookie name as Auth.js: __Secure-authjs.session-token when NEXTAUTH_URL is https
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
+  const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? true;
   const token = await getToken({
     req,
     secret: secret!,
+    secureCookie: useSecureCookies,
   });
 
   if (!token) {
