@@ -108,7 +108,7 @@ const config: NextAuthConfig = {
 
         const defaultRole = await Role.findOne({ isDefault: true }).lean();
         if (!defaultRole) {
-          logger.error('OAuth signIn: no default role in DB (run seed?)', { eventType: 'auth.oauth.failed', provider: account?.provider });
+          logger.error('OAuth signIn: no default role in DB (run seed?)', { eventType: 'auth.oauth.failed', metadata: { provider: account?.provider } });
           return false;
         }
 
@@ -135,7 +135,7 @@ const config: NextAuthConfig = {
         const roleId = (dbUser as { roleId?: Types.ObjectId }).roleId ?? defaultRole._id;
         const role = await Role.findById(roleId).lean();
         if (!role) {
-          logger.error('OAuth signIn: user role not found', { eventType: 'auth.oauth.failed', roleId: String(roleId) });
+          logger.error('OAuth signIn: user role not found', { eventType: 'auth.oauth.failed', metadata: { roleId: String(roleId) } });
           return false;
         }
 
@@ -145,7 +145,7 @@ const config: NextAuthConfig = {
         user.roleName = role.name;
         return true;
       } catch (err) {
-        logger.error('OAuth signIn callback error', { eventType: 'auth.oauth.failed', error: err, provider: account?.provider });
+        logger.error('OAuth signIn callback error', { eventType: 'auth.oauth.failed', error: err, metadata: { provider: account?.provider } });
         return false;
       }
     },
