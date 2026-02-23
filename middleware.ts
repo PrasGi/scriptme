@@ -36,6 +36,21 @@ export default async function middleware(req: NextRequest) {
   });
 
   if (!token) {
+    // #region agent log — debug why /dashboard request has no session (cookie not set vs getToken failing)
+    const cookieNames = req.cookies.getAll().map((c) => c.name);
+    const hasAuthCookie = cookieNames.some(
+      (n) => n.includes('authjs') || n.includes('next-auth') || n.includes('session')
+    );
+    console.log(
+      JSON.stringify({
+        sessionId: '4d1c77',
+        location: 'middleware.ts:redirect to login',
+        message: 'no token',
+        data: { pathname, hasAuthCookie, cookieCount: cookieNames.length, cookieNames },
+        hypothesisId: 'cookie-or-secret',
+      })
+    );
+    // #endregion
     const loginUrl = new URL('/login', req.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
