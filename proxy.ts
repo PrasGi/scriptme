@@ -14,10 +14,11 @@ const PERMISSION_GUARDED: Array<{ prefix: string; permission: string }> = [
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow public pages, static files, and NextAuth API routes
+  // Allow public pages, static files, NextAuth API routes, and public APIs (e.g. plans for LP)
   const isPublic =
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith('/api/auth') ||
+    pathname === '/api/plans' ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/public') ||
     pathname.includes('.');
