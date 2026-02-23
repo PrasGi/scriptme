@@ -1,0 +1,87 @@
+import { auth } from '@/auth';
+import { unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
+import { connectDB } from '@/lib/db';
+import { checkFeatureAccess, checkTokenLimit, getEffectivePlan } from '@/lib/subscription';
+import Script from '@/models/script.model';
+import Character from '@/models/character.model';
+import { getAnalyzeQueue } from '@/lib/queue';
+
+type Params = { params: Promise<{ id: string; sid: string }> };
+
+type ScriptLine = { startTime: string; endTime: string; text: string };
+
+/**
+ * POST /api/projects/[id]/scripts/[sid]/analyze
+ * Enqueue a script analysis job. Returns immediately with jobId.
+ * A BullMQ worker processes the job in the background and updates the script in DB.
+ * Client should poll GET /api/projects/[id]/scripts/[sid] until status is 'ready'.
+ *
+ * Body: { lines?: ScriptLine[] } — use current lines (e.g. unsaved edits).
+ */
+export async function POST(req: Request, { params }: Params) {
+  const session = await auth();
+  if (!session?.user?.id) return unauthorized();
+
+  const { id: projectId, sid } = await params;
+
+  let bodyLines: ScriptLine[] | undefined;
+  try {
+    const body = await req.json().catch(() => ({}));
+    if (Array.isArray(body.lines) && body.lines.length > 0) {
+      bodyLines = body.lines;
+    }
+  } catch { /* ignore */ }
+
+  const hasAccess = await checkFeatureAccess(session.user.id, 'analyze');
+  if (!hasAccess) return forbidden('Upgrade your plan to use script analysis');
+  const plan = await getEffectivePlan(session.user.id);
+  const tokenCheck = await checkTokenLimit(session.user.id, plan, 50_000);
+  if (!tokenCheck.allowed) return forbidden('Monthly AI token limit reached. Upgrade or wait until next month.');
+
+  try {
+    await connectDB();
+    const script = await Script.findOne({
+      _id:       sid,
+      projectId,
+      userId:    session.user.id,
+      deletedAt: null,
+    }).populate<{ characterId: { description: string } | null }>('characterId', 'description');
+    if (!script) return notFound('Script not found');
+
+    const linesToAnalyze = bodyLines ?? script.lines;
+    const plainFallback = script.plainText;
+    if (linesToAnalyze.length === 0 && !plainFallback) {
+      return badRequest('Script has no content to analyze');
+    }
+
+    const scriptContent = linesToAnalyze.length > 0
+      ? linesToAnalyze.map((l) => `${l.startTime} --> ${l.endTime}\n${l.text}`).join('\n\n')
+      : plainFallback;
+
+    const char = script.characterId as { description?: string } | null;
+    const characterContext = char?.description ?? undefined;
+
+    await Script.findByIdAndUpdate(sid, { $set: { status: 'analyzing' } });
+
+    const queue = getAnalyzeQueue();
+    const job = await queue.add(
+      'analyze',
+      {
+        scriptId:         sid,
+        projectId,
+        userId:           session.user.id,
+        scriptContent,
+        characterContext,
+      },
+      { jobId: `analyze-${sid}-${Date.now()}` }
+    );
+
+    return Response.json({
+      success: true,
+      message: 'Analysis job queued',
+      data:    { jobId: job.id },
+    });
+  } catch (err) {
+    return serverError(err);
+  }
+}

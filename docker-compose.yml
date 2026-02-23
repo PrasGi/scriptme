@@ -1,0 +1,48 @@
+# script-minder: app + worker only
+# MongoDB and Redis are started separately from /docker/redis and /docker/db/mongo (shared by other projects).
+# Set MONGODB_URI and REDIS_URL in .env (e.g. mongodb://user:pass@mongodb:27017/scriptminder?authSource=admin, redis://redis:6379).
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: script-minder-app:latest
+    container_name: script-minder
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3200}:3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: "0.0.0.0"
+      LOGGER_SERVICE_NAME: script-minder
+    networks:
+      - server-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: script-minder-worker:latest
+    container_name: script-minder-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      LOGGER_SERVICE_NAME: script-minder-worker
+    networks:
+      - server-network
+
+networks:
+  server-network:
+    external: true

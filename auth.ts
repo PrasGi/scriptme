@@ -1,0 +1,160 @@
+import NextAuth, { type NextAuthConfig } from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
+import GitHub from 'next-auth/providers/github';
+import { connectDB } from '@/lib/db';
+import User from '@/models/user.model';
+import Role from '@/models/role.model';
+import { getUserPermissions } from '@/lib/permissions';
+import { logger } from '@/lib/logger';
+import { Types } from 'mongoose';
+
+const config: NextAuthConfig = {
+  providers: [
+    // ─── Credentials (email + password) ─────────────────────────────────────
+    Credentials({
+      credentials: {
+        email:    { label: 'Email',    type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        try {
+          if (!credentials?.email || !credentials?.password) return null;
+
+          await connectDB();
+
+          const user = await User.findOne({ email: credentials.email })
+            .select('+password')
+            .populate('roleId')
+            .lean();
+
+          if (!user || !user.isActive) return null;
+
+          const bcrypt = await import('bcryptjs');
+          const valid = await bcrypt.compare(
+            credentials.password as string,
+            user.password ?? ''
+          );
+          if (!valid) return null;
+
+          const populated = user.roleId as unknown as { _id: Types.ObjectId; name: string };
+          const roleId    = populated?._id?.toString() ?? '';
+          const roleName  = populated?.name ?? 'creator';
+
+          return {
+            id:       user._id.toString(),
+            name:     user.name,
+            email:    user.email,
+            image:    user.image ?? null,
+            roleId,
+            roleName,
+          };
+        } catch (err) {
+          logger.error('Credentials authorize failed', {
+            eventType: 'auth.login.failed',
+            error: err,
+          });
+          return null;
+        }
+      },
+    }),
+
+    // ─── Google OAuth ────────────────────────────────────────────────────────
+    Google({
+      clientId:     process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
+
+    // ─── GitHub OAuth ────────────────────────────────────────────────────────
+    GitHub({
+      clientId:     process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
+    }),
+  ],
+
+  session: { strategy: 'jwt' },
+
+  pages: {
+    signIn:  '/login',
+    signOut: '/login',
+    error:   '/login',
+  },
+
+  callbacks: {
+    // ─── OAuth sign-in: find-or-create user in MongoDB ──────────────────────
+    async signIn({ user, account }) {
+      if (account?.provider === 'credentials') return true;
+
+      try {
+        await connectDB();
+
+        const defaultRole = await Role.findOne({ isDefault: true }).lean();
+        if (!defaultRole) return false;
+
+        const field = account?.provider === 'google' ? 'googleId' : 'githubId';
+
+        let dbUser = await User.findOne({ email: user.email! }).lean();
+
+        if (!dbUser) {
+          dbUser = await User.create({
+            name:          user.name ?? user.email!.split('@')[0],
+            email:         user.email!,
+            image:         user.image ?? undefined,
+            [field]:       user.id,
+            roleId:        defaultRole._id,
+            emailVerified: new Date(),
+          });
+        } else if (!dbUser[field as keyof typeof dbUser]) {
+          await User.findByIdAndUpdate(dbUser._id, {
+            $set: { [field]: user.id, image: user.image ?? dbUser.image },
+          });
+        }
+
+        // Inject custom fields so jwt callback can read them
+        user.id       = dbUser._id.toString();
+        user.roleId   = defaultRole._id.toString();
+        user.roleName = defaultRole.name;
+        return true;
+      } catch {
+        return false;
+      }
+    },
+
+    // ─── JWT: embed user metadata + permissions ──────────────────────────────
+    async jwt({ token, user }) {
+      if (user) {
+        // First login — populate identity fields from the authorize/signIn result
+        token.id       = user.id!;
+        token.roleId   = (user as { roleId?: string }).roleId ?? '';
+        token.roleName = (user as { roleName?: string }).roleName ?? 'creator';
+      }
+
+      // Always refresh permissions so changes take effect without re-login
+      try {
+        const perms = await getUserPermissions(token.id as string, token.roleId as string);
+        token.permissions = perms.map((p) => `${p.resource}:${p.action}:${p.scope}`);
+      } catch (err) {
+        console.error('[auth] Failed to load permissions into JWT:', err);
+        logger.error('Failed to load permissions into JWT', {
+          eventType: 'auth.session.error',
+          auth: { userId: token.id as string },
+          error: err,
+        });
+        token.permissions = (token.permissions as string[]) ?? [];
+      }
+
+      return token;
+    },
+
+    // ─── Session: expose safe fields to client ───────────────────────────────
+    async session({ session, token }) {
+      session.user.id          = token.id as string;
+      session.user.roleId      = token.roleId as string;
+      session.user.roleName    = token.roleName as string;
+      session.user.permissions = token.permissions as string[];
+      return session;
+    },
+  },
+};
+
+export const { handlers, auth, signIn, signOut } = NextAuth(config);
