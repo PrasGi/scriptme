@@ -60,9 +60,16 @@ export function useLogin() {
 
     if (result?.ok) {
       // Full page navigation so the session cookie is sent on the first dashboard request.
-      // router.push() can run before the cookie is set, causing middleware to redirect back to login.
       window.location.href = redirect;
+      return;
     }
+
+    // No error but not ok (e.g. network failure or unexpected response)
+    setState({
+      isLoading:   false,
+      fieldErrors: {},
+      error:       'Sign-in failed. Please try again.',
+    });
   }
 
   async function loginWithGoogle(redirect = '/dashboard') {

@@ -23,23 +23,37 @@ const config: NextAuthConfig = {
       },
       async authorize(credentials) {
         try {
-          if (!credentials?.email || !credentials?.password) return null;
+          if (!credentials?.email || !credentials?.password) {
+            logger.warn('Credentials authorize: missing email or password', { eventType: 'auth.login.failed' });
+            return null;
+          }
 
           await connectDB();
 
-          const user = await User.findOne({ email: credentials.email })
+          const email = (credentials.email as string).trim().toLowerCase();
+          const user = await User.findOne({ email })
             .select('+password')
             .populate('roleId')
             .lean();
 
-          if (!user || !user.isActive) return null;
+          if (!user) {
+            logger.warn('Credentials authorize: user not found', { eventType: 'auth.login.failed', email });
+            return null;
+          }
+          if (!user.isActive) {
+            logger.warn('Credentials authorize: user inactive', { eventType: 'auth.login.failed', email });
+            return null;
+          }
 
           const bcrypt = await import('bcryptjs');
           const valid = await bcrypt.compare(
             credentials.password as string,
             user.password ?? ''
           );
-          if (!valid) return null;
+          if (!valid) {
+            logger.warn('Credentials authorize: invalid password', { eventType: 'auth.login.failed', email });
+            return null;
+          }
 
           const populated = user.roleId as unknown as { _id: Types.ObjectId; name: string };
           const roleId    = populated?._id?.toString() ?? '';
