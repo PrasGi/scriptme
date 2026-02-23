@@ -59,8 +59,9 @@ export function useLogin() {
     }
 
     if (result?.ok) {
-      router.push(redirect);
-      router.refresh();
+      // Full page navigation so the session cookie is sent on the first dashboard request.
+      // router.push() can run before the cookie is set, causing middleware to redirect back to login.
+      window.location.href = redirect;
     }
   }
 
