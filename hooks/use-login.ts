@@ -19,7 +19,8 @@ interface LoginInput {
 
 /**
  * Hook for credentials login via NextAuth.
- * Validates locally first, then calls NextAuth signIn.
+ * Validates locally first, then calls NextAuth signIn (redirect: false).
+ * On success uses router.push + refresh (same pattern as paralyze).
  */
 export function useLogin() {
   const router = useRouter();
@@ -30,7 +31,6 @@ export function useLogin() {
   });
 
   async function login({ email, password, redirect = '/dashboard' }: LoginInput) {
-    // Client-side validation
     const parsed = validateLogin({ email, password });
     if (!parsed.ok) {
       const fieldErrors: Record<string, string> = {};
@@ -43,33 +43,40 @@ export function useLogin() {
 
     setState({ isLoading: true, error: null, fieldErrors: {} });
 
-    const result = await signIn('credentials', {
-      email:    parsed.data.email,
-      password: parsed.data.password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn('credentials', {
+        email:    parsed.data.email,
+        password: parsed.data.password,
+        redirect: false,
+      });
 
-    if (result?.error) {
+      if (result?.error) {
+        setState({
+          isLoading:   false,
+          fieldErrors: {},
+          error:       'Invalid email or password',
+        });
+        return;
+      }
+
+      if (result?.ok) {
+        router.push(redirect);
+        router.refresh();
+        return;
+      }
+
       setState({
         isLoading:   false,
         fieldErrors: {},
-        error:       'Invalid email or password',
+        error:       'Sign-in failed. Please try again.',
       });
-      return;
+    } catch {
+      setState({
+        isLoading:   false,
+        fieldErrors: {},
+        error:       'Sign-in failed. Please try again.',
+      });
     }
-
-    if (result?.ok) {
-      // Full page navigation so the session cookie is sent on the first dashboard request.
-      window.location.href = redirect;
-      return;
-    }
-
-    // No error but not ok (e.g. network failure or unexpected response)
-    setState({
-      isLoading:   false,
-      fieldErrors: {},
-      error:       'Sign-in failed. Please try again.',
-    });
   }
 
   async function loginWithGoogle(redirect = '/dashboard') {

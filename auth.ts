@@ -147,17 +147,23 @@ const config: NextAuthConfig = {
         token.roleName = (user as { roleName?: string }).roleName ?? 'creator';
       }
 
-      // Always refresh permissions so changes take effect without re-login
-      try {
-        const perms = await getUserPermissions(token.id as string, token.roleId as string);
-        token.permissions = perms.map((p) => `${p.resource}:${p.action}:${p.scope}`);
-      } catch (err) {
-        console.error('[auth] Failed to load permissions into JWT:', err);
-        logger.error('Failed to load permissions into JWT', {
-          eventType: 'auth.session.error',
-          auth: { userId: token.id as string },
-          error: err,
-        });
+      // Refresh permissions only when we have valid id and roleId (avoid ObjectId('') throw)
+      const userId = token.id as string | undefined;
+      const roleId = token.roleId as string | undefined;
+      if (userId && roleId) {
+        try {
+          const perms = await getUserPermissions(userId, roleId);
+          token.permissions = perms.map((p) => `${p.resource}:${p.action}:${p.scope}`);
+        } catch (err) {
+          console.error('[auth] Failed to load permissions into JWT:', err);
+          logger.error('Failed to load permissions into JWT', {
+            eventType: 'auth.session.error',
+            auth: { userId },
+            error: err,
+          });
+          token.permissions = (token.permissions as string[]) ?? [];
+        }
+      } else {
         token.permissions = (token.permissions as string[]) ?? [];
       }
 

@@ -1,8 +1,15 @@
+import { Suspense } from 'react';
 import { LoginForm } from '@/components/auth/auth-forms';
 
 export const metadata = {
   title: 'Sign In — ScriptMinder',
 };
+
+function LoginFormFallback() {
+  return (
+    <div className="w-full max-w-md mx-auto animate-pulse rounded-2xl border border-white/[0.08] bg-[#161B22] p-8 h-96" />
+  );
+}
 
 export default function LoginPage() {
   return (
@@ -12,7 +19,9 @@ export default function LoginPage() {
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-indigo-500/8 blur-[100px] pointer-events-none" />
       <div className="absolute inset-0 grid-bg pointer-events-none" />
       <div className="relative z-10 w-full">
-        <LoginForm />
+        <Suspense fallback={<LoginFormFallback />}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

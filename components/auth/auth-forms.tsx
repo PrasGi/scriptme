@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { LogoStatic } from '@/components/common/logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,12 +16,17 @@ import { validateRegister } from '@/app/api/auth/register/validation';
 // LOGIN FORM
 // ────────────────────────────────────────────────────────────────────────────
 export function LoginForm() {
+  const searchParams = useSearchParams();
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
 
   const { login, loginWithGoogle, loginWithGitHub, isLoading, error, fieldErrors, clearError } =
     useLogin();
+
+  // Auth.js redirects to /login?error=CredentialsSignin on failure; show message even when client didn't get result
+  const authError = searchParams.get('error');
+  const displayError = error ?? (authError === 'CredentialsSignin' ? 'Invalid email or password' : authError ? 'Sign-in failed. Please try again.' : null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,14 +45,6 @@ export function LoginForm() {
       </div>
 
       <div className="rounded-2xl border border-white/[0.08] bg-[#161B22] p-8 space-y-5">
-        {/* Error banner */}
-        {error && (
-          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
-            <AlertCircle size={15} className="shrink-0" />
-            {error}
-          </div>
-        )}
-
         {/* OAuth */}
         <div className="grid grid-cols-2 gap-3">
           <button
@@ -72,6 +70,14 @@ export function LoginForm() {
           <span className="text-xs text-[#8B949E]">or continue with email</span>
           <div className="flex-1 h-px bg-white/[0.06]" />
         </div>
+
+        {/* Error banner (from hook or from URL ?error=CredentialsSignin) */}
+        {displayError && (
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+            <AlertCircle size={15} className="shrink-0" />
+            {displayError}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
