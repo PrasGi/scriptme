@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 # Install all deps including devDependencies (tsx) for running worker
 ENV NODE_ENV=development
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 ENV NODE_ENV=production
 COPY . .
 
