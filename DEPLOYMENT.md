@@ -209,6 +209,7 @@ Jenkins runs on the **host** (e.g. `https://jenkins.prasme.id`). The pipeline co
    # Jenkins user must be able to run Docker
    groups jenkins   # should include docker; if not: sudo usermod -aG docker jenkins
    ```
+   If Jenkins runs as a different user (e.g. from a systemd unit), use that user instead of `jenkins` in `chown`.
 
 4. **Webhook (optional):** In GitHub repo → Settings → Webhooks → Add webhook: Payload URL `https://jenkins.prasme.id/github-webhook/`, Content type `application/json`, Just the push event.
 
