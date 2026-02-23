@@ -10,6 +10,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# Dummy env so Next.js "Collecting page data" does not throw (lib/db.ts checks at import)
+ENV MONGODB_URI=mongodb://build:placeholder@localhost:27017/scriptminder?authSource=admin
 RUN npm run build
 
 # Stage 3: Runner (Next.js app)
