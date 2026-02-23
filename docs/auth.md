@@ -86,6 +86,37 @@ If login works locally but on the server you get **307 redirect back to /login**
 
 ---
 
+### Google OAuth: `invalid_client` / Unauthorized
+
+If Docker logs show:
+
+```text
+[auth][details]: { "error": "invalid_client", "error_description": "Unauthorized", "provider": "google" }
+```
+
+Google is rejecting the token exchange. Fix it in **Google Cloud Console**, not in code:
+
+1. **Redirect URI**
+   - [Google Cloud Console](https://console.cloud.google.com/) → **APIs & Services** → **Credentials**.
+   - Open your **OAuth 2.0 Client ID** (type: **Web application**).
+   - Under **Authorized redirect URIs** add exactly (no trailing slash):
+     - **Production:** `https://scriptme.cloud/api/auth/callback/google`
+     - If you use another domain (e.g. staging), add that too: `https://<domain>/api/auth/callback/google`
+   - Save.
+
+2. **Client ID and Secret**
+   - Copy **Client ID** and **Client secret** from that same OAuth client.
+   - In Jenkins: **Manage Jenkins** → **Credentials** → update (or create) **Secret text** for:
+     - `script-minder-google-oauth-id` → paste Client ID.
+     - `script-minder-google-oauth-secret` → paste Client secret (if you regenerated it, Jenkins must use the new value).
+   - Redeploy so the container gets the updated `.env`.
+
+3. **Optional check**
+   - On the server: `docker exec script-minder env | grep AUTH_GOOGLE`  
+     Both `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` should be set (values may be masked). If either is empty, the Jenkins credential or pipeline is wrong.
+
+---
+
 ## Environment Variables
 
 Add these to your `.env.local`:

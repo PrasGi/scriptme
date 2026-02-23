@@ -188,8 +188,8 @@ Jenkins runs on the **host** (e.g. `https://jenkins.prasme.id`). The pipeline co
    | `script-minder-mongo-root-password` | MongoDB root password |
    | `script-minder-auth-secret` | NextAuth `AUTH_SECRET` (e.g. `openssl rand -base64 32`) |
    | `script-minder-google-genai-api-key` | `GOOGLE_GENAI_API_KEY` for AI/analyze |
-   | `script-minder-google-oauth-id` | `AUTH_GOOGLE_ID` (optional) |
-   | `script-minder-google-oauth-secret` | `AUTH_GOOGLE_SECRET` (optional) |
+   | `script-minder-google-oauth-id` | `AUTH_GOOGLE_ID` (optional). In Google Console add redirect URI: `https://scriptme.cloud/api/auth/callback/google` |
+   | `script-minder-google-oauth-secret` | `AUTH_GOOGLE_SECRET` (optional). Must match the OAuth client whose redirect URI is set above |
    | `script-minder-github-oauth-id` | `AUTH_GITHUB_ID` (optional) |
    | `script-minder-github-oauth-secret` | `AUTH_GITHUB_SECRET` (optional) |
    | `script-minder-cloudflare-proxy-url` | `CLOUDFLARE_PROXY_URL` (optional) |
