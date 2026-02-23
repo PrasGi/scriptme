@@ -37,11 +37,11 @@ const config: NextAuthConfig = {
             .lean();
 
           if (!user) {
-            logger.warn('Credentials authorize: user not found', { eventType: 'auth.login.failed', email });
+            logger.warn('Credentials authorize: user not found', { eventType: 'auth.login.failed', metadata: { email } });
             return null;
           }
           if (!user.isActive) {
-            logger.warn('Credentials authorize: user inactive', { eventType: 'auth.login.failed', email });
+            logger.warn('Credentials authorize: user inactive', { eventType: 'auth.login.failed', metadata: { email } });
             return null;
           }
 
@@ -51,7 +51,7 @@ const config: NextAuthConfig = {
             user.password ?? ''
           );
           if (!valid) {
-            logger.warn('Credentials authorize: invalid password', { eventType: 'auth.login.failed', email });
+            logger.warn('Credentials authorize: invalid password', { eventType: 'auth.login.failed', metadata: { email } });
             return null;
           }
 
