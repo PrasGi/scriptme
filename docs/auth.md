@@ -64,6 +64,28 @@ Permissions are pre-loaded into the JWT on first login so no extra DB call is ne
 
 ---
 
+## Production / Server (e.g. scriptme.cloud)
+
+If login works locally but on the server you get **307 redirect back to /login** after signing in:
+
+1. **Env on the server**
+   - `NEXTAUTH_URL` must be exactly the public URL users see, e.g. `https://scriptme.cloud` (no trailing slash).
+   - `AUTH_SECRET` must be set and **identical** everywhere (no empty value; same secret as used when the cookie was set).
+
+2. **Nginx (or any reverse proxy)**
+   - Forward the real host and protocol so NextAuth sees the correct URL:
+     - `proxy_set_header Host $host;`
+     - `proxy_set_header X-Forwarded-Proto $scheme;`
+   - Do **not** strip or rewrite `Cookie` or `Set-Cookie` headers.
+
+3. **Browser**
+   - After clicking Sign In, open DevTools → Application → Cookies → `https://scriptme.cloud`. You should see a session cookie (e.g. `__Secure-authjs.session-token`). If it’s missing, the server isn’t setting it (check NEXTAUTH_URL and AUTH_SECRET). If it’s present, check the **Request Headers** for the next `/dashboard` request and confirm the `Cookie` header is sent.
+
+4. **Deploy**
+   - Ensure the latest code is deployed (login uses `window.location.href` after success so the cookie is sent on the first dashboard load, and `middleware.ts` is present so route protection runs).
+
+---
+
 ## Environment Variables
 
 Add these to your `.env.local`:

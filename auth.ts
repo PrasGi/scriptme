@@ -12,6 +12,8 @@ import { Types } from 'mongoose';
 const config: NextAuthConfig = {
   trustHost: true, // required when behind reverse proxy (e.g. Nginx at scriptme.cloud)
   useSecureCookies: process.env.NEXTAUTH_URL?.startsWith('https://') ?? true,
+  // Must match getToken() in middleware (NEXTAUTH_SECRET || AUTH_SECRET)
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
   providers: [
     // ─── Credentials (email + password) ─────────────────────────────────────
     Credentials({
