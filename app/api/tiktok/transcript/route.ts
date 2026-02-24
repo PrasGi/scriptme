@@ -1,5 +1,6 @@
+import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { unauthorized, forbidden, badRequest, ok, serverError } from '@/lib/response';
+import { unauthorized, forbidden, badRequest, ok } from '@/lib/response';
 import { getTikTokTranscript } from '@/lib/tiktok';
 import { logger } from '@/lib/logger';
 import { checkActionLimit, incrementActionUsage } from '@/lib/subscription';
@@ -62,6 +63,16 @@ export async function POST(req: Request) {
       auth:      { userId: session.user.id },
       error:     err,
     });
-    return serverError(err);
+    // User-friendly message for known TikTok parsing failures
+    const msg = err instanceof Error ? err.message : '';
+    const isRehydrationError = msg.includes('__UNIVERSAL_DATA_FOR_REHYDRATION__');
+    const isStructureError = msg.includes('webapp.video-detail') || msg.includes('itemStruct');
+    const friendlyMessage = isRehydrationError || isStructureError
+      ? 'TikTok returned a page we couldn\'t parse. The video may be private, region-locked, or TikTok may have changed their site. Try another video or try again later.'
+      : msg || 'Failed to fetch transcript';
+    return NextResponse.json(
+      { success: false, message: friendlyMessage },
+      { status: 422 }
+    );
   }
 }
