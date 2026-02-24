@@ -2,7 +2,22 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps
+
+# Reduce ECONNRESET / network flakes in CI (Jenkins, etc.)
+RUN npm config set fetch-timeout 120000 && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000
+
+# Optional: pass build args in Jenkins for proxy, e.g. --build-arg HTTP_PROXY=... HTTPS_PROXY=...
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ENV HTTP_PROXY=${HTTP_PROXY} HTTPS_PROXY=${HTTPS_PROXY}
+
+# Retry npm ci on network failure (common in CI)
+RUN npm ci --legacy-peer-deps || \
+    (sleep 20 && npm ci --legacy-peer-deps) || \
+    (sleep 45 && npm ci --legacy-peer-deps)
 
 # Stage 2: Build
 FROM node:20-alpine AS builder
