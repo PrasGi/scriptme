@@ -24,6 +24,7 @@ import {
   Loader2,
   Tag,
   Receipt,
+  MessageSquare,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
@@ -53,6 +54,7 @@ const mainNavItems: NavItem[] = [
 const adminNavItems: NavItem[] = [
   { label: 'Users',       href: '/admin/users',            icon: UserCog,  requires: ['user:read:all'] },
   { label: 'Notifications', href: '/admin/notifications',  icon: Bell,     requires: ['user:read:all'] },
+  { label: 'Feedback',    href: '/admin/feedback',        icon: MessageSquare, requires: ['user:read:all'] },
   { label: 'IAM',         href: '/admin/iam',              icon: Shield,   requires: ['role:read:all'] },
   { label: 'Plans',       href: '/admin/plans',            icon: CreditCard, requires: ['role:read:all'] },
   { label: 'Vouchers',    href: '/admin/vouchers',         icon: Tag,       requires: ['role:read:all'] },

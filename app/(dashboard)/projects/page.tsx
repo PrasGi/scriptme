@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { ProjectCard } from '@/components/dashboard/project-card';
 import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components/ui/tooltip';
-import { Plus, Search, Grid, List, Loader2 } from 'lucide-react';
+import { Plus, Search, Grid, List, Loader2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type ProjectStatus   = 'draft' | 'analyzing' | 'ready' | 'published';
@@ -50,8 +51,11 @@ export default function ProjectsPage() {
   const [search,   setSearch]   = useState('');
   const [filter,   setFilter]   = useState<FilterType>('all');
   const [view,     setView]     = useState<'grid' | 'list'>('grid');
+  const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
+  const fetchProjects = useCallback(() => {
+    setLoading(true);
     fetch('/api/projects')
       .then((r) => r.json())
       .then((json) => {
@@ -60,6 +64,25 @@ export default function ProjectsPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  async function handleConfirmDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/projects/${deleteTarget._id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.success) {
+        setDeleteTarget(null);
+        fetchProjects();
+      }
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   const filtered = projects.filter((p) => {
     const matchSearch =
@@ -167,9 +190,65 @@ export default function ProjectsPage() {
               platform={project.platform}
               onClick={() => router.push(`/projects/${project._id}`)}
               onEdit={() => router.push(`/projects/${project._id}/edit`)}
+              onRequestDelete={() => setDeleteTarget(project)}
             />
           ))}
         </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {deleteTarget && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="presentation">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            onClick={() => !deleting && setDeleteTarget(null)}
+            aria-hidden
+          />
+          <div
+            className="relative z-10 w-full max-w-sm rounded-2xl border border-white/10 bg-[#161B22] shadow-2xl p-5"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400">
+                <Trash2 size={20} />
+              </div>
+              <h2 id="delete-dialog-title" className="text-lg font-semibold text-white">
+                Delete project?
+              </h2>
+            </div>
+            <p className="text-sm text-[#8B949E] mb-1">
+              &quot;{deleteTarget.title}&quot; and all its scripts will be moved to trash (soft delete). You can&apos;t undo this from here.
+            </p>
+            <p className="text-xs text-[#8B949E]/80 mb-5">
+              The project and scripts are hidden from the list but not permanently removed.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="gap-1.5"
+              >
+                {deleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                {deleting ? 'Deleting…' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {/* Empty */}

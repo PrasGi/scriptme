@@ -1,9 +1,10 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { FileText, MoreHorizontal, Calendar, BarChart2 } from 'lucide-react';
+import { FileText, MoreHorizontal, Calendar, BarChart2, Pencil, Trash2 } from 'lucide-react';
 
 type ProjectStatus = 'draft' | 'analyzing' | 'ready' | 'published';
 
@@ -17,8 +18,9 @@ interface ProjectCardProps {
   platform?: string;
   className?: string;
   onClick?: () => void;
-  /** Navigate to edit page when Edit is clicked */
   onEdit?: () => void;
+  /** Called when user chooses Delete (caller should show confirmation and then delete) */
+  onRequestDelete?: () => void;
 }
 
 const statusConfig: Record<ProjectStatus, { label: string; variant: 'default' | 'cyan' | 'green' | 'orange' | 'purple' }> = {
@@ -39,8 +41,21 @@ export function ProjectCard({
   className,
   onClick,
   onEdit,
+  onRequestDelete,
 }: ProjectCardProps) {
   const st = statusConfig[status];
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [menuOpen]);
 
   return (
     <div
@@ -64,11 +79,42 @@ export function ProjectCard({
             {platform && <p className="text-xs text-[#8B949E]">{platform}</p>}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative" ref={menuRef}>
           <Badge variant={st.variant}>{st.label}</Badge>
-          <button className="text-[#8B949E] hover:text-white transition-colors">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setMenuOpen((o) => !o); }}
+            className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/6 transition-colors"
+            aria-haspopup="true"
+            aria-expanded={menuOpen}
+          >
             <MoreHorizontal size={16} />
           </button>
+          {menuOpen && (
+            <div
+              className="absolute right-0 top-full mt-1 min-w-[120px] rounded-xl border border-white/10 bg-[#161B22] shadow-xl py-1 z-10"
+              role="menu"
+            >
+              <button
+                type="button"
+                role="menuitem"
+                onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit?.(); }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-[#E6EDF3] hover:bg-white/6 transition-colors"
+              >
+                <Pencil size={14} />
+                Edit
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onRequestDelete?.(); }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                <Trash2 size={14} />
+                Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

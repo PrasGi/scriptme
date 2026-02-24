@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Bell, Search, FolderOpen, FileText, Users, Loader2 } from 'lucide-react';
+import { Bell, Search, FolderOpen, FileText, Users, Loader2, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { usePermissions } from '@/hooks/use-permissions';
 import { Tooltip } from '@/components/ui/tooltip';
+import { FeedbackModal } from './feedback-modal';
 
 interface SearchResult {
   projects: { _id: string; title: string; href: string; type: string }[];
@@ -20,6 +21,7 @@ export function DashboardHeader() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [notifications, setNotifications] = useState<{ _id: string; title: string; body: string; readAt: string | null; createdAt: string }[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -161,6 +163,16 @@ export function DashboardHeader() {
 
       {/* Right */}
       <div className="flex items-center gap-2 relative" ref={notifRef}>
+        <Tooltip content="Feedback" description="Send feedback to the team" side="bottom">
+          <button
+            type="button"
+            onClick={() => setFeedbackOpen(true)}
+            className="w-9 h-9 rounded-xl border border-white/6 bg-white/3 flex items-center justify-center text-[#8B949E] hover:text-white hover:bg-white/6 transition-all"
+          >
+            <MessageSquare size={16} />
+          </button>
+        </Tooltip>
+        <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
         <Tooltip content="Notifications" description="View and manage your notifications" side="bottom">
           <button
             onClick={() => setNotifOpen((o) => !o)}
