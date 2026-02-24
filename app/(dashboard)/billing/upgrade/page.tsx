@@ -111,7 +111,7 @@ function UpgradePageContent() {
   if (loading || !plan) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+        <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -169,7 +169,7 @@ function UpgradePageContent() {
                   onClick={() => { setSelectedMonths(m); setAppliedCoupon(null); }}
                   className={`flex-1 rounded-xl border p-4 text-left transition-all ${
                     selectedMonths === m
-                      ? 'border-[#06B6D4]/40 bg-[#06B6D4]/10'
+                      ? 'border-[#7C3AED]/40 bg-[#7C3AED]/10'
                       : 'border-white/[0.08] bg-[#161B22] hover:border-white/[0.12]'
                   }`}
                 >
@@ -205,7 +205,7 @@ function UpgradePageContent() {
         <div>
           <Card className="p-6">
             <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
-              <Zap size={16} className="text-[#06B6D4]" />
+              <Zap size={16} className="text-[#7C3AED]" />
               Summary
             </h2>
             <div className="space-y-2 text-sm">
@@ -225,7 +225,7 @@ function UpgradePageContent() {
               </div>
             </div>
             <Button
-              variant="cyan"
+              variant="accent"
               size="lg"
               className="w-full mt-6 gap-2"
               disabled={paying || displayAmount <= 0}
@@ -244,7 +244,7 @@ function UpgradePageContent() {
 export default function UpgradePage() {
   return (
     <div className="py-4">
-      <Suspense fallback={<div className="flex items-center justify-center py-32"><Loader2 size={24} className="animate-spin text-[#06B6D4]" /></div>}>
+      <Suspense fallback={<div className="flex items-center justify-center py-32"><Loader2 size={24} className="animate-spin text-[#7C3AED]" /></div>}>
         <UpgradePageContent />
       </Suspense>
     </div>

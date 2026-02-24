@@ -116,7 +116,7 @@ export function Sidebar() {
           className={cn(
             'flex flex-1 min-w-0 w-full items-center gap-3 rounded-xl px-3 h-10 text-sm font-medium transition-all duration-150',
             active
-              ? 'bg-[#06B6D4]/10 text-[#06B6D4]'
+              ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
               : 'text-[#8B949E] hover:text-white hover:bg-white/[0.05]',
             collapsed && 'justify-center px-2'
           )}
@@ -151,7 +151,7 @@ export function Sidebar() {
         {collapsed ? (
           <Image
             src="/assets/logo/logo-script-minder.png"
-            alt="ScriptMinder"
+            alt="ScriptMe"
             width={32}
             height={32}
             className="object-contain"
@@ -189,7 +189,7 @@ export function Sidebar() {
         {/* User info */}
         {!collapsed && (
           <div className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.04] transition-colors cursor-pointer">
-            <div className="w-8 h-8 rounded-full bg-[#06B6D4]/20 flex items-center justify-center text-xs font-bold text-[#06B6D4] flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-xs font-bold text-[#7C3AED] flex-shrink-0">
               {initials}
             </div>
             <div className="flex-1 min-w-0">
@@ -243,7 +243,7 @@ export function Sidebar() {
           <div className="p-3 max-h-72 overflow-y-auto">
             {pickerLoading && (
               <div className="flex items-center justify-center py-8">
-                <Loader2 size={18} className="animate-spin text-[#06B6D4]" />
+                <Loader2 size={18} className="animate-spin text-[#7C3AED]" />
               </div>
             )}
             {!pickerLoading && projects.length === 0 && (
@@ -265,7 +265,7 @@ export function Sidebar() {
           <div className="px-3 pb-3">
             <button
               onClick={() => { setPickerOpen(false); router.push('/projects/new'); }}
-              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-[#06B6D4] border border-[#06B6D4]/20 hover:bg-[#06B6D4]/10 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-[#7C3AED] border border-[#7C3AED]/20 hover:bg-[#7C3AED]/10 transition-colors"
             >
               <Plus size={14} />
               Create new project first

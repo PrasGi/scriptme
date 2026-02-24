@@ -29,7 +29,7 @@ export function CharacterCard({
   description,
   uses = 0,
   avatarInitial,
-  accentColor = '#06B6D4',
+  accentColor = '#7C3AED',
   isCustom = false,
   className,
   onEdit,
@@ -71,7 +71,7 @@ export function CharacterCard({
           {isCustom ? (
             <Badge variant="orange">Custom</Badge>
           ) : (
-            <Badge variant="cyan">Cloned</Badge>
+            <Badge variant="accent">Cloned</Badge>
           )}
           {(onEdit || onDelete) && (
             <div className="relative" ref={menuRef}>
@@ -139,7 +139,7 @@ export function CharacterCard({
           )}
           {onApply && (
             <Tooltip content="Apply to script" description="Use this character's style for a script" side="top">
-              <Button variant="cyan" size="sm" className="flex-1 text-xs gap-1" onClick={onApply}>
+              <Button variant="accent" size="sm" className="flex-1 text-xs gap-1" onClick={onApply}>
                 <Wand2 size={12} />
                 Apply
               </Button>

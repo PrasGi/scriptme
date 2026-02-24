@@ -796,7 +796,7 @@ export default function EditScriptPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+        <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -827,12 +827,12 @@ export default function EditScriptPage({
             </Tooltip>
             <div>
               <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                <Save size={22} className="text-[#06B6D4]" />
+                <Save size={22} className="text-[#7C3AED]" />
                 Edit Script
               </h1>
               <p className="text-sm text-[#8B949E] mt-0.5 flex items-center gap-2">
                 {lines.length} lines
-                <Badge variant={script.status === 'ready' ? 'cyan' : script.status === 'analyzing' ? 'orange' : 'default'} className="text-[10px]">
+                <Badge variant={script.status === 'ready' ? 'accent' : script.status === 'analyzing' ? 'orange' : 'default'} className="text-[10px]">
                   {script.status}
                 </Badge>
               </p>
@@ -933,13 +933,13 @@ export default function EditScriptPage({
           <div className="rounded-2xl border border-white/6 bg-[#0D1117] p-5">
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider flex items-center gap-2">
-                <UserCircle2 size={12} className="text-[#06B6D4]" />
+                <UserCircle2 size={12} className="text-[#7C3AED]" />
                 Character
               </label>
               <select
                 value={characterId ?? ''}
                 onChange={(e) => onCharacterChange(e.target.value || null)}
-                className="w-full h-10 rounded-xl border border-white/8 bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50"
+                className="w-full h-10 rounded-xl border border-white/8 bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">None</option>
                 {characters.map((c) => (
@@ -957,7 +957,7 @@ export default function EditScriptPage({
         <div className="mt-6 rounded-2xl border border-white/6 bg-[#0D1117] overflow-hidden flex-1 flex flex-col min-h-0 min-w-0">
           <div className="px-4 py-2 border-b border-white/6 shrink-0">
             <h3 className="text-xs font-medium text-[#8B949E] uppercase tracking-wider flex items-center gap-2">
-              <Bot size={12} className="text-[#06B6D4]" />
+              <Bot size={12} className="text-[#7C3AED]" />
               Chat with AI
             </h3>
           </div>
@@ -970,14 +970,14 @@ export default function EditScriptPage({
             {aiMessages.map((msg, i) => (
               <div key={i} className={cn('flex gap-2 text-xs min-w-0 w-full', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
                 {msg.role === 'ai' && (
-                  <div className="w-6 h-6 rounded-full bg-[#06B6D4]/20 flex items-center justify-center shrink-0">
-                    <Bot size={12} className="text-[#06B6D4]" />
+                  <div className="w-6 h-6 rounded-full bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
+                    <Bot size={12} className="text-[#7C3AED]" />
                   </div>
                 )}
                 <div
                   className={cn(
                     'max-w-[85%] min-w-0 rounded-xl px-3 py-2 overflow-hidden',
-                    msg.role === 'user' ? 'bg-[#06B6D4]/10 text-white border border-[#06B6D4]/20' : 'bg-white/4 text-[#E6EDF3] border border-white/6'
+                    msg.role === 'user' ? 'bg-[#7C3AED]/10 text-white border border-[#7C3AED]/20' : 'bg-white/4 text-[#E6EDF3] border border-white/6'
                   )}
                 >
                   {msg.role === 'ai' && msg.content ? (
@@ -1076,9 +1076,9 @@ export default function EditScriptPage({
                 onChange={(e) => setAiInput(e.target.value)}
                 placeholder={aiSessionId ? 'Ask AI…' : 'Initializing…'}
                 disabled={!aiSessionId || aiLoading}
-                className="flex-1 h-8 px-3 rounded-lg border border-white/8 bg-[#161B22] text-xs text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/50 disabled:opacity-50"
+                className="flex-1 h-8 px-3 rounded-lg border border-white/8 bg-[#161B22] text-xs text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/50 disabled:opacity-50"
               />
-              <Button type="submit" variant="cyan" size="sm" disabled={!aiSessionId || aiLoading || !aiInput.trim()} className="h-8 px-3 shrink-0">
+              <Button type="submit" variant="accent" size="sm" disabled={!aiSessionId || aiLoading || !aiInput.trim()} className="h-8 px-3 shrink-0">
                 {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
               </Button>
             </div>
@@ -1179,7 +1179,7 @@ export default function EditScriptPage({
           <div className="w-full max-w-md rounded-2xl border border-white/8 bg-[#0D1117] shadow-2xl">
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/6">
               <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-                <Link2 size={15} className="text-[#06B6D4]" />
+                <Link2 size={15} className="text-[#7C3AED]" />
                 Fetch from TikTok URL
               </h2>
               <button
@@ -1204,7 +1204,7 @@ export default function EditScriptPage({
                 <select
                   value={tiktokLang}
                   onChange={(e) => setTiktokLang(e.target.value)}
-                  className="w-full h-10 rounded-xl border border-white/8 bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50"
+                  className="w-full h-10 rounded-xl border border-white/8 bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
                 >
                   <option value="">Auto</option>
                   <option value="eng">English (eng)</option>
@@ -1230,7 +1230,7 @@ export default function EditScriptPage({
                 </div>
               ) : (
                 <div className="flex gap-3">
-                  <Button type="submit" variant="cyan" disabled={tiktokLoading || !tiktokUrl.trim()} className="gap-2">
+                  <Button type="submit" variant="accent" disabled={tiktokLoading || !tiktokUrl.trim()} className="gap-2">
                     {tiktokLoading ? <Loader2 size={14} className="animate-spin" /> : <Link2 size={14} />}
                     {tiktokLoading ? 'Fetching…' : 'Fetch'}
                   </Button>

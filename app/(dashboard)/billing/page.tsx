@@ -102,7 +102,7 @@ export default function BillingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+        <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -116,14 +116,14 @@ export default function BillingPage() {
       </div>
 
       {/* Current plan banner */}
-      <div className="rounded-2xl border border-[#06B6D4]/25 bg-[#06B6D4]/06 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-[#06B6D4]/20 flex items-center justify-center text-[#06B6D4] flex-shrink-0">
+      <div className="rounded-2xl border border-[#7C3AED]/25 bg-[#7C3AED]/06 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/20 flex items-center justify-center text-[#7C3AED] flex-shrink-0">
           <Zap size={20} />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <h2 className="text-base font-semibold text-white">{plan?.name ?? 'Starter'}</h2>
-            <Badge variant="cyan">Active</Badge>
+            <Badge variant="accent">Active</Badge>
           </div>
           <p className="text-sm text-[#8B949E]">
             {sub?.endsAt
@@ -137,7 +137,7 @@ export default function BillingPage() {
         </div>
         {planSlug !== 'enterprise' && plan?.slug !== 'enterprise' && (
           <Link href="/billing/upgrade?plan=creator">
-            <Button variant="cyan" size="sm" className="gap-1.5">
+            <Button variant="accent" size="sm" className="gap-1.5">
               <ArrowRight size={14} />
               Upgrade
             </Button>
@@ -150,7 +150,7 @@ export default function BillingPage() {
         <h2 className="text-base font-semibold text-white mb-4">AI Token Usage This Month</h2>
         <Card>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#06B6D4]/15 text-[#06B6D4]">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7C3AED]/15 text-[#7C3AED]">
               <BarChart2 size={15} />
             </div>
             <span className="text-sm text-[#8B949E]">Tokens used</span>
@@ -164,13 +164,13 @@ export default function BillingPage() {
           {usage?.limit != null && (
             <div className="w-full h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
               <div
-                className="h-full rounded-full transition-all bg-[#06B6D4]"
+                className="h-full rounded-full transition-all bg-[#7C3AED]"
                 style={{ width: `${Math.min(100, ((usage.used ?? 0) / usage.limit) * 100)}%` }}
               />
             </div>
           )}
           {usage?.limit == null && (
-            <div className="text-xs text-[#06B6D4]">Unlimited on your plan</div>
+            <div className="text-xs text-[#7C3AED]">Unlimited on your plan</div>
           )}
         </Card>
       </div>
@@ -181,7 +181,7 @@ export default function BillingPage() {
         <div className="grid md:grid-cols-3 gap-4">
           {plans.map((p) => {
             const isCurrent = p.slug === planSlug;
-            const accent = p.slug === 'creator' ? '#06B6D4' : p.slug === 'enterprise' ? '#A855F7' : '#8B949E';
+            const accent = p.slug === 'creator' ? '#7C3AED' : p.slug === 'enterprise' ? '#A855F7' : '#8B949E';
             const priceDisplay = p.priceMonthly === 0
               ? 'Free' : p.priceMonthly == null ? 'Custom' : formatRp(p.priceMonthly);
             return (
@@ -195,8 +195,8 @@ export default function BillingPage() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-white">{p.name}</h3>
-                  {isCurrent && <Badge variant="cyan">Current Plan</Badge>}
-                  {p.badge && !isCurrent && <Badge variant="cyan">{p.badge}</Badge>}
+                  {isCurrent && <Badge variant="accent">Current Plan</Badge>}
+                  {p.badge && !isCurrent && <Badge variant="accent">{p.badge}</Badge>}
                 </div>
                 <div className="flex items-baseline gap-1 mb-5">
                   <span className="text-3xl font-bold text-white">{priceDisplay}</span>
@@ -268,7 +268,7 @@ export default function BillingPage() {
                     type="button"
                     onClick={() => downloadInvoice(tx)}
                     disabled={downloadingId === tx._id}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#06B6D4] hover:bg-[#06B6D4]/10 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-colors disabled:opacity-50"
                   >
                     {downloadingId === tx._id ? (
                       <Loader2 size={14} className="animate-spin" />

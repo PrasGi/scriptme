@@ -7,8 +7,8 @@
   --border-color: rgba(255, 255, 255, 0.08);
   --text-primary: #FFFFFF;
   --text-secondary: #8B949E;
-  --accent-cyan: #06B6D4;
-  --accent-cyan-glow: rgba(6, 182, 212, 0.3);
+  --accent: #7C3AED;
+  --accent-glow: rgba(124, 58, 237, 0.3);
   --radius: 0.75rem;
 }
 
@@ -43,14 +43,14 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #fff 0%, #06B6D4 100%);
+  background: linear-gradient(135deg, #fff 0%, #7C3AED 50%, #2563EB 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* Glow */
-.glow-cyan { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
+.glow-accent { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
 
 /* Grid background */
 .grid-bg {
@@ -90,4 +90,12 @@ body {
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
+}
+
+/* Landing (Genesis-style) */
+.glass {
+  @apply bg-white/10 border border-white/20;
+}
+.btn-landing {
+  @apply cursor-pointer rounded-full px-8 py-2.5 font-medium text-white transition hover:opacity-90 active:scale-[0.98];
 }

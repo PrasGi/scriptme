@@ -101,7 +101,7 @@ export default function ProjectsPage() {
           <p className="text-sm text-[#8B949E] mt-0.5">Manage all your video script projects</p>
         </div>
         <Tooltip content="New Project" description="Create a new project for your scripts" side="left">
-          <Button variant="cyan" size="md" className="gap-2" onClick={() => router.push('/projects/new')}>
+          <Button variant="accent" size="md" className="gap-2" onClick={() => router.push('/projects/new')}>
             <Plus size={16} />
             New Project
           </Button>
@@ -116,7 +116,7 @@ export default function ProjectsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search projects..."
-            className="w-full h-9 pl-9 pr-4 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/40 transition-colors"
+            className="w-full h-9 pl-9 pr-4 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40 transition-colors"
           />
         </div>
 
@@ -128,7 +128,7 @@ export default function ProjectsPage() {
               className={cn(
                 'px-3 h-8 rounded-lg text-xs font-medium border transition-all',
                 filter === opt.key
-                  ? 'bg-[#06B6D4]/10 border-[#06B6D4]/30 text-[#06B6D4]'
+                  ? 'bg-[#7C3AED]/10 border-[#7C3AED]/30 text-[#7C3AED]'
                   : 'bg-white/[0.03] border-white/[0.06] text-[#8B949E] hover:text-white hover:border-white/10'
               )}
             >
@@ -172,7 +172,7 @@ export default function ProjectsPage() {
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+          <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
         </div>
       )}
 
@@ -264,7 +264,7 @@ export default function ProjectsPage() {
               : 'Try adjusting your search or filters'}
           </div>
           {projects.length === 0 && (
-            <Button variant="cyan" size="sm" className="gap-2" onClick={() => router.push('/projects/new')}>
+            <Button variant="accent" size="sm" className="gap-2" onClick={() => router.push('/projects/new')}>
               <Plus size={14} />
               New Project
             </Button>

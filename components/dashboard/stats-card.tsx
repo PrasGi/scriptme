@@ -17,7 +17,7 @@ export function StatsCard({
   change,
   changeType = 'neutral',
   icon: Icon,
-  accent = '#06B6D4',
+  accent = '#7C3AED',
   className,
 }: StatsCardProps) {
   const changeColors = {

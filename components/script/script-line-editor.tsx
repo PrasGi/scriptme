@@ -82,7 +82,7 @@ export function ScriptLineEditor({
   }, [lines]);
 
   const PRESET_COLORS = [
-    '#EF4444', '#F97316', '#EAB308', '#22C55E', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899',
+    '#EF4444', '#F97316', '#EAB308', '#22C55E', '#7C3AED', '#3B82F6', '#8B5CF6', '#EC4899',
   ];
 
   return (
@@ -117,7 +117,7 @@ export function ScriptLineEditor({
               }}
               placeholder="Script text…"
               rows={1}
-              className="w-full min-h-[44px] rounded-lg border border-white/[0.05] bg-white/[0.04] px-3 py-2.5 text-sm text-[#E6EDF3] placeholder:text-[#8B949E]/40 outline-none focus:border-[#06B6D4]/40 focus:ring-1 focus:ring-[#06B6D4]/15 focus:bg-white/[0.06] transition-[height,background-color,border-color] duration-150 ease-out overflow-y-auto resize-none"
+              className="w-full min-h-[44px] rounded-lg border border-white/[0.05] bg-white/[0.04] px-3 py-2.5 text-sm text-[#E6EDF3] placeholder:text-[#8B949E]/40 outline-none focus:border-[#7C3AED]/40 focus:ring-1 focus:ring-[#7C3AED]/15 focus:bg-white/[0.06] transition-[height,background-color,border-color] duration-150 ease-out overflow-y-auto resize-none"
             />
 
             {/* Times — compact, subtle, still editable */}
@@ -127,7 +127,7 @@ export function ScriptLineEditor({
                   value={line.startTime}
                   onChange={(e) => updateLine(i, { startTime: e.target.value })}
                   placeholder="00:00:00.000"
-                  className="w-[95px] min-w-[95px] h-7 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[11px] text-[#8B949E] font-mono tabular-nums placeholder:text-[#8B949E]/40 outline-none focus:border-[#06B6D4]/40 focus:text-white focus:bg-white/[0.05] transition-colors"
+                  className="w-[95px] min-w-[95px] h-7 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[11px] text-[#8B949E] font-mono tabular-nums placeholder:text-[#8B949E]/40 outline-none focus:border-[#7C3AED]/40 focus:text-white focus:bg-white/[0.05] transition-colors"
                   title="Start time"
                 />
                 <span className="text-[#8B949E]/40 text-[10px]">→</span>
@@ -135,7 +135,7 @@ export function ScriptLineEditor({
                   value={line.endTime}
                   onChange={(e) => updateLine(i, { endTime: e.target.value })}
                   placeholder="00:00:01.360"
-                  className="w-[95px] min-w-[95px] h-7 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[11px] text-[#8B949E] font-mono tabular-nums placeholder:text-[#8B949E]/40 outline-none focus:border-[#06B6D4]/40 focus:text-white focus:bg-white/[0.05] transition-colors"
+                  className="w-[95px] min-w-[95px] h-7 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[11px] text-[#8B949E] font-mono tabular-nums placeholder:text-[#8B949E]/40 outline-none focus:border-[#7C3AED]/40 focus:text-white focus:bg-white/[0.05] transition-colors"
                   title="End time"
                 />
               </div>
@@ -222,7 +222,7 @@ export function ScriptLineEditor({
             {/* Per-line AI analysis */}
             {analyzing && !getAnalysisForLine(i) && (
               <div className="flex items-center gap-2 mt-2 py-2 px-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                <Bot size={12} className="text-[#06B6D4] animate-pulse shrink-0" />
+                <Bot size={12} className="text-[#7C3AED] animate-pulse shrink-0" />
                 <span className="text-xs text-[#8B949E]">Analyzing…</span>
               </div>
             )}
@@ -233,12 +233,12 @@ export function ScriptLineEditor({
                   <div className="px-3 py-2.5 space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Bot size={12} className="text-[#06B6D4] shrink-0" />
+                        <Bot size={12} className="text-[#7C3AED] shrink-0" />
                         <span
                           className={cn(
                             'text-[10px] font-medium px-1.5 py-0.5 rounded',
                             analysis.type === 'actionable'
-                              ? 'bg-[#06B6D4]/15 text-[#06B6D4]'
+                              ? 'bg-[#7C3AED]/15 text-[#7C3AED]'
                               : 'bg-white/5 text-[#8B949E]'
                           )}
                         >
@@ -260,7 +260,7 @@ export function ScriptLineEditor({
                     <p className="text-[11px] text-[#8B949E]">{analysis.reason}</p>
                     {analysis.type === 'actionable' && onImplementSuggestion && (
                       <Button
-                        variant="cyan"
+                        variant="accent"
                         size="sm"
                         onClick={() => onImplementSuggestion(analysis)}
                         disabled={

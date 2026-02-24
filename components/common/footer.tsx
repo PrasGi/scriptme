@@ -76,7 +76,7 @@ export function Footer() {
 
         <div className="mt-16 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-[#8B949E]">
-            © {new Date().getFullYear()} ScriptMinder. All rights reserved.
+            © {new Date().getFullYear()} ScriptMe. All rights reserved.
           </p>
           <p className="text-sm text-[#8B949E]">
             Made with ❤️ for content creators

@@ -79,7 +79,7 @@ export default function NewProjectPage() {
         </button>
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <FolderPlus size={22} className="text-[#06B6D4]" />
+            <FolderPlus size={22} className="text-[#7C3AED]" />
             New Project
           </h1>
           <p className="text-sm text-[#8B949E] mt-0.5">Create a new video script project</p>
@@ -111,7 +111,7 @@ export default function NewProjectPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2.5 text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/50 transition-colors resize-none"
+            className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2.5 text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/50 transition-colors resize-none"
           />
         </div>
 
@@ -126,7 +126,7 @@ export default function NewProjectPage() {
                 onClick={() => setPlatform(opt.value)}
                 className={`px-4 h-9 rounded-xl text-sm font-medium border transition-all ${
                   platform === opt.value
-                    ? 'bg-[#06B6D4]/10 border-[#06B6D4]/40 text-[#06B6D4]'
+                    ? 'bg-[#7C3AED]/10 border-[#7C3AED]/40 text-[#7C3AED]'
                     : 'bg-white/[0.03] border-white/[0.06] text-[#8B949E] hover:text-white hover:border-white/10'
                 }`}
               >
@@ -141,11 +141,11 @@ export default function NewProjectPage() {
           <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">
             Tags <span className="text-[#8B949E]/50 normal-case font-normal">(press Enter to add)</span>
           </label>
-          <div className="flex flex-wrap gap-2 min-h-[38px] rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 focus-within:border-[#06B6D4]/50 transition-colors">
+          <div className="flex flex-wrap gap-2 min-h-[38px] rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 focus-within:border-[#7C3AED]/50 transition-colors">
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#06B6D4]/10 text-[#06B6D4] text-xs border border-[#06B6D4]/20"
+                className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#7C3AED]/10 text-[#7C3AED] text-xs border border-[#7C3AED]/20"
               >
                 {tag}
                 <button type="button" onClick={() => removeTag(tag)} className="hover:text-white transition-colors">
@@ -174,7 +174,7 @@ export default function NewProjectPage() {
         <div className="flex items-center gap-3 pt-1">
           <Button
             type="submit"
-            variant="cyan"
+            variant="accent"
             disabled={loading || !title.trim()}
             className="gap-2"
           >

@@ -4,8 +4,8 @@ import { Footer } from '@/components/common/footer';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Privacy Policy — ScriptMinder',
-  description: 'Privacy Policy for ScriptMinder. Learn how we collect, use, and protect your data.',
+  title: 'Privacy Policy — ScriptMe',
+  description: 'Privacy Policy for ScriptMe. Learn how we collect, use, and protect your data.',
 };
 
 export default function PrivacyPage() {

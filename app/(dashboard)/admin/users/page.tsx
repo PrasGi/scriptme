@@ -303,13 +303,13 @@ export default function UsersPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Users size={22} className="text-[#06B6D4]" />
+            <Users size={22} className="text-[#7C3AED]" />
             Users
           </h1>
           <p className="text-sm text-[#8B949E] mt-0.5">Manage user accounts, roles and permission overrides</p>
         </div>
         {canCreate && (
-          <Button variant="cyan" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ name: '', email: '', password: '', roleId: roles[0]?.id ?? '', isActive: true }); }} className="gap-1.5">
+          <Button variant="accent" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ name: '', email: '', password: '', roleId: roles[0]?.id ?? '', isActive: true }); }} className="gap-1.5">
             <Plus size={14} />
             New User
           </Button>
@@ -351,7 +351,7 @@ export default function UsersPage() {
               <tr key={user.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#06B6D4]/20 flex items-center justify-center text-xs font-bold text-[#06B6D4] flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-xs font-bold text-[#7C3AED] flex-shrink-0">
                       {initials(user.name)}
                     </div>
                     <div>
@@ -361,7 +361,7 @@ export default function UsersPage() {
                   </div>
                 </td>
                 <td className="px-5 py-3.5">
-                  <Badge variant={roleName(user) === 'admin' ? 'cyan' : 'default'} className="capitalize">
+                  <Badge variant={roleName(user) === 'admin' ? 'accent' : 'default'} className="capitalize">
                     {roleName(user)}
                   </Badge>
                 </td>
@@ -386,7 +386,7 @@ export default function UsersPage() {
                     {canUpdate && (
                       <button
                         onClick={() => openPermissions(user)}
-                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-[#06B6D4] hover:bg-[#06B6D4]/10 transition-all"
+                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-all"
                         title="Manage permissions"
                       >
                         <ShieldCheck size={15} />
@@ -460,19 +460,19 @@ export default function UsersPage() {
                 value={form.roleId}
                 onChange={(e) => setForm({ ...form, roleId: e.target.value })}
                 required
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">Select a role…</option>
                 {roles.map((r) => <option key={r.id} value={r.id} className="capitalize">{r.name}</option>)}
               </select>
             </Field>
             <div className="flex items-center gap-2 pt-1">
-              <input type="checkbox" id="is-active-create" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#06B6D4]" />
+              <input type="checkbox" id="is-active-create" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#7C3AED]" />
               <label htmlFor="is-active-create" className="text-sm text-[#8B949E]">Active account</label>
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button variant="cyan" type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create User'}</Button>
+              <Button variant="accent" type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create User'}</Button>
             </div>
           </form>
         </Modal>
@@ -493,18 +493,18 @@ export default function UsersPage() {
               <select
                 value={form.roleId}
                 onChange={(e) => setForm({ ...form, roleId: e.target.value })}
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
               >
                 {roles.map((r) => <option key={r.id} value={r.id} className="capitalize">{r.name}</option>)}
               </select>
             </Field>
             <div className="flex items-center gap-2">
-              <input type="checkbox" id="is-active-edit" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#06B6D4]" />
+              <input type="checkbox" id="is-active-edit" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#7C3AED]" />
               <label htmlFor="is-active-edit" className="text-sm text-[#8B949E]">Active account</label>
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setEditTarget(null)}>Cancel</Button>
-              <Button variant="cyan" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
+              <Button variant="accent" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
             </div>
           </form>
         </Modal>
@@ -520,7 +520,7 @@ export default function UsersPage() {
               <select
                 value={grantForm.planId}
                 onChange={(e) => setGrantForm({ ...grantForm, planId: e.target.value })}
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">Select plan…</option>
                 {plans.map((p) => <option key={p._id} value={p._id}>{p.name}</option>)}
@@ -533,7 +533,7 @@ export default function UsersPage() {
             <p className="text-xs text-[#8B949E]">Use months (e.g. 1, 3, 6) or days. Months take precedence if both set.</p>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" onClick={() => setGrantTarget(null)}>Cancel</Button>
-              <Button variant="cyan" disabled={saving || !grantForm.planId} onClick={handleGrantSubscription}>{saving ? 'Granting…' : 'Grant Subscription'}</Button>
+              <Button variant="accent" disabled={saving || !grantForm.planId} onClick={handleGrantSubscription}>{saving ? 'Granting…' : 'Grant Subscription'}</Button>
             </div>
           </div>
         </Modal>
@@ -590,7 +590,7 @@ export default function UsersPage() {
                   placeholder="Search resource, action, scope…"
                   value={permSearch}
                   onChange={(e) => setPermSearch(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#161B22] border border-white/[0.08] text-sm text-white placeholder-[#8B949E] focus:outline-none focus:border-[#06B6D4]/50"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#161B22] border border-white/[0.08] text-sm text-white placeholder-[#8B949E] focus:outline-none focus:border-[#7C3AED]/50"
                 />
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
@@ -600,7 +600,7 @@ export default function UsersPage() {
                     onClick={() => setPermFilter(f)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all capitalize ${
                       permFilter === f
-                        ? 'bg-[#06B6D4]/20 text-[#06B6D4] border border-[#06B6D4]/40'
+                        ? 'bg-[#7C3AED]/20 text-[#7C3AED] border border-[#7C3AED]/40'
                         : 'text-[#8B949E] hover:text-white hover:bg-white/[0.05] border border-transparent'
                     }`}
                   >
@@ -615,7 +615,7 @@ export default function UsersPage() {
               {/* Legend */}
               <div className="flex items-center gap-3 pt-0.5 text-xs text-[#8B949E]">
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-emerald-500/20 border border-emerald-500/40" /> Role default</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[#06B6D4]/20 border border-[#06B6D4]/40" /> Override: granted</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[#7C3AED]/20 border border-[#7C3AED]/40" /> Override: granted</span>
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-red-500/20 border border-red-500/40" /> Override: revoked</span>
               </div>
             </div>
@@ -645,8 +645,8 @@ export default function UsersPage() {
                             onClick={() => togglePermOverride(row, row.override === true ? null : true)}
                             className={`p-1.5 rounded-lg transition-all text-xs ${
                               row.override === true
-                                ? 'bg-[#06B6D4]/20 text-[#06B6D4] border border-[#06B6D4]/40'
-                                : 'text-[#8B949E] hover:bg-[#06B6D4]/10 hover:text-[#06B6D4]'
+                                ? 'bg-[#7C3AED]/20 text-[#7C3AED] border border-[#7C3AED]/40'
+                                : 'text-[#8B949E] hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]'
                             }`}
                             title="Grant override"
                           >

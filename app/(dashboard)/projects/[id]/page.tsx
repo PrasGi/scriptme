@@ -36,17 +36,17 @@ interface Project {
   updatedAt:   string;
 }
 
-const projectStatusConfig: Record<ProjectStatus, { label: string; variant: 'default' | 'cyan' | 'green' | 'orange' | 'purple' }> = {
+const projectStatusConfig: Record<ProjectStatus, { label: string; variant: 'default' | 'accent' | 'green' | 'orange' | 'purple' }> = {
   draft:     { label: 'Draft',     variant: 'default' },
   analyzing: { label: 'Analyzing', variant: 'orange' },
-  ready:     { label: 'Ready',     variant: 'cyan' },
+  ready:     { label: 'Ready',     variant: 'accent' },
   published: { label: 'Published', variant: 'green' },
 };
 
-const scriptStatusConfig: Record<ScriptStatus, { label: string; variant: 'default' | 'cyan' | 'green' | 'orange' | 'purple' }> = {
+const scriptStatusConfig: Record<ScriptStatus, { label: string; variant: 'default' | 'accent' | 'green' | 'orange' | 'purple' }> = {
   draft:     { label: 'Draft',     variant: 'default' },
   analyzing: { label: 'Analyzing', variant: 'orange' },
-  ready:     { label: 'Ready',     variant: 'cyan' },
+  ready:     { label: 'Ready',     variant: 'accent' },
 };
 
 const sourceTypeLabel: Record<string, string> = {
@@ -140,7 +140,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+        <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -205,7 +205,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           </Tooltip>
           <Tooltip content="New Script" description="Add a new script to this project" side="bottom">
             <Button
-              variant="cyan"
+              variant="accent"
               size="sm"
               className="gap-2"
               onClick={() => router.push(`/projects/${id}/scripts/new`)}
@@ -232,7 +232,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             <p className="text-sm font-medium text-white mb-1">No scripts yet</p>
             <p className="text-xs text-[#8B949E] mb-4">Add your first script to this project</p>
             <Button
-              variant="cyan"
+              variant="accent"
               size="sm"
               className="gap-2"
               onClick={() => router.push(`/projects/${id}/scripts/new`)}
@@ -253,7 +253,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                     'hover:border-white/[0.12] transition-all group'
                   )}
                 >
-                  <div className="w-9 h-9 rounded-xl bg-[#06B6D4]/10 flex items-center justify-center text-[#06B6D4] shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center text-[#7C3AED] shrink-0">
                     <FileText size={16} />
                   </div>
 

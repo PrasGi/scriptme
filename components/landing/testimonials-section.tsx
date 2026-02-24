@@ -10,7 +10,7 @@ const testimonials = [
     content:
       'ScriptMinder cut my script writing time by 70%. The analysis feature alone is worth it — it showed me my intros were too slow before I even filmed.',
     rating: 5,
-    accent: '#06B6D4',
+    accent: '#7C3AED',
   },
   {
     name: 'Sari Dewi',
@@ -46,7 +46,7 @@ const testimonials = [
     content:
       'I generate 10 short scripts every morning in under 15 minutes. ScriptMinder understands the short-form format perfectly.',
     rating: 5,
-    accent: '#06B6D4',
+    accent: '#7C3AED',
   },
   {
     name: 'Alicia Torres',

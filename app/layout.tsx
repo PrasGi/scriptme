@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ScriptMinder — AI Video Script Platform",
+  title: "ScriptMe — AI Video Script Platform",
   description:
     "Generate, analyze, and optimize your video scripts with AI. Clone any creator's writing style and produce content that drives engagement.",
   keywords: ["video script", "AI script generator", "content creator", "YouTube script", "script analyzer"],

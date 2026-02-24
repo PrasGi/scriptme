@@ -4,8 +4,8 @@ import { Footer } from '@/components/common/footer';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Terms of Service — ScriptMinder',
-  description: 'Terms of Service for ScriptMinder. Read our terms and conditions for using our platform.',
+  title: 'Terms of Service — ScriptMe',
+  description: 'Terms of Service for ScriptMe. Read our terms and conditions for using our platform.',
 };
 
 export default function TermsPage() {
@@ -28,7 +28,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mt-8 mb-3">1. Acceptance of Terms</h2>
             <p className="text-[#8B949E] leading-relaxed">
-              By accessing or using ScriptMinder, you agree to be bound by these Terms of Service. If you do not agree,
+              By accessing or using ScriptMe, you agree to be bound by these Terms of Service. If you do not agree,
               please do not use our services.
             </p>
           </section>
@@ -36,7 +36,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mt-8 mb-3">2. Description of Service</h2>
             <p className="text-[#8B949E] leading-relaxed">
-              ScriptMinder provides AI-powered tools for creating, analyzing, and optimizing video scripts. We reserve
+              ScriptMe provides AI-powered tools for creating, analyzing, and optimizing video scripts. We reserve
               the right to modify, suspend, or discontinue any part of the service at any time.
             </p>
           </section>
@@ -53,7 +53,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mt-8 mb-3">4. Intellectual Property</h2>
             <p className="text-[#8B949E] leading-relaxed">
               You retain ownership of the content you create. By using our service, you grant us a limited license to
-              process your content for the purpose of providing our services. ScriptMinder&apos;s platform, design, and
+              process your content for the purpose of providing our services. ScriptMe&apos;s platform, design, and
               technology remain our property.
             </p>
           </section>
@@ -69,7 +69,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mt-8 mb-3">6. Limitation of Liability</h2>
             <p className="text-[#8B949E] leading-relaxed">
-              ScriptMinder is provided &quot;as is.&quot; We are not liable for any indirect, incidental, or consequential
+              ScriptMe is provided &quot;as is.&quot; We are not liable for any indirect, incidental, or consequential
               damages arising from your use of the service. Our total liability is limited to the amount you paid us in
               the past 12 months.
             </p>

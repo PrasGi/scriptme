@@ -31,7 +31,7 @@ interface DashboardStats {
 }
 
 const quickActions = [
-  { icon: PenLine, label: 'Generate Script', desc: 'Create from a topic', href: '/projects/new?type=generate', accent: '#06B6D4' },
+  { icon: PenLine, label: 'Generate Script', desc: 'Create from a topic', href: '/projects/new?type=generate', accent: '#7C3AED' },
   { icon: Search, label: 'Analyze Script', desc: 'Get AI feedback', href: '/projects/new?type=analyze', accent: '#10B981' },
   { icon: UserPlus, label: 'Clone Creator', desc: 'From video URL', href: '/characters/new', accent: '#A855F7' },
   { icon: Sparkles, label: 'Apply Character', desc: 'Rewrite your script', href: '/projects', accent: '#F59E0B' },
@@ -61,7 +61,7 @@ export default function DashboardPage() {
   if (loading || !stats) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+        <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -85,7 +85,7 @@ export default function DashboardPage() {
       change: stats.scriptsReady > 0 ? `${stats.scriptsReady} ready` : undefined,
       changeType: 'positive' as const,
       icon: FileText,
-      accent: '#06B6D4',
+      accent: '#7C3AED',
     },
     {
       title: 'AI Tokens',
@@ -124,7 +124,7 @@ export default function DashboardPage() {
           <p className="text-sm text-[#8B949E] mt-0.5">Overview of your content pipeline</p>
         </div>
         <Link href="/projects/new">
-          <Button variant="cyan" size="md" className="gap-2 shrink-0">
+          <Button variant="accent" size="md" className="gap-2 shrink-0">
             <Plus size={16} />
             New Project
           </Button>
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                   <Icon size={22} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium text-white group-hover:text-[#06B6D4] transition-colors">
+                  <div className="text-sm font-medium text-white group-hover:text-[#7C3AED] transition-colors">
                     {action.label}
                   </div>
                   <div className="text-xs text-[#8B949E] truncate">{action.desc}</div>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-semibold text-white">Recent Projects</h2>
-          <Link href="/projects" className="flex items-center gap-1 text-sm text-[#06B6D4] hover:underline">
+          <Link href="/projects" className="flex items-center gap-1 text-sm text-[#7C3AED] hover:underline">
             View all <ArrowRight size={14} />
           </Link>
         </div>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
             <p className="text-sm font-medium text-white mb-1">No projects yet</p>
             <p className="text-xs text-[#8B949E] mb-4">Create your first project to get started</p>
             <Link href="/projects/new">
-              <Button variant="cyan" size="sm" className="gap-2">
+              <Button variant="accent" size="sm" className="gap-2">
                 <Plus size={13} />
                 New Project
               </Button>
@@ -208,13 +208,13 @@ export default function DashboardPage() {
       </div>
 
       {/* AI tip */}
-      <div className="rounded-2xl border border-[#06B6D4]/20 bg-[#06B6D4]/5 p-6">
+      <div className="rounded-2xl border border-[#7C3AED]/20 bg-[#7C3AED]/5 p-6">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-xl bg-[#06B6D4]/20 flex items-center justify-center text-[#06B6D4] shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/20 flex items-center justify-center text-[#7C3AED] shrink-0">
             <TrendingUp size={18} />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-white mb-1">Tip from ScriptMinder AI</h3>
+            <h3 className="text-sm font-semibold text-white mb-1">Tip from ScriptMe AI</h3>
             <p className="text-sm text-[#8B949E] leading-relaxed">
               Your best-performing scripts start with a pattern-interrupt hook in the first 3 seconds.
               Try opening your next video with a shocking statistic or a bold counter-intuitive statement.

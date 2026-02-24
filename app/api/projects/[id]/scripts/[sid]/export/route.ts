@@ -110,7 +110,7 @@ export async function GET(req: Request, { params }: Params) {
         const png = await pdfDoc.embedPng(logoBytes);
         page.drawImage(png, { x: MARGIN, y: yFromTop(74), width: 100, height: 34 });
       } else {
-        page.drawText('ScriptMinder', {
+        page.drawText('ScriptMe', {
           x: MARGIN,
           y: yFromTop(64),
           size: 20,
@@ -202,7 +202,7 @@ export async function GET(req: Request, { params }: Params) {
 
       const pages = pdfDoc.getPages();
       for (const p of pages) {
-        p.drawText(`ScriptMinder · ${script.title}`, {
+        p.drawText(`ScriptMe · ${script.title}`, {
           x: MARGIN,
           y: 30,
           size: 8,

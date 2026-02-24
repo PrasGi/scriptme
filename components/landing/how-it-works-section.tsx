@@ -7,7 +7,7 @@ const steps = [
     title: 'Create a Project',
     description:
       'Start a new project and tell us about your channel, niche, and target audience. Our AI personalizes everything to your content style.',
-    accent: '#06B6D4',
+    accent: '#7C3AED',
   },
   {
     step: '02',
@@ -50,7 +50,7 @@ export function HowItWorksSection() {
         {/* Steps */}
         <div className="relative">
           {/* Connector line */}
-          <div className="hidden md:block absolute left-[calc(50%-1px)] top-10 bottom-10 w-px bg-gradient-to-b from-[#06B6D4]/40 via-[#A855F7]/40 to-transparent" />
+          <div className="hidden md:block absolute left-[calc(50%-1px)] top-10 bottom-10 w-px bg-gradient-to-b from-[#7C3AED]/40 via-[#A855F7]/40 to-transparent" />
 
           <div className="space-y-8">
             {steps.map((step, i) => (

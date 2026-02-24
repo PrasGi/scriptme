@@ -36,7 +36,7 @@ const CharacterSchema = new Schema<ICharacter>(
     sourceUrl:    { type: String, default: '' },
     sourceAuthor: { type: String, default: '' },
     sourceVideoId: { type: String, default: '' },
-    accentColor:  { type: String, default: '#06B6D4' },
+    accentColor:  { type: String, default: '#7C3AED' },
     deletedAt:    { type: Date, default: null },
   },
   { timestamps: true }

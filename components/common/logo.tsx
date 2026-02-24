@@ -20,14 +20,14 @@ function LogoContent({ size = 'md', className }: { size?: LogoProps['size']; cla
     <div className={cn('flex items-center', s.gap, className)}>
       <Image
         src="/assets/logo/logo-script-minder.png"
-        alt="ScriptMinder logo"
+        alt="ScriptMe logo"
         width={s.img}
         height={s.img}
         className="object-contain"
         priority
       />
       <span className={cn('font-bold text-white', s.text)}>
-        Script<span className="text-[#06B6D4]">Minder</span>
+        Script<span className="text-transparent bg-clip-text bg-linear-to-r from-[#7C3AED] to-[#2563EB]">Me</span>
       </span>
     </div>
   );

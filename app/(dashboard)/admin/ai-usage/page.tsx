@@ -53,8 +53,8 @@ const MODE_LABELS: Record<string, string> = {
   chat:       'Chat',
 };
 
-const MODE_VARIANTS: Record<string, 'default' | 'cyan' | 'green' | 'orange' | 'purple'> = {
-  generate:   'cyan',
+const MODE_VARIANTS: Record<string, 'default' | 'accent' | 'green' | 'orange' | 'purple'> = {
+  generate:   'accent',
   analyze:    'orange',
   regenerate: 'purple',
   chat:       'green',
@@ -182,7 +182,7 @@ export default function AiUsagePage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Bot size={22} className="text-[#06B6D4]" />
+          <Bot size={22} className="text-[#7C3AED]" />
           AI Usage
         </h1>
         <p className="text-sm text-[#8B949E] mt-0.5">
@@ -193,7 +193,7 @@ export default function AiUsagePage() {
       {/* Summary widget with filters */}
       <div className="rounded-2xl border border-white/[0.06] bg-[#161B22] overflow-hidden">
         <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
-          <BarChart3 size={18} className="text-[#06B6D4]" />
+          <BarChart3 size={18} className="text-[#7C3AED]" />
           <span className="text-sm font-medium text-white">Summary</span>
         </div>
         <div className="p-5 space-y-4">
@@ -207,20 +207,20 @@ export default function AiUsagePage() {
                 type="date"
                 value={startDate}
                 onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-[#8B949E] focus:outline-none focus:border-[#06B6D4]/50"
+                className="h-8 px-3 rounded-lg text-xs bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-[#8B949E] focus:outline-none focus:border-[#7C3AED]/50"
                 placeholder="From"
               />
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-[#8B949E] focus:outline-none focus:border-[#06B6D4]/50"
+                className="h-8 px-3 rounded-lg text-xs bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-[#8B949E] focus:outline-none focus:border-[#7C3AED]/50"
                 placeholder="To"
               />
               <select
                 value={modeFilter}
                 onChange={(e) => { setModeFilter(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-[#161B22] border border-white/8 text-white focus:outline-none focus:border-[#06B6D4]/50"
+                className="h-8 px-3 rounded-lg text-xs bg-[#161B22] border border-white/8 text-white focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="" className="bg-[#161B22] text-white">All modes</option>
                 {Object.entries(MODE_LABELS).map(([k, v]) => (
@@ -230,7 +230,7 @@ export default function AiUsagePage() {
               <select
                 value={userIdFilter}
                 onChange={(e) => { setUserIdFilter(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-[#161B22] border border-white/8 text-white focus:outline-none focus:border-[#06B6D4]/50 min-w-[160px]"
+                className="h-8 px-3 rounded-lg text-xs bg-[#161B22] border border-white/8 text-white focus:outline-none focus:border-[#7C3AED]/50 min-w-[160px]"
               >
                 <option value="" className="bg-[#161B22] text-white">All users</option>
                 {users.map((u) => (
@@ -242,7 +242,7 @@ export default function AiUsagePage() {
 
           {summaryLoading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+              <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
             </div>
           ) : summary ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -250,7 +250,7 @@ export default function AiUsagePage() {
                 title="Total requests"
                 value={summary.totalRequests.toLocaleString()}
                 icon={MessageSquare}
-                accent="#06B6D4"
+                accent="#7C3AED"
               />
               <StatsCard
                 title="Input tokens"
@@ -290,7 +290,7 @@ export default function AiUsagePage() {
             className={cn(
               'px-3 h-8 rounded-lg text-xs font-medium border transition-all',
               modeFilter === m
-                ? 'bg-[#06B6D4]/10 border-[#06B6D4]/30 text-[#06B6D4]'
+                ? 'bg-[#7C3AED]/10 border-[#7C3AED]/30 text-[#7C3AED]'
                 : 'bg-white/[0.03] border-white/[0.06] text-[#8B949E] hover:text-white'
             )}
           >
@@ -303,7 +303,7 @@ export default function AiUsagePage() {
       <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+            <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
           </div>
         ) : logs.length === 0 ? (
           <div className="py-16 text-center text-[#8B949E]">

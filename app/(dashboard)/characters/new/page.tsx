@@ -16,7 +16,7 @@ const platformOptions: { value: Platform; label: string }[] = [
 ];
 
 const accentColors = [
-  '#06B6D4', '#F59E0B', '#A855F7', '#10B981', '#EF4444', '#EC4899', '#3B82F6', '#84CC16',
+  '#7C3AED', '#F59E0B', '#A855F7', '#10B981', '#EF4444', '#EC4899', '#3B82F6', '#84CC16',
 ];
 
 export default function NewCharacterPage() {
@@ -25,7 +25,7 @@ export default function NewCharacterPage() {
   const [name,        setName]        = useState('');
   const [description, setDescription] = useState('');
   const [platform,    setPlatform]    = useState<Platform>('custom');
-  const [accentColor, setAccentColor] = useState('#06B6D4');
+  const [accentColor, setAccentColor] = useState('#7C3AED');
   const [loading,     setLoading]     = useState(false);
   const [error,       setError]       = useState('');
 
@@ -72,7 +72,7 @@ export default function NewCharacterPage() {
         </button>
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <User size={22} className="text-[#06B6D4]" />
+            <User size={22} className="text-[#7C3AED]" />
             New Custom Character
           </h1>
           <p className="text-sm text-[#8B949E] mt-0.5">
@@ -104,7 +104,7 @@ export default function NewCharacterPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
-            className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2.5 text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/50 transition-colors resize-none"
+            className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2.5 text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/50 transition-colors resize-none"
           />
         </div>
 
@@ -120,7 +120,7 @@ export default function NewCharacterPage() {
                 onClick={() => setPlatform(opt.value)}
                 className={`px-4 h-9 rounded-xl text-sm font-medium border transition-all ${
                   platform === opt.value
-                    ? 'bg-[#06B6D4]/10 border-[#06B6D4]/40 text-[#06B6D4]'
+                    ? 'bg-[#7C3AED]/10 border-[#7C3AED]/40 text-[#7C3AED]'
                     : 'bg-white/[0.03] border-white/[0.06] text-[#8B949E] hover:text-white hover:border-white/10'
                 }`}
               >
@@ -158,7 +158,7 @@ export default function NewCharacterPage() {
         <div className="flex items-center gap-3 pt-1">
           <Button
             type="submit"
-            variant="cyan"
+            variant="accent"
             disabled={loading || !name.trim()}
             className="gap-2"
           >

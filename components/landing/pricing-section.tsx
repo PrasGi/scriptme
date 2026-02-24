@@ -48,7 +48,7 @@ export function PricingSection() {
     return (
       <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#0D1117]">
         <div className="flex items-center justify-center py-32">
-          <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+          <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
         </div>
       </section>
     );
@@ -86,11 +86,11 @@ export function PricingSection() {
                 key={plan._id}
                 noPadding
                 className="relative overflow-hidden flex flex-col"
-                style={highlight ? { borderColor: '#06B6D430', background: '#06B6D406' } : {}}
+                style={highlight ? { borderColor: '#7C3AED30', background: '#7C3AED06' } : {}}
               >
                 {plan.badge && (
                   <div className="absolute top-4 right-4">
-                    <Badge variant="cyan">{plan.badge}</Badge>
+                    <Badge variant="accent">{plan.badge}</Badge>
                   </div>
                 )}
                 <div className="p-6 flex-1">
@@ -102,7 +102,7 @@ export function PricingSection() {
                   <ul className="space-y-2.5">
                     {getDisplayFeatures(plan).map((feat) => (
                       <li key={feat} className="flex items-start gap-2.5">
-                        <Check size={14} className="text-[#06B6D4] flex-shrink-0 mt-0.5" />
+                        <Check size={14} className="text-[#7C3AED] flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-[#8B949E]">{feat}</span>
                       </li>
                     ))}

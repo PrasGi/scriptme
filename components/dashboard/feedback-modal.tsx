@@ -78,7 +78,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       >
         <div className="flex items-center justify-between border-b border-white/6 px-5 py-4">
           <h2 id="feedback-title" className="text-lg font-semibold text-white flex items-center gap-2">
-            <MessageSquare size={20} className="text-[#06B6D4]" />
+            <MessageSquare size={20} className="text-[#7C3AED]" />
             Send feedback
           </h2>
           <button
@@ -94,7 +94,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
         {sent ? (
           <div className="px-5 py-8 text-center">
-            <p className="text-[#06B6D4] font-medium">Thanks! Your feedback has been sent to the team.</p>
+            <p className="text-[#7C3AED] font-medium">Thanks! Your feedback has been sent to the team.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-5 space-y-4">
@@ -108,7 +108,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tell us what you think, report a bug, or suggest an improvement..."
                 rows={4}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-[#8B949E]/70 outline-none focus:border-[#06B6D4]/50 resize-none"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-[#8B949E]/70 outline-none focus:border-[#7C3AED]/50 resize-none"
                 disabled={submitting}
               />
             </div>
@@ -117,7 +117,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               <Button type="button" variant="ghost" size="sm" onClick={handleClose} disabled={submitting}>
                 Cancel
               </Button>
-              <Button type="submit" variant="cyan" size="sm" disabled={submitting}>
+              <Button type="submit" variant="accent" size="sm" disabled={submitting}>
                 {submitting ? <Loader2 size={14} className="animate-spin" /> : 'Send feedback'}
               </Button>
             </div>

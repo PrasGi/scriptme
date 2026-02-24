@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     return badRequest('Invalid JSON body');
   }
 
-  const { name, description = '', platform = 'custom', accentColor = '#06B6D4' } = body;
+  const { name, description = '', platform = 'custom', accentColor = '#7C3AED' } = body;
   if (!name || typeof name !== 'string' || !name.trim()) {
     return badRequest('name is required');
   }
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
       description: description.trim(),
       platform,
       sourceType:  'custom',
-      accentColor: typeof accentColor === 'string' ? accentColor : '#06B6D4',
+      accentColor: typeof accentColor === 'string' ? accentColor : '#7C3AED',
     });
 
     await incrementActionUsage(session.user.id, 'character_create');

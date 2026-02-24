@@ -92,7 +92,7 @@ export default function AdminNotificationsPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Bell size={22} className="text-[#06B6D4]" />
+          <Bell size={22} className="text-[#7C3AED]" />
           Notifications
         </h1>
         <div className="rounded-2xl border border-white/6 bg-[#161B22] p-8 text-center">
@@ -106,7 +106,7 @@ export default function AdminNotificationsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Bell size={22} className="text-[#06B6D4]" />
+          <Bell size={22} className="text-[#7C3AED]" />
           Send Notification
         </h1>
         <p className="text-sm text-[#8B949E] mt-0.5">
@@ -134,7 +134,7 @@ export default function AdminNotificationsPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. New features available"
-            className="w-full h-10 px-3 rounded-xl border border-white/6 bg-[#0D1117] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/40"
+            className="w-full h-10 px-3 rounded-xl border border-white/6 bg-[#0D1117] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40"
           />
         </div>
 
@@ -147,7 +147,7 @@ export default function AdminNotificationsPage() {
             onChange={(e) => setBody(e.target.value)}
             placeholder="Write your notification message..."
             rows={4}
-            className="w-full px-3 py-2.5 rounded-xl border border-white/6 bg-[#0D1117] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/40 resize-none"
+            className="w-full px-3 py-2.5 rounded-xl border border-white/6 bg-[#0D1117] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40 resize-none"
           />
         </div>
 
@@ -162,7 +162,7 @@ export default function AdminNotificationsPage() {
                 name="target"
                 checked={target === 'all'}
                 onChange={() => setTarget('all')}
-                className="w-4 h-4 rounded-full border-white/6 bg-[#0D1117] text-[#06B6D4] focus:ring-[#06B6D4]/40"
+                className="w-4 h-4 rounded-full border-white/6 bg-[#0D1117] text-[#7C3AED] focus:ring-[#7C3AED]/40"
               />
               <span className="text-sm text-white flex items-center gap-1.5">
                 <Users size={14} />
@@ -175,7 +175,7 @@ export default function AdminNotificationsPage() {
                 name="target"
                 checked={target === 'users'}
                 onChange={() => setTarget('users')}
-                className="w-4 h-4 rounded-full border-white/6 bg-[#0D1117] text-[#06B6D4] focus:ring-[#06B6D4]/40"
+                className="w-4 h-4 rounded-full border-white/6 bg-[#0D1117] text-[#7C3AED] focus:ring-[#7C3AED]/40"
               />
               <span className="text-sm text-white flex items-center gap-1.5">
                 <User size={14} />
@@ -208,7 +208,7 @@ export default function AdminNotificationsPage() {
                         type="checkbox"
                         checked={selectedUserIds.includes(u.id)}
                         onChange={() => toggleUser(u.id)}
-                        className="w-4 h-4 rounded border-white/6 bg-[#161B22] text-[#06B6D4] focus:ring-[#06B6D4]/40"
+                        className="w-4 h-4 rounded border-white/6 bg-[#161B22] text-[#7C3AED] focus:ring-[#7C3AED]/40"
                       />
                       <span className="text-sm text-white">{u.name}</span>
                       <span className="text-xs text-[#8B949E]">{u.email}</span>
@@ -227,7 +227,7 @@ export default function AdminNotificationsPage() {
 
         <Button
           type="submit"
-          variant="cyan"
+          variant="accent"
           size="md"
           disabled={loading || !title.trim() || (target === 'users' && selectedUserIds.length === 0)}
           className="gap-2"

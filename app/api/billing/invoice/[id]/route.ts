@@ -69,7 +69,7 @@ export async function GET(req: Request, { params }: Params) {
       const png = await pdfDoc.embedPng(logoBytes);
       page.drawImage(png, { x: MARGIN, y: y(90), width: 120, height: 40 });
     } else {
-      page.drawText('ScriptMinder', {
+      page.drawText('ScriptMe', {
         x: MARGIN,
         y: y(70),
         size: 24,
@@ -242,7 +242,7 @@ export async function GET(req: Request, { params }: Params) {
       font: helvetica,
       color: rgb(0.61, 0.64, 0.69),
     });
-    page.drawText('ScriptMinder — AI-Powered Script Writing for Creators', {
+    page.drawText('ScriptMe — AI-Powered Script Writing for Creators', {
       x: MARGIN,
       y: y(796),
       size: 9,

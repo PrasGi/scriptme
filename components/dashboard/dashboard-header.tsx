@@ -86,7 +86,7 @@ export function DashboardHeader() {
     <header className="h-16 border-b border-white/6 bg-[#0D1117]/80 backdrop-blur-sm flex items-center justify-between px-6 lg:px-8 sticky top-0 z-30">
       {/* Search */}
       <div className="flex items-center gap-2 flex-1 max-w-sm relative" ref={searchRef}>
-        <div className="flex items-center gap-2 h-9 w-full rounded-xl border border-white/6 bg-white/3 px-3 text-[#8B949E] focus-within:border-[#06B6D4]/40 transition-colors">
+        <div className="flex items-center gap-2 h-9 w-full rounded-xl border border-white/6 bg-white/3 px-3 text-[#8B949E] focus-within:border-[#7C3AED]/40 transition-colors">
           <Search size={15} />
           <input
             placeholder="Search projects, scripts, characters..."
@@ -117,7 +117,7 @@ export function DashboardHeader() {
                         onClick={() => { setOpen(false); setQuery(''); }}
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#E6EDF3] hover:bg-white/6 transition-colors"
                       >
-                        <FolderOpen size={14} className="text-[#06B6D4] shrink-0" />
+                        <FolderOpen size={14} className="text-[#7C3AED] shrink-0" />
                         {p.title}
                       </Link>
                     ))}
@@ -133,7 +133,7 @@ export function DashboardHeader() {
                         onClick={() => { setOpen(false); setQuery(''); }}
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#E6EDF3] hover:bg-white/6 transition-colors"
                       >
-                        <FileText size={14} className="text-[#06B6D4] shrink-0" />
+                        <FileText size={14} className="text-[#7C3AED] shrink-0" />
                         {s.title}
                       </Link>
                     ))}
@@ -149,7 +149,7 @@ export function DashboardHeader() {
                         onClick={() => { setOpen(false); setQuery(''); }}
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#E6EDF3] hover:bg-white/6 transition-colors"
                       >
-                        <Users size={14} className="text-[#06B6D4] shrink-0" />
+                        <Users size={14} className="text-[#7C3AED] shrink-0" />
                         {c.name}
                       </Link>
                     ))}
@@ -180,7 +180,7 @@ export function DashboardHeader() {
           >
             <Bell size={16} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[14px] h-3.5 px-1 rounded-full bg-[#06B6D4] text-[10px] font-bold text-[#0D1117] flex items-center justify-center">
+            <span className="absolute top-1 right-1 min-w-[14px] h-3.5 px-1 rounded-full bg-[#7C3AED] text-[10px] font-bold text-[#0D1117] flex items-center justify-center">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
@@ -194,7 +194,7 @@ export function DashboardHeader() {
                 <Tooltip content="Send notifications" description="Open admin panel to send notifications to users" side="left">
                   <Link
                     href="/admin/notifications"
-                    className="text-xs text-[#06B6D4] hover:underline"
+                    className="text-xs text-[#7C3AED] hover:underline"
                     onClick={() => setNotifOpen(false)}
                   >
                     Admin: Send

@@ -28,7 +28,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               'w-full h-11 rounded-xl border bg-white/[0.04] text-white placeholder:text-white/30',
               'border-white/[0.08] transition-all duration-200',
-              'focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/40 focus:border-[#06B6D4]/40',
+              'focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/40 focus:border-[#7C3AED]/40',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               error && 'border-red-500/40 focus:ring-red-500/30',
               leftIcon ? 'pl-10' : 'pl-4',

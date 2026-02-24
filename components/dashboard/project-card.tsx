@@ -23,10 +23,10 @@ interface ProjectCardProps {
   onRequestDelete?: () => void;
 }
 
-const statusConfig: Record<ProjectStatus, { label: string; variant: 'default' | 'cyan' | 'green' | 'orange' | 'purple' }> = {
+const statusConfig: Record<ProjectStatus, { label: string; variant: 'default' | 'accent' | 'green' | 'orange' | 'purple' }> = {
   draft:     { label: 'Draft',     variant: 'default' },
   analyzing: { label: 'Analyzing', variant: 'orange' },
-  ready:     { label: 'Ready',     variant: 'cyan' },
+  ready:     { label: 'Ready',     variant: 'accent' },
   published: { label: 'Published', variant: 'green' },
 };
 
@@ -69,11 +69,11 @@ export function ProjectCard({
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#06B6D4]/10 flex items-center justify-center text-[#06B6D4]">
+          <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center text-[#7C3AED]">
             <FileText size={18} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white group-hover:text-[#06B6D4] transition-colors line-clamp-1">
+            <h3 className="text-sm font-semibold text-white group-hover:text-[#7C3AED] transition-colors line-clamp-1">
               {title}
             </h3>
             {platform && <p className="text-xs text-[#8B949E]">{platform}</p>}
@@ -154,7 +154,7 @@ export function ProjectCard({
           Edit
         </Button>
         <Button
-          variant="cyan"
+          variant="accent"
           size="sm"
           className="flex-1 min-w-0 text-xs"
           onClick={(e) => { e.stopPropagation(); onClick?.(); }}

@@ -12,9 +12,9 @@ const features = [
     description:
       'Describe your topic, audience, and tone — our AI generates a complete, structured video script with hooks, body, and CTA in seconds.',
     badge: 'Core',
-    badgeVariant: 'cyan' as const,
+    badgeVariant: 'accent' as const,
     highlight: true,
-    accent: '#06B6D4',
+    accent: '#7C3AED',
   },
   {
     icon: BarChart2,
@@ -61,7 +61,7 @@ export function FeaturesSection() {
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="text-center mb-16 space-y-4">
-          <Badge variant="cyan" className="mx-auto">Features</Badge>
+          <Badge variant="accent" className="mx-auto">Features</Badge>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
             Everything you need to
             <br />
@@ -123,7 +123,7 @@ export function FeaturesSection() {
               key={title}
               className="flex items-center gap-3 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1] hover:bg-white/[0.04] transition-all"
             >
-              <Icon size={18} className="text-[#06B6D4] flex-shrink-0" />
+              <Icon size={18} className="text-[#7C3AED] flex-shrink-0" />
               <div>
                 <div className="text-sm font-medium text-white">{title}</div>
                 <div className="text-xs text-[#8B949E]">{desc}</div>

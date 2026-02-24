@@ -149,7 +149,7 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
                   onClick={() => setAutoScroll((v) => !v)}
                   className={cn(
                     'gap-1.5',
-                    autoScroll && 'ring-1 ring-[#06B6D4]/50 bg-[#06B6D4]/10'
+                    autoScroll && 'ring-1 ring-[#7C3AED]/50 bg-[#7C3AED]/10'
                   )}
                 >
                   {autoScroll ? (
@@ -171,7 +171,7 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
                   </Button>
                 ) : (
                   <Button
-                    variant="cyan"
+                    variant="accent"
                     size="sm"
                     onClick={handleStart}
                     disabled={!hasTimestamps || lines.length === 0}
@@ -216,7 +216,7 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
                       'rounded-xl px-5 py-4 text-lg leading-relaxed transition-all duration-300 cursor-pointer relative overflow-hidden',
                       line.flagColor ? 'border-l-[3px]' : '',
                       isActiveLine
-                        ? 'bg-[#06B6D4]/15 text-white border border-[#06B6D4]/40 scale-[1.02] shadow-lg shadow-[#06B6D4]/10'
+                        ? 'bg-[#7C3AED]/15 text-white border border-[#7C3AED]/40 scale-[1.02] shadow-lg shadow-[#7C3AED]/10'
                         : 'bg-white/[0.04] text-[#8B949E] border border-transparent hover:bg-white/[0.06] hover:text-[#E6EDF3]'
                     )}
                     style={line.flagColor ? { borderLeftColor: line.flagColor + 'CC' } : undefined}

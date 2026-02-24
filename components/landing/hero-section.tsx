@@ -24,7 +24,7 @@ export function HeroSection() {
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08]">
-            <Sparkles className="h-4 w-4 text-[#06B6D4]" />
+            <Sparkles className="h-4 w-4 text-[#7C3AED]" />
             <span className="text-sm font-medium text-[#8B949E]">
               AI-Powered Video Script Platform
             </span>
@@ -55,7 +55,7 @@ export function HeroSection() {
                 placeholder="Paste a TikTok URL to clone its style..."
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="flex-1 h-12 px-4 rounded-xl bg-white/[0.06] border border-white/[0.06] text-white placeholder:text-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/40 focus:border-transparent"
+                className="flex-1 h-12 px-4 rounded-xl bg-white/[0.06] border border-white/[0.06] text-white placeholder:text-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/40 focus:border-transparent"
               />
               <Link href={url ? `/register?url=${encodeURIComponent(url)}` : '/register'}>
                 <Button variant="primary" size="lg" className="w-full sm:w-auto whitespace-nowrap">
@@ -72,7 +72,7 @@ export function HeroSection() {
           {/* CTA buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link href="/register">
-              <Button variant="cyan" size="lg" className="gap-2">
+              <Button variant="accent" size="lg" className="gap-2">
                 <Zap className="h-4 w-4" />
                 Start Free Today
               </Button>
@@ -115,7 +115,7 @@ export function HeroSection() {
                   icon: '✍️',
                   title: 'Generate Script',
                   desc: 'AI writes a full video script from your topic or brief',
-                  accent: 'text-[#06B6D4]',
+                  accent: 'text-[#7C3AED]',
                 },
                 {
                   icon: '🔍',

@@ -181,13 +181,13 @@ export default function VouchersPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Tag size={22} className="text-[#06B6D4]" />
+            <Tag size={22} className="text-[#7C3AED]" />
             Vouchers
           </h1>
           <p className="text-sm text-[#8B949E] mt-0.5">Manage discount coupons for checkout</p>
         </div>
         {canUpdate && (
-          <Button variant="cyan" size="sm" onClick={openCreate} className="gap-1.5">
+          <Button variant="accent" size="sm" onClick={openCreate} className="gap-1.5">
             <Plus size={14} />
             New Voucher
           </Button>
@@ -239,7 +239,7 @@ export default function VouchersPage() {
             {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
             <Field label="Code"><Input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} placeholder="WELCOME20" required className="bg-[#161B22] border-white/[0.08] font-mono" /></Field>
             <Field label="Type">
-              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'percent' | 'fixed' })} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none">
+              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'percent' | 'fixed' })} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#7C3AED]/50 outline-none">
                 <option value="percent">Percent (%)</option>
                 <option value="fixed">Fixed (IDR)</option>
               </select>
@@ -253,8 +253,8 @@ export default function VouchersPage() {
               <Field label="Usage limit (empty = ∞)"><Input type="number" min={0} value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} placeholder="100" className="bg-[#161B22] border-white/[0.08]" /></Field>
               <Field label="Per user limit (empty = ∞)"><Input type="number" min={0} value={form.perUserLimit} onChange={(e) => setForm({ ...form, perUserLimit: e.target.value })} placeholder="1" className="bg-[#161B22] border-white/[0.08]" /></Field>
             </div>
-            <div className="flex items-center gap-2 pt-1"><input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#06B6D4]" /><label htmlFor="isActive" className="text-sm text-[#8B949E]">Active</label></div>
-            <div className="flex justify-end gap-2 pt-2"><Button type="button" variant="secondary" onClick={() => setCreateOpen(false)}>Cancel</Button><Button type="submit" variant="cyan" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button></div>
+            <div className="flex items-center gap-2 pt-1"><input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#7C3AED]" /><label htmlFor="isActive" className="text-sm text-[#8B949E]">Active</label></div>
+            <div className="flex justify-end gap-2 pt-2"><Button type="button" variant="secondary" onClick={() => setCreateOpen(false)}>Cancel</Button><Button type="submit" variant="accent" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button></div>
           </form>
         </Modal>
       )}
@@ -264,7 +264,7 @@ export default function VouchersPage() {
           <form onSubmit={handleEdit} className="space-y-4">
             {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
             <Field label="Code"><Input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} className="bg-[#161B22] border-white/[0.08] font-mono" /></Field>
-            <Field label="Type"><select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'percent' | 'fixed' })} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none"><option value="percent">Percent (%)</option><option value="fixed">Fixed (IDR)</option></select></Field>
+            <Field label="Type"><select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'percent' | 'fixed' })} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#7C3AED]/50 outline-none"><option value="percent">Percent (%)</option><option value="fixed">Fixed (IDR)</option></select></Field>
             <Field label={form.type === 'percent' ? 'Discount %' : 'Discount (IDR)'}><Input type="number" min={0} value={form.value} onChange={(e) => setForm({ ...form, value: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Valid from"><Input type="date" value={form.validFrom} onChange={(e) => setForm({ ...form, validFrom: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
@@ -274,8 +274,8 @@ export default function VouchersPage() {
               <Field label="Usage limit"><Input type="number" min={0} value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
               <Field label="Per user limit"><Input type="number" min={0} value={form.perUserLimit} onChange={(e) => setForm({ ...form, perUserLimit: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             </div>
-            <div className="flex items-center gap-2 pt-1"><input type="checkbox" id="isActiveEdit" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#06B6D4]" /><label htmlFor="isActiveEdit" className="text-sm text-[#8B949E]">Active</label></div>
-            <div className="flex justify-end gap-2 pt-2"><Button type="button" variant="secondary" onClick={() => setEditTarget(null)}>Cancel</Button><Button type="submit" variant="cyan" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button></div>
+            <div className="flex items-center gap-2 pt-1"><input type="checkbox" id="isActiveEdit" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#7C3AED]" /><label htmlFor="isActiveEdit" className="text-sm text-[#8B949E]">Active</label></div>
+            <div className="flex justify-end gap-2 pt-2"><Button type="button" variant="secondary" onClick={() => setEditTarget(null)}>Cancel</Button><Button type="submit" variant="accent" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button></div>
           </form>
         </Modal>
       )}

@@ -62,7 +62,7 @@ export default function TranscriptTestPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <FileText size={22} className="text-[#06B6D4]" />
+          <FileText size={22} className="text-[#7C3AED]" />
           TikTok Transcript Test
         </h1>
         <p className="text-sm text-[#8B949E] mt-0.5">
@@ -90,7 +90,7 @@ export default function TranscriptTestPage() {
               <select
                 value={lang}
                 onChange={(e) => setLang(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">Auto</option>
                 <option value="eng">English (eng)</option>
@@ -102,7 +102,7 @@ export default function TranscriptTestPage() {
                 <option value="por">Portuguese (por)</option>
               </select>
             </div>
-            <Button variant="cyan" type="submit" disabled={loading || !url.trim()} className="gap-2">
+            <Button variant="accent" type="submit" disabled={loading || !url.trim()} className="gap-2">
               <Search size={14} />
               {loading ? 'Fetching…' : 'Fetch Transcript'}
             </Button>
@@ -145,7 +145,7 @@ export default function TranscriptTestPage() {
                 <span className="text-[#8B949E]">Available Captions</span>
                 <div className="flex flex-wrap gap-1 mt-0.5">
                   {result.subtitles.map((s) => (
-                    <span key={s.language} className="px-2 py-0.5 rounded-md bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-mono border border-[#06B6D4]/20">
+                    <span key={s.language} className="px-2 py-0.5 rounded-md bg-[#7C3AED]/10 text-[#7C3AED] text-xs font-mono border border-[#7C3AED]/20">
                       {s.language}
                     </span>
                   ))}

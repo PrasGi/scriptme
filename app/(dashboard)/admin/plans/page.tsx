@@ -241,13 +241,13 @@ export default function PlansPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <CreditCard size={22} className="text-[#06B6D4]" />
+            <CreditCard size={22} className="text-[#7C3AED]" />
             Plans
           </h1>
           <p className="text-sm text-[#8B949E] mt-0.5">Manage pricing plans for LP and billing</p>
         </div>
         {canUpdate && (
-          <Button variant="cyan" size="sm" onClick={openCreate} className="gap-1.5">
+          <Button variant="accent" size="sm" onClick={openCreate} className="gap-1.5">
             <Plus size={14} />
             New Plan
           </Button>
@@ -275,7 +275,7 @@ export default function PlansPage() {
               <tr key={p._id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
                 <td className="px-5 py-3.5">
                   <span className="font-medium text-white">{p.name}</span>
-                  {p.badge && <Badge variant="cyan" className="ml-2">{p.badge}</Badge>}
+                  {p.badge && <Badge variant="accent" className="ml-2">{p.badge}</Badge>}
                 </td>
                 <td className="px-5 py-3.5 text-[#8B949E]">{formatRp(p.priceMonthly)}</td>
                 <td className="px-5 py-3.5 text-[#8B949E]">{p.tokenLimitMonthly != null ? p.tokenLimitMonthly.toLocaleString() : '∞'}</td>
@@ -339,12 +339,12 @@ export default function PlansPage() {
                 Generate features from limits
               </Button>
             </div>
-            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
+            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#7C3AED]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
             <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <Field label="Badge (optional)"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="Most Popular" className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="secondary" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button type="submit" variant="cyan" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button>
+              <Button type="submit" variant="accent" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button>
             </div>
           </form>
         </Modal>
@@ -388,12 +388,12 @@ export default function PlansPage() {
                 Generate features from limits
               </Button>
             </div>
-            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#06B6D4]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
+            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#7C3AED]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
             <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <Field label="Badge"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="secondary" onClick={() => setEditTarget(null)}>Cancel</Button>
-              <Button type="submit" variant="cyan" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
+              <Button type="submit" variant="accent" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
             </div>
           </form>
         </Modal>

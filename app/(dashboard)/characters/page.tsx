@@ -117,7 +117,7 @@ export default function CharactersPage() {
         </div>
         <Tooltip content="Create Custom" description="Add a character with your own style description" side="left">
           <Button
-            variant="cyan"
+            variant="accent"
             size="md"
             className="gap-2"
             onClick={() => router.push('/characters/new')}
@@ -128,7 +128,7 @@ export default function CharactersPage() {
         </Tooltip>
       </div>
 
-      <div className="rounded-2xl border border-[#06B6D4]/20 bg-[#06B6D4]/5 p-5">
+      <div className="rounded-2xl border border-[#7C3AED]/20 bg-[#7C3AED]/5 p-5">
         <form onSubmit={handleClone} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           <div className="flex-1">
             <div className="text-sm font-medium text-white mb-1">Clone a new creator style</div>
@@ -143,14 +143,14 @@ export default function CharactersPage() {
                 placeholder="https://www.tiktok.com/@user/video/..."
                 value={cloneUrl}
                 onChange={(e) => setCloneUrl(e.target.value)}
-                className="flex-1 min-w-0 h-9 px-3 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/40"
+                className="flex-1 min-w-0 h-9 px-3 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40"
               />
             </div>
             <div className="relative" ref={langDropdownRef}>
               <button
                 type="button"
                 onClick={() => setLangOpen((o) => !o)}
-                className="relative h-9 pl-3 pr-8 rounded-xl border border-white/[0.06] bg-[#161B22] text-sm text-white flex items-center min-w-[7rem] outline-none focus:border-[#06B6D4]/40 hover:border-white/[0.12] transition-colors"
+                className="relative h-9 pl-3 pr-8 rounded-xl border border-white/[0.06] bg-[#161B22] text-sm text-white flex items-center min-w-[7rem] outline-none focus:border-[#7C3AED]/40 hover:border-white/[0.12] transition-colors"
               >
                 <span>{LANG_OPTIONS.find((o) => o.value === cloneLang)?.label ?? 'Auto'}</span>
                 <ChevronDown size={14} className={cn('text-[#8B949E] shrink-0 absolute right-2.5', langOpen && 'rotate-180')} />
@@ -168,7 +168,7 @@ export default function CharactersPage() {
                       className={cn(
                         'w-full text-left px-3 py-2 text-sm transition-colors',
                         cloneLang === opt.value
-                          ? 'bg-[#06B6D4]/15 text-[#06B6D4]'
+                          ? 'bg-[#7C3AED]/15 text-[#7C3AED]'
                           : 'text-[#E6EDF3] hover:bg-white/[0.06]'
                       )}
                     >
@@ -179,7 +179,7 @@ export default function CharactersPage() {
               )}
             </div>
             <Tooltip content="Clone style" description="Extract writing style from the TikTok video" side="top">
-              <Button variant="cyan" size="sm" type="submit" disabled={cloning || !cloneUrl.trim()}>
+              <Button variant="accent" size="sm" type="submit" disabled={cloning || !cloneUrl.trim()}>
                 {cloning ? <Loader2 size={14} className="animate-spin" /> : 'Clone'}
               </Button>
             </Tooltip>
@@ -203,7 +203,7 @@ export default function CharactersPage() {
               className={cn(
                 'px-3 h-7 rounded-lg text-xs font-medium transition-all',
                 tab === t.key
-                  ? 'bg-[#06B6D4]/10 text-[#06B6D4]'
+                  ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
                   : 'text-[#8B949E] hover:text-white'
               )}
             >
@@ -217,14 +217,14 @@ export default function CharactersPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search characters..."
-            className="h-9 pl-9 pr-4 w-48 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#06B6D4]/40 transition-colors"
+            className="h-9 pl-9 pr-4 w-48 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40 transition-colors"
           />
         </div>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 size={24} className="animate-spin text-[#06B6D4]" />
+          <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
         </div>
       ) : filtered.length > 0 ? (
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">

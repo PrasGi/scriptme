@@ -21,7 +21,7 @@ export function LoginForm() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
 
-  const { login, loginWithGoogle, loginWithGitHub, isLoading, error, fieldErrors, clearError } =
+  const { login, loginWithGoogle, isLoading, error, fieldErrors, clearError } =
     useLogin();
 
   // Auth.js redirects to /login?error=CredentialsSignin on failure; show message even when client didn't get result
@@ -44,31 +44,21 @@ export function LoginForm() {
         <p className="text-sm text-[#8B949E]">Sign in to continue creating amazing scripts</p>
       </div>
 
-      <div className="rounded-2xl border border-white/[0.08] bg-[#161B22] p-8 space-y-5">
+      <div className="rounded-2xl border border-white/10 bg-white/6 backdrop-blur-xl p-8 space-y-5">
         {/* OAuth */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => loginWithGoogle()}
-            disabled={isLoading}
-            className="flex items-center justify-center gap-2 h-11 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-white hover:bg-white/[0.06] transition-colors disabled:opacity-50"
-          >
-            <GoogleIcon /> Google
-          </button>
-          <button
-            type="button"
-            onClick={() => loginWithGitHub()}
-            disabled={isLoading}
-            className="flex items-center justify-center gap-2 h-11 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-white hover:bg-white/[0.06] transition-colors disabled:opacity-50"
-          >
-            <GithubIcon /> GitHub
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => loginWithGoogle()}
+          disabled={isLoading}
+          className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-white/10 bg-white/4 text-sm text-white hover:bg-white/8 transition-colors disabled:opacity-50"
+        >
+          <GoogleIcon /> Continue with Google
+        </button>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/[0.06]" />
+          <div className="flex-1 h-px bg-white/6" />
           <span className="text-xs text-[#8B949E]">or continue with email</span>
-          <div className="flex-1 h-px bg-white/[0.06]" />
+          <div className="flex-1 h-px bg-white/6" />
         </div>
 
         {/* Error banner (from hook or from URL ?error=CredentialsSignin) */}
@@ -112,7 +102,7 @@ export function LoginForm() {
             autoComplete="current-password"
           />
           <div className="flex justify-end">
-            <Link href="/forgot-password" className="text-xs text-[#06B6D4] hover:underline">
+            <Link href="/forgot-password" className="text-xs text-[#7C3AED] hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -124,7 +114,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-[#8B949E]">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="text-[#06B6D4] hover:underline font-medium">
+        <Link href="/register" className="text-[#7C3AED] hover:underline font-medium">
           Sign up free
         </Link>
       </p>
@@ -143,7 +133,7 @@ export function RegisterForm() {
   const [password, setPassword] = useState('');
 
   const { register, isLoading, error, fieldErrors, clearError, setFieldErrors } = useRegister();
-  const { loginWithGoogle: oauthGoogle, loginWithGitHub: oauthGitHub } = useLogin();
+  const { loginWithGoogle: oauthGoogle } = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,13 +170,13 @@ export function RegisterForm() {
             key={s}
             className={cn(
               'h-1 flex-1 rounded-full transition-all',
-              s <= step ? 'bg-[#06B6D4]' : 'bg-white/[0.06]'
+              s <= step ? 'bg-[#7C3AED]' : 'bg-white/6'
             )}
           />
         ))}
       </div>
 
-      <div className="rounded-2xl border border-white/[0.08] bg-[#161B22] p-8 space-y-5">
+      <div className="rounded-2xl border border-white/10 bg-white/6 backdrop-blur-xl p-8 space-y-5">
         {/* Error banner */}
         {error && (
           <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
@@ -197,26 +187,17 @@ export function RegisterForm() {
 
         {step === 1 && (
           <>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => oauthGoogle()}
-                className="flex items-center justify-center gap-2 h-11 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-white hover:bg-white/[0.06] transition-colors"
-              >
-                <GoogleIcon /> Google
-              </button>
-              <button
-                type="button"
-                onClick={() => oauthGitHub()}
-                className="flex items-center justify-center gap-2 h-11 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-white hover:bg-white/[0.06] transition-colors"
-              >
-                <GithubIcon /> GitHub
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => oauthGoogle()}
+              className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-white/10 bg-white/4 text-sm text-white hover:bg-white/8 transition-colors"
+            >
+              <GoogleIcon /> Continue with Google
+            </button>
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-white/[0.06]" />
+              <div className="flex-1 h-px bg-white/6" />
               <span className="text-xs text-[#8B949E]">or with email</span>
-              <div className="flex-1 h-px bg-white/[0.06]" />
+              <div className="flex-1 h-px bg-white/6" />
             </div>
           </>
         )}
@@ -274,9 +255,9 @@ export function RegisterForm() {
                 {['YouTube', 'TikTok', 'Instagram', 'Podcast', 'LinkedIn', 'Other'].map((p) => (
                   <label
                     key={p}
-                    className="flex items-center gap-2 p-3 rounded-xl border border-white/[0.06] bg-white/[0.02] cursor-pointer hover:border-white/[0.12] hover:bg-white/[0.04] transition-all"
+                    className="flex items-center gap-2 p-3 rounded-xl border border-white/6 bg-white/2 cursor-pointer hover:border-white/12 hover:bg-white/4 transition-all"
                   >
-                    <input type="checkbox" className="accent-[#06B6D4]" />
+                    <input type="checkbox" className="accent-[#7C3AED]" />
                     <span className="text-sm text-[#8B949E]">{p}</span>
                   </label>
                 ))}
@@ -316,7 +297,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-[#8B949E]">
         Already have an account?{' '}
-        <Link href="/login" className="text-[#06B6D4] hover:underline font-medium">
+        <Link href="/login" className="text-[#7C3AED] hover:underline font-medium">
           Sign in
         </Link>
       </p>
@@ -343,11 +324,4 @@ function GoogleIcon() {
   );
 }
 
-function GithubIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85.004 1.71.11 2.51.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10.01 10.01 0 0022 12c0-5.52-4.48-10-10-10z"/>
-    </svg>
-  );
-}
 

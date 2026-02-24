@@ -60,7 +60,7 @@ export default function AdminFeedbackPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <MessageSquare size={22} className="text-[#06B6D4]" />
+          <MessageSquare size={22} className="text-[#7C3AED]" />
           Feedback
         </h1>
         <div className="rounded-2xl border border-white/6 bg-[#161B22] p-8 text-center">
@@ -74,7 +74,7 @@ export default function AdminFeedbackPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <MessageSquare size={22} className="text-[#06B6D4]" />
+          <MessageSquare size={22} className="text-[#7C3AED]" />
           User Feedback
         </h1>
         <p className="text-sm text-[#8B949E] mt-0.5">
@@ -94,7 +94,7 @@ export default function AdminFeedbackPage() {
             className={cn(
               'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
               statusFilter === s
-                ? 'bg-[#06B6D4] text-white'
+                ? 'bg-[#7C3AED] text-white'
                 : 'bg-white/5 text-[#8B949E] hover:text-white hover:bg-white/10 border border-white/6'
             )}
           >

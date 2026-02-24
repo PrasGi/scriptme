@@ -98,7 +98,7 @@ export default function TransactionsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Receipt size={22} className="text-[#06B6D4]" />
+          <Receipt size={22} className="text-[#7C3AED]" />
           Transactions
         </h1>
         <p className="text-sm text-[#8B949E] mt-0.5">View and complete pending transactions</p>
@@ -112,7 +112,7 @@ export default function TransactionsPage() {
             onClick={() => { setStatusFilter(s); setPage(1); }}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
               statusFilter === s
-                ? 'bg-[#06B6D4]/20 text-[#06B6D4] border border-[#06B6D4]/40'
+                ? 'bg-[#7C3AED]/20 text-[#7C3AED] border border-[#7C3AED]/40'
                 : 'text-[#8B949E] hover:text-white hover:bg-white/[0.05] border border-transparent'
             }`}
           >
@@ -155,7 +155,7 @@ export default function TransactionsPage() {
                 <td className="px-5 py-3.5">
                   {canComplete && tx.status === 'pending' && (
                     <Button
-                      variant="cyan"
+                      variant="accent"
                       size="sm"
                       className="gap-1"
                       disabled={!!completing}
@@ -208,7 +208,7 @@ export default function TransactionsPage() {
             <div className="flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setCompleteTarget(null)}>Cancel</Button>
               <Button
-                variant="cyan"
+                variant="accent"
                 disabled={completing === completeTarget._id}
                 onClick={() => handleComplete(completeTarget)}
               >

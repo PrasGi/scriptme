@@ -60,7 +60,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function ScopeSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#06B6D4]/50">
+      className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50">
       <option value="own">own</option>
       <option value="all">all</option>
     </select>
@@ -106,7 +106,7 @@ export default function IAMPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Shield size={22} className="text-[#06B6D4]" />
+          <Shield size={22} className="text-[#7C3AED]" />
           Identity & Access Management
         </h1>
         <p className="text-sm text-[#8B949E] mt-0.5">Manage roles, permissions and access control policies</p>
@@ -120,7 +120,7 @@ export default function IAMPage() {
             onClick={() => setTab(t.key)}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
               tab === t.key
-                ? 'bg-[#06B6D4]/10 text-[#06B6D4]'
+                ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
                 : 'text-[#8B949E] hover:text-white'
             }`}
           >
@@ -177,7 +177,7 @@ function RolesTab({ roles, onRefresh, can }: { roles: Role[]; onRefresh: () => v
       <div className="flex justify-between items-center">
         <p className="text-sm text-[#8B949E]">{roles.length} role{roles.length !== 1 ? 's' : ''}</p>
         {can.createRole && (
-          <Button variant="cyan" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ name: '', description: '', isDefault: false }); }} className="gap-1.5">
+          <Button variant="accent" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ name: '', description: '', isDefault: false }); }} className="gap-1.5">
             <Plus size={14} /> New Role
           </Button>
         )}
@@ -197,7 +197,7 @@ function RolesTab({ roles, onRefresh, can }: { roles: Role[]; onRefresh: () => v
             {roles.map((role, i) => (
               <tr key={role.id} className={`${i > 0 ? 'border-t border-white/[0.04]' : ''} hover:bg-white/[0.02] transition-colors`}>
                 <td className="px-5 py-3.5">
-                  <Badge variant={role.name === 'admin' ? 'cyan' : 'default'} className="capitalize">{role.name}</Badge>
+                  <Badge variant={role.name === 'admin' ? 'accent' : 'default'} className="capitalize">{role.name}</Badge>
                 </td>
                 <td className="px-5 py-3.5 text-[#8B949E]">{role.description}</td>
                 <td className="px-5 py-3.5">
@@ -228,10 +228,10 @@ function RolesTab({ roles, onRefresh, can }: { roles: Role[]; onRefresh: () => v
             {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
             <Field label="Name"><Input placeholder="editor" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" /></Field>
             <Field label="Description"><Input placeholder="Can edit content…" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <div className="flex items-center gap-2"><input type="checkbox" id="default-create" checked={form.isDefault} onChange={(e) => setForm({ ...form, isDefault: e.target.checked })} className="accent-[#06B6D4]" /><label htmlFor="default-create" className="text-sm text-[#8B949E]">Set as default role for new users</label></div>
+            <div className="flex items-center gap-2"><input type="checkbox" id="default-create" checked={form.isDefault} onChange={(e) => setForm({ ...form, isDefault: e.target.checked })} className="accent-[#7C3AED]" /><label htmlFor="default-create" className="text-sm text-[#8B949E]">Set as default role for new users</label></div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button variant="cyan" type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create Role'}</Button>
+              <Button variant="accent" type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create Role'}</Button>
             </div>
           </form>
         </Modal>
@@ -244,10 +244,10 @@ function RolesTab({ roles, onRefresh, can }: { roles: Role[]; onRefresh: () => v
             {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
             <Field label="Name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" /></Field>
             <Field label="Description"><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <div className="flex items-center gap-2"><input type="checkbox" id="default-edit" checked={form.isDefault} onChange={(e) => setForm({ ...form, isDefault: e.target.checked })} className="accent-[#06B6D4]" /><label htmlFor="default-edit" className="text-sm text-[#8B949E]">Set as default role</label></div>
+            <div className="flex items-center gap-2"><input type="checkbox" id="default-edit" checked={form.isDefault} onChange={(e) => setForm({ ...form, isDefault: e.target.checked })} className="accent-[#7C3AED]" /><label htmlFor="default-edit" className="text-sm text-[#8B949E]">Set as default role</label></div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setEditTarget(null)}>Cancel</Button>
-              <Button variant="cyan" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
+              <Button variant="accent" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
             </div>
           </form>
         </Modal>
@@ -325,7 +325,7 @@ function PermissionsTab({ permissions, onRefresh, can }: { permissions: Permissi
           <Input placeholder="Search permissions…" value={search} onChange={(e) => setSearch(e.target.value)} className="bg-[#0D1117] border-white/[0.08] text-sm pl-3" />
         </div>
         {can.createPerm && (
-          <Button variant="cyan" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ resource: '', action: '', scope: 'own', description: '' }); }} className="gap-1.5 ml-3">
+          <Button variant="accent" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ resource: '', action: '', scope: 'own', description: '' }); }} className="gap-1.5 ml-3">
             <Plus size={14} /> New Permission
           </Button>
         )}
@@ -341,7 +341,7 @@ function PermissionsTab({ permissions, onRefresh, can }: { permissions: Permissi
               <tbody>
                 {perms.map((p, i) => (
                   <tr key={p.id} className={`${i > 0 ? 'border-t border-white/[0.04]' : ''} hover:bg-white/[0.02] transition-colors`}>
-                    <td className="px-5 py-3 font-mono text-[#06B6D4] text-xs">{p.key}</td>
+                    <td className="px-5 py-3 font-mono text-[#7C3AED] text-xs">{p.key}</td>
                     <td className="px-5 py-3 text-[#8B949E]">{p.description}</td>
                     <td className="px-5 py-3">
                       <div className="flex items-center justify-end gap-1">
@@ -376,7 +376,7 @@ function PermissionsTab({ permissions, onRefresh, can }: { permissions: Permissi
             <Field label="Description"><Input placeholder="Create own projects" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button variant="cyan" type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button>
+              <Button variant="accent" type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button>
             </div>
           </form>
         </Modal>
@@ -395,7 +395,7 @@ function PermissionsTab({ permissions, onRefresh, can }: { permissions: Permissi
             <Field label="Description"><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setEditTarget(null)}>Cancel</Button>
-              <Button variant="cyan" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
+              <Button variant="accent" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
             </div>
           </form>
         </Modal>
@@ -484,7 +484,7 @@ function RolePermissionsTab({ roles, permissions, can }: { roles: Role[]; permis
           <select
             value={selectedRoleId}
             onChange={(e) => setSelectedRoleId(e.target.value)}
-            className="appearance-none w-full rounded-xl border border-white/[0.08] bg-[#0D1117] px-4 py-2 text-sm text-white pr-9 focus:outline-none focus:border-[#06B6D4]/50"
+            className="appearance-none w-full rounded-xl border border-white/[0.08] bg-[#0D1117] px-4 py-2 text-sm text-white pr-9 focus:outline-none focus:border-[#7C3AED]/50"
           >
             <option value="">Select a role…</option>
             {roles.map((r) => <option key={r.id} value={r.id} className="capitalize">{r.name}</option>)}
@@ -518,13 +518,13 @@ function RolePermissionsTab({ roles, permissions, can }: { roles: Role[]; permis
                         className={`w-5 h-5 rounded flex items-center justify-center border transition-all flex-shrink-0 ${
                           can.updateRole ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
                         } ${
-                          on ? 'bg-[#06B6D4] border-[#06B6D4]' : 'border-white/[0.15] bg-transparent hover:border-[#06B6D4]/50'
+                          on ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-white/[0.15] bg-transparent hover:border-[#7C3AED]/50'
                         }`}
                       >
                         {on && <Check size={11} className="text-white" />}
                       </div>
                       <div className="flex-1">
-                        <span className="font-mono text-xs text-[#06B6D4]">{perm.key}</span>
+                        <span className="font-mono text-xs text-[#7C3AED]">{perm.key}</span>
                         <span className="text-xs text-[#8B949E] ml-2">{perm.description}</span>
                       </div>
                     </label>
@@ -618,7 +618,7 @@ function UserPermissionsTab({ users, permissions, can }: { users: UserItem[]; pe
           <select
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="appearance-none w-full rounded-xl border border-white/[0.08] bg-[#0D1117] px-4 py-2 text-sm text-white pr-9 focus:outline-none focus:border-[#06B6D4]/50"
+            className="appearance-none w-full rounded-xl border border-white/[0.08] bg-[#0D1117] px-4 py-2 text-sm text-white pr-9 focus:outline-none focus:border-[#7C3AED]/50"
           >
             <option value="">Select a user…</option>
             {users.map((u) => (
@@ -646,7 +646,7 @@ function UserPermissionsTab({ users, permissions, can }: { users: UserItem[]; pe
       {selectedUserId && !loading && (
         <div className="flex items-center gap-5 text-xs text-[#8B949E]">
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-400" /> From role</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#06B6D4]" /> Override: granted</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#7C3AED]" /> Override: granted</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-400" /> Override: revoked</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-white/20" /> No access</span>
         </div>
@@ -671,12 +671,12 @@ function UserPermissionsTab({ users, permissions, can }: { users: UserItem[]; pe
                     <div key={perm.id} className="flex items-center gap-4 px-5 py-3 hover:bg-white/[0.02] transition-colors">
                       {/* Status dot */}
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                        status === 'granted-override' ? 'bg-[#06B6D4]' :
+                        status === 'granted-override' ? 'bg-[#7C3AED]' :
                         status === 'revoked-override' ? 'bg-red-400' :
                         status === 'from-role'        ? 'bg-emerald-400' : 'bg-white/20'
                       }`} />
                       <div className="flex-1 min-w-0">
-                        <span className="font-mono text-xs text-[#06B6D4]">{perm.key}</span>
+                        <span className="font-mono text-xs text-[#7C3AED]">{perm.key}</span>
                         <span className="text-xs text-[#8B949E] ml-2">{perm.description}</span>
                       </div>
                       {/* Override actions */}
@@ -687,8 +687,8 @@ function UserPermissionsTab({ users, permissions, can }: { users: UserItem[]; pe
                           disabled={!can.updateUser}
                           className={`px-2 py-1 rounded-lg text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
                             ov?.granted === true
-                              ? 'bg-[#06B6D4] text-white'
-                              : 'text-[#8B949E] hover:bg-[#06B6D4]/10 hover:text-[#06B6D4] border border-transparent hover:border-[#06B6D4]/30'
+                              ? 'bg-[#7C3AED] text-white'
+                              : 'text-[#8B949E] hover:bg-[#7C3AED]/10 hover:text-[#7C3AED] border border-transparent hover:border-[#7C3AED]/30'
                           }`}
                         >
                           Grant

@@ -51,7 +51,7 @@ Blank line between blocks. Current script is in [CURRENT SCRIPT].
 \`\`\`
   - lineIndex: 0-based (Line 1 = 0, Line 2 = 1, Line 5 = 4, etc.).
   - color: hex string for the flag color, or null to remove the flag.
-  - Allowed colors (use these hex values): red=#EF4444, orange=#F97316, yellow=#EAB308, green=#22C55E, cyan=#06B6D4, blue=#3B82F6, purple=#8B5CF6, pink=#EC4899.
+  - Allowed colors (use these hex values): red=#EF4444, orange=#F97316, yellow=#EAB308, green=#22C55E, cyan=#7C3AED, blue=#3B82F6, purple=#8B5CF6, pink=#EC4899.
   - Include every line that should change; omit lines that stay the same. Example: "remove all except line 3 and 5" → set color to null for all other lines, and leave line 3 and 5 unchanged (or set their color if user specified).
 
 [MODE: generate]

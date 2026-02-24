@@ -101,7 +101,7 @@ export async function POST(req: Request) {
       sourceUrl:     url.trim(),
       sourceAuthor:  result.meta.author,
       sourceVideoId: result.meta.id,
-      accentColor:   '#06B6D4',
+      accentColor:   '#7C3AED',
     });
 
     await incrementActionUsage(session.user.id, 'character_create');
