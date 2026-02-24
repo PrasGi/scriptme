@@ -1,15 +1,12 @@
 @import "tailwindcss";
 
+/* Clipper-style: dark base */
 :root {
-  --bg-primary: #0B0E14;
-  --bg-card: #161B22;
-  --bg-card-glass: rgba(255, 255, 255, 0.03);
-  --border-color: rgba(255, 255, 255, 0.08);
+  --bg-primary: #000000;
   --text-primary: #FFFFFF;
   --text-secondary: #8B949E;
-  --accent: #7C3AED;
-  --accent-glow: rgba(124, 58, 237, 0.3);
-  --radius: 0.75rem;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
@@ -31,71 +28,36 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, #7C3AED 50%, #2563EB 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Glow */
-.glow-accent { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
-
-/* Grid background */
-.grid-bg {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-/* Blob animation */
+/* Clipper-style blob animation (login/landing) */
 @keyframes blob {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(30px, -50px) scale(1.1); }
   66% { transform: translate(-20px, 20px) scale(0.9); }
 }
-.animate-blob { animation: blob 8s infinite ease-in-out; }
-.animation-delay-2000 { animation-delay: 2s; }
-.animation-delay-4000 { animation-delay: 4s; }
-
-/* Fade in */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-blob {
+  animation: blob 7s infinite ease-in-out;
 }
-.fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
-
-/* Tooltip */
-@keyframes tooltipIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.animation-delay-2000 {
+  animation-delay: 2s;
 }
-.animate-tooltip-in { animation: tooltipIn 0.12s ease-out forwards; }
-
-/* Glass card */
-.glass-card {
-  background: var(--bg-card-glass);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
+.animation-delay-4000 {
+  animation-delay: 4s;
 }
 
-/* Landing (Genesis-style) */
-.glass {
-  @apply bg-white/10 border border-white/20;
+/* Purple-blue gradient text (ScriptMinder accent) */
+.gradient-text {
+  background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 40%, #2563EB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.btn-landing {
-  @apply cursor-pointer rounded-full px-8 py-2.5 font-medium text-white transition hover:opacity-90 active:scale-[0.98];
-}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }

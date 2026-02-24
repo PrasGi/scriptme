@@ -107,7 +107,7 @@ export function HeroSection() {
               <span className="w-3 h-3 rounded-full bg-red-500/70" />
               <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
               <span className="w-3 h-3 rounded-full bg-green-500/70" />
-              <span className="ml-4 text-xs text-[#8B949E]">ScriptMinder — dashboard</span>
+              <span className="ml-4 text-xs text-[#8B949E]">ScriptMe — dashboard</span>
             </div>
             <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
               {[

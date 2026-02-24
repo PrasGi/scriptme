@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { LogoStatic } from '@/components/common/logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
@@ -35,22 +34,18 @@ export function LoginForm() {
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
-      <div className="flex justify-center mb-2">
-        <LogoStatic size="lg" />
-      </div>
-
-      <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+      <div className="text-center space-y-1 mb-8">
+        <h2 className="text-2xl font-bold text-white">Welcome back</h2>
         <p className="text-sm text-[#8B949E]">Sign in to continue creating amazing scripts</p>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/6 backdrop-blur-xl p-8 space-y-5">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-xl p-8 space-y-5 shadow-2xl shadow-black/40">
         {/* OAuth */}
         <button
           type="button"
           onClick={() => loginWithGoogle()}
           disabled={isLoading}
-          className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-white/10 bg-white/4 text-sm text-white hover:bg-white/8 transition-colors disabled:opacity-50"
+          className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-white/[0.08] bg-white/[0.04] text-sm text-white hover:bg-white/[0.08] transition-colors disabled:opacity-50"
         >
           <GoogleIcon /> Continue with Google
         </button>
@@ -102,11 +97,11 @@ export function LoginForm() {
             autoComplete="current-password"
           />
           <div className="flex justify-end">
-            <Link href="/forgot-password" className="text-xs text-[#7C3AED] hover:underline">
+            <Link href="/forgot-password" className="text-xs text-[#A78BFA] hover:text-white hover:underline transition-colors">
               Forgot password?
             </Link>
           </div>
-          <Button type="submit" variant="primary" size="lg" className="w-full" isLoading={isLoading}>
+          <Button type="submit" variant="primary" size="lg" className="w-full bg-white text-[#0B0E14] hover:bg-white/90" isLoading={isLoading}>
             Sign In
           </Button>
         </form>
@@ -114,7 +109,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-[#8B949E]">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="text-[#7C3AED] hover:underline font-medium">
+        <Link href="/register" className="text-[#A78BFA] hover:text-white hover:underline font-medium transition-colors">
           Sign up free
         </Link>
       </p>
@@ -155,28 +150,25 @@ export function RegisterForm() {
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
-      <div className="flex justify-center mb-2">
-        <LogoStatic size="lg" />
-      </div>
-      <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold text-white">Create your account</h1>
+      <div className="text-center space-y-1 mb-8">
+        <h2 className="text-2xl font-bold text-white">Create your account</h2>
         <p className="text-sm text-[#8B949E]">Start generating better scripts today — it&apos;s free</p>
       </div>
 
       {/* Step progress */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 mb-6">
         {([1, 2] as const).map((s) => (
           <div
             key={s}
             className={cn(
               'h-1 flex-1 rounded-full transition-all',
-              s <= step ? 'bg-[#7C3AED]' : 'bg-white/6'
+              s <= step ? 'bg-[#7C3AED]' : 'bg-white/[0.06]'
             )}
           />
         ))}
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/6 backdrop-blur-xl p-8 space-y-5">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-xl p-8 space-y-5 shadow-2xl shadow-black/40">
         {/* Error banner */}
         {error && (
           <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
@@ -190,7 +182,7 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={() => oauthGoogle()}
-              className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-white/10 bg-white/4 text-sm text-white hover:bg-white/8 transition-colors"
+              className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-white/[0.08] bg-white/[0.04] text-sm text-white hover:bg-white/[0.08] transition-colors"
             >
               <GoogleIcon /> Continue with Google
             </button>
@@ -255,7 +247,7 @@ export function RegisterForm() {
                 {['YouTube', 'TikTok', 'Instagram', 'Podcast', 'LinkedIn', 'Other'].map((p) => (
                   <label
                     key={p}
-                    className="flex items-center gap-2 p-3 rounded-xl border border-white/6 bg-white/2 cursor-pointer hover:border-white/12 hover:bg-white/4 transition-all"
+                    className="flex items-center gap-2 p-3 rounded-xl border border-white/[0.06] bg-white/[0.02] cursor-pointer hover:border-white/[0.12] hover:bg-white/[0.04] transition-all"
                   >
                     <input type="checkbox" className="accent-[#7C3AED]" />
                     <span className="text-sm text-[#8B949E]">{p}</span>
@@ -286,7 +278,7 @@ export function RegisterForm() {
               type="submit"
               variant="primary"
               size="lg"
-              className="flex-1"
+              className="flex-1 bg-white text-[#0B0E14] hover:bg-white/90"
               isLoading={isLoading}
             >
               {step === 1 ? 'Continue →' : 'Create Account'}
@@ -297,7 +289,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-[#8B949E]">
         Already have an account?{' '}
-        <Link href="/login" className="text-[#7C3AED] hover:underline font-medium">
+        <Link href="/login" className="text-[#A78BFA] hover:text-white hover:underline font-medium transition-colors">
           Sign in
         </Link>
       </p>

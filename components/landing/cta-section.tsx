@@ -22,7 +22,7 @@ export function CTASection() {
               <span className="gradient-text">that actually convert?</span>
             </h2>
             <p className="text-lg text-[#8B949E] max-w-xl mx-auto">
-              Join 12,000+ creators using ScriptMinder to produce better video content, faster.
+              Join 12,000+ creators using ScriptMe to produce better video content, faster.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-2">
               <Link href="/register">

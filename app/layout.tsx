@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ScriptMe — AI Video Script Platform",
+  title: "ScriptMe — AI Script Platform",
   description:
-    "Generate, analyze, and optimize your video scripts with AI. Clone any creator's writing style and produce content that drives engagement.",
-  keywords: ["video script", "AI script generator", "content creator", "YouTube script", "script analyzer"],
+    "Generate, analyze, and optimize your scripts with AI. Clone any creator's writing style and produce content that drives engagement.",
+  keywords: ["script", "AI script generator", "content creator", "script analyzer", "your script"],
 };
 
 export default function RootLayout({

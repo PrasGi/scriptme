@@ -8,7 +8,7 @@ const testimonials = [
     role: 'Tech YouTuber • 380K subs',
     avatar: 'BS',
     content:
-      'ScriptMinder cut my script writing time by 70%. The analysis feature alone is worth it — it showed me my intros were too slow before I even filmed.',
+      'ScriptMe cut my script writing time by 70%. The analysis feature alone is worth it — it showed me my intros were too slow before I even filmed.',
     rating: 5,
     accent: '#7C3AED',
   },
@@ -26,7 +26,7 @@ const testimonials = [
     role: 'Marketing Agency Owner',
     avatar: 'MC',
     content:
-      'We use ScriptMinder for all client video campaigns. The ability to maintain different character styles per client is a game-changer for our workflow.',
+      'We use ScriptMe for all client video campaigns. The ability to maintain different character styles per client is a game-changer for our workflow.',
     rating: 5,
     accent: '#10B981',
   },
@@ -44,7 +44,7 @@ const testimonials = [
     role: 'Shorts Creator • 5M views/month',
     avatar: 'DW',
     content:
-      'I generate 10 short scripts every morning in under 15 minutes. ScriptMinder understands the short-form format perfectly.',
+      'I generate 10 short scripts every morning in under 15 minutes. ScriptMe understands the short-form format perfectly.',
     rating: 5,
     accent: '#7C3AED',
   },

@@ -1,61 +1,86 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { PlayCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sparkles, ArrowRight, PenLine, TrendingUp } from 'lucide-react';
 
 export function LandingHero() {
-  return (
-    <motion.section className="flex flex-col items-center px-4">
-      <motion.div
-        className="flex items-center gap-3 mt-32"
-        initial={{ y: -20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2, type: 'spring', stiffness: 320, damping: 70, mass: 1 }}
-      >
-        <p className="text-sm text-white/80">Smart, fast, creator-ready.</p>
-        <Link href="/register" className="btn-landing glass py-1 px-3 text-xs">
-          Launch App
-        </Link>
-      </motion.div>
-      <motion.h1
-        className="text-center text-4xl leading-[1.2] md:text-6xl md:leading-[1.2] mt-4 font-semibold tracking-tight max-w-3xl text-white"
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ type: 'spring', stiffness: 240, damping: 70, mass: 1 }}
-      >
-        Write, Analyze & Polish Video Scripts with AI.
-      </motion.h1>
-      <motion.p
-        className="text-center text-gray-100 text-base leading-7 max-w-md mt-6"
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2, type: 'spring', stiffness: 320, damping: 70, mass: 1 }}
-      >
-        Generate scripts, clone any creator&apos;s style, and get AI feedback to boost engagement — all in one place.
-      </motion.p>
+  const [url, setUrl] = useState('');
 
-      <motion.div
-        className="flex flex-col md:flex-row max-md:w-full items-center gap-4 md:gap-3 mt-6"
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ type: 'spring', stiffness: 320, damping: 70, mass: 1 }}
-      >
-        <Link href="/register" className="btn-landing max-md:w-full glass py-3 text-center">
-          Get Started Free
-        </Link>
-        <Link
-          href="#how-it-works"
-          className="btn-landing max-md:w-full glass flex items-center justify-center gap-2 py-3"
-        >
-          <PlayCircle className="size-4" />
-          See How It Works
-        </Link>
-      </motion.div>
-    </motion.section>
+  return (
+    <section className="relative min-h-screen pt-28 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-black">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full bg-[#7C3AED]/15 blur-[120px] animate-blob" />
+        <div className="absolute bottom-[20%] left-[-10%] w-[450px] h-[450px] rounded-full bg-[#2563EB]/12 blur-[100px] animate-blob animation-delay-2000" />
+        <div className="absolute top-[50%] right-[20%] w-[300px] h-[300px] rounded-full bg-[#6366F1]/10 blur-[80px] animate-blob animation-delay-4000" />
+      </div>
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+        }}
+      />
+
+      <div className="relative z-10 container mx-auto max-w-5xl">
+        {/* Top: centered copy — ~45% of hero */}
+        <div className="text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-6">
+            <Sparkles className="h-4 w-4 text-[#A78BFA]" />
+            <span className="text-sm font-medium text-[#8B949E]">
+              AI-Powered Script Writer & Optimizer
+            </span>
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] text-white mb-5">
+            Generate, Analyze &{' '}
+            <span className="gradient-text">Refine Your Script</span>
+            <br />
+            <span className="text-2xl sm:text-3xl md:text-4xl text-[#8B949E] font-semibold">
+              with AI Intelligence
+            </span>
+          </h1>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center max-w-xl mx-auto mb-6 mt-8">
+            <input
+              type="url"
+              placeholder="Paste a TikTok URL to clone its style..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="flex-1 h-12 sm:h-12 px-4 rounded-xl bg-white/[0.06] border-0 text-white placeholder:text-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/40 focus:ring-offset-0"
+            />
+            <Link href={url ? `/register?url=${encodeURIComponent(url)}` : '/register'} className="sm:shrink-0">
+              <Button size="lg" className="w-full sm:w-auto h-12 px-6 text-base font-semibold rounded-xl bg-white text-black hover:bg-white/90 transition-all gap-2">
+                Clone Style
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+          <p className="text-sm text-[#8B949E]/80 mb-10">TikTok • No credit card required</p>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            {[
+              { icon: PenLine, label: 'Generate', sub: 'AI writes your script' },
+              { icon: TrendingUp, label: 'Analyze', sub: 'Per-line suggestions' },
+              { icon: Sparkles, label: 'Clone', sub: "Creator's voice" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06]"
+              >
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#7C3AED]/20">
+                  <item.icon className="h-4 w-4 text-[#A78BFA]" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-semibold text-white">{item.label}</div>
+                  <div className="text-xs text-[#8B949E]">{item.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

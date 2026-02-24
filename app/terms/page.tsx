@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Navbar } from '@/components/common/navbar';
-import { Footer } from '@/components/common/footer';
+import { LandingNavbar } from '@/components/landing/landing-navbar';
+import { LandingFooter } from '@/components/landing/landing-footer';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
@@ -10,8 +10,8 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#0B0E14]">
-      <Navbar />
+    <div className="min-h-screen bg-black text-white dark">
+      <LandingNavbar />
       <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16">
         <Link
           href="/"
@@ -83,7 +83,7 @@ export default function TermsPage() {
           </section>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 }

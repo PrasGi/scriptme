@@ -27,7 +27,7 @@ function LogoContent({ size = 'md', className }: { size?: LogoProps['size']; cla
         priority
       />
       <span className={cn('font-bold text-white', s.text)}>
-        Script<span className="text-transparent bg-clip-text bg-linear-to-r from-[#7C3AED] to-[#2563EB]">Me</span>
+        Script<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] to-[#2563EB]">Me</span>
       </span>
     </div>
   );
