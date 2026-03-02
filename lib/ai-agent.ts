@@ -44,10 +44,12 @@ Blank line between blocks. Current script is in [CURRENT SCRIPT].
 - LINE NUMBERS: The user refers to script lines by number. "Line 1" = first line, "Line 2" = second, "lines 5, 6 and 15" = those script lines. Always use 1-based line numbers when discussing with the user.
 
 - SELECTED TEXT: When the user's message contains a [SELECTED TEXT]...[/SELECTED TEXT] block, the user has highlighted specific text from specific lines. Focus your response ONLY on the selected text — do NOT output the full script.
-  - When the user asks to EDIT, REWRITE, IMPROVE, or CHANGE the selected text: write a brief explanation in the USER'S MESSAGE LANGUAGE (e.g. English if they wrote in English), then ALWAYS output a JSON code block with the line edits so the app can show accept/reject buttons per line:
+  - When the user asks to EDIT, REWRITE, IMPROVE, or CHANGE the selected text: write a brief explanation in the USER'S MESSAGE LANGUAGE (e.g. English if they wrote in English), then you MUST output the lineEdits inside a fenced code block (triple backticks with json). This is CRITICAL — the app parses this block to show accept/reject buttons. Do NOT output raw JSON without code fences.
+  - CORRECT format (ALWAYS use this):
 \`\`\`json
 {"lineEdits":[{"lineIndex":2,"original":"old text","suggested":"new text"},{"lineIndex":4,"original":"old text","suggested":"new text"}]}
 \`\`\`
+  - WRONG (NEVER do this): {"lineEdits":[...]} without triple backtick fences.
     - lineIndex: 0-based (Line 1 = 0, Line 3 = 2, etc.).
     - original: the original text from the selected context (for reference).
     - suggested: the improved/edited text.

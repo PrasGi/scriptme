@@ -434,7 +434,9 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
   function messageContentForDisplay(aiText: string): string {
     return aiText
       .replace(/```[\s\S]*?```/g, (block) => (block.includes('flagUpdates') || block.includes('lineEdits') ? '' : block))
-      .replace(/\s{2,}/g, ' ')
+      .replace(/\{\s*"lineEdits"\s*:\s*\[[\s\S]*?\]\s*\}/g, '')
+      .replace(/\{\s*"flagUpdates"\s*:\s*\[[\s\S]*?\]\s*\}/g, '')
+      .replace(/\n{3,}/g, '\n\n')
       .trim();
   }
 
@@ -442,13 +444,19 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
     aiText: string
   ): { lineIndex: number; color: string | null }[] | null {
     const jsonBlock = aiText.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (!jsonBlock) return null;
-    try {
-      const parsed = JSON.parse(jsonBlock[1].trim()) as {
-        flagUpdates?: { lineIndex: number; color: string | null }[];
-      };
-      if (!Array.isArray(parsed?.flagUpdates) || parsed.flagUpdates.length === 0) return null;
-      return parsed.flagUpdates;
+    const raw = jsonBlock ? jsonBlock[1].trim() : null;
+    const candidates = raw ? [raw] : [];
+    if (!raw) {
+      const braceMatch = aiText.match(/\{\s*"flagUpdates"\s*:\s*\[[\s\S]*?\]\s*\}/);
+      if (braceMatch) candidates.push(braceMatch[0]);
+    }
+    for (const candidate of candidates) {
+      try {
+        const parsed = JSON.parse(candidate) as { flagUpdates?: { lineIndex: number; color: string | null }[] };
+        if (Array.isArray(parsed?.flagUpdates) && parsed.flagUpdates.length > 0) return parsed.flagUpdates;
+      } catch { /* try next */ }
+    }
+    return null;
     } catch {
       return null;
     }
@@ -462,13 +470,19 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
 
   function parseLineEditsFromAiResponse(aiText: string): LineEdit[] | null {
     const jsonBlock = aiText.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (!jsonBlock) return null;
-    try {
-      const parsed = JSON.parse(jsonBlock[1].trim()) as {
-        lineEdits?: LineEdit[];
-      };
-      if (!Array.isArray(parsed?.lineEdits) || parsed.lineEdits.length === 0) return null;
-      return parsed.lineEdits;
+    const raw = jsonBlock ? jsonBlock[1].trim() : null;
+    const candidates = raw ? [raw] : [];
+    if (!raw) {
+      const braceMatch = aiText.match(/\{\s*"lineEdits"\s*:\s*\[[\s\S]*?\]\s*\}/);
+      if (braceMatch) candidates.push(braceMatch[0]);
+    }
+    for (const candidate of candidates) {
+      try {
+        const parsed = JSON.parse(candidate) as { lineEdits?: LineEdit[] };
+        if (Array.isArray(parsed?.lineEdits) && parsed.lineEdits.length > 0) return parsed.lineEdits;
+      } catch { /* try next */ }
+    }
+    return null;
     } catch {
       return null;
     }
