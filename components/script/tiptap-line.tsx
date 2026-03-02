@@ -154,6 +154,7 @@ export function TiptapLine({
       {toolbarPos && editor && (
         <div
           ref={toolbarRef}
+          data-tiptap-toolbar
           className="fixed z-9999 flex items-center bg-white rounded-xl border border-slate-200/80 shadow-xl shadow-slate-300/30 overflow-visible"
           style={{
             top: `${toolbarPos.top}px`,

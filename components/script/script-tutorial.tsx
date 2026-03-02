@@ -21,6 +21,76 @@ function forceHide(selector: string) {
   if (el) el.style.opacity = '';
 }
 
+const DEMO_TEXT = 'Hello, this is a sample script line';
+const SELECT_WORD = 'sample';
+
+function typeAndSelect() {
+  const firstLine = document.querySelector('#tour-first-line');
+  if (!firstLine) return;
+  const pm = firstLine.querySelector('.ProseMirror') as HTMLElement;
+  if (!pm) return;
+
+  const hasContent = !!pm.textContent?.trim();
+
+  const doSelect = () => {
+    pm.focus();
+    const walker = document.createTreeWalker(pm, NodeFilter.SHOW_TEXT);
+    let target: Text | null = null;
+    while (walker.nextNode()) {
+      const n = walker.currentNode as Text;
+      if (n.textContent && n.textContent.length >= 4) {
+        target = n;
+        break;
+      }
+    }
+    if (!target?.textContent) return;
+
+    const word = target.textContent.includes(SELECT_WORD)
+      ? SELECT_WORD
+      : target.textContent.split(/\s+/).find((w) => w.length >= 4) ?? '';
+    if (!word) return;
+
+    const idx = target.textContent.indexOf(word);
+    if (idx < 0) return;
+
+    const range = document.createRange();
+    range.setStart(target, idx);
+    range.setEnd(target, idx + word.length);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+
+    setTimeout(() => {
+      const toolbar = document.querySelector('[data-tiptap-toolbar]') as HTMLElement;
+      if (toolbar) toolbar.style.zIndex = '100002';
+    }, 250);
+  };
+
+  if (hasContent) {
+    doSelect();
+    return;
+  }
+
+  pm.focus();
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= DEMO_TEXT.length) {
+      clearInterval(interval);
+      setTimeout(doSelect, 300);
+      return;
+    }
+    document.execCommand('insertText', false, DEMO_TEXT[i]);
+    i++;
+  }, 35);
+}
+
+function cleanupToolbarDemo() {
+  window.getSelection()?.removeAllRanges();
+  const toolbar = document.querySelector('[data-tiptap-toolbar]') as HTMLElement;
+  if (toolbar) toolbar.style.zIndex = '';
+  const pm = document.querySelector('#tour-first-line .ProseMirror') as HTMLElement;
+  if (pm) pm.blur();
+}
+
 const TOUR_STEPS: DriveStep[] = [
   {
     popover: {
@@ -46,10 +116,12 @@ const TOUR_STEPS: DriveStep[] = [
     popover: {
       title: 'Rich Text Formatting',
       description:
-        'Select any text in a line to reveal a floating toolbar with Bold (Ctrl+B), Italic (Ctrl+I), Underline, Strikethrough, and text colors. You can also use the toolbar\'s "Ask AI" button to send your selection as context to the AI chat.',
+        'Select any text to reveal a floating toolbar with Bold, Italic, Underline, Strikethrough, text colors, and an "Ask AI" button. Try it out after the tour!',
       side: 'bottom',
       align: 'start',
     },
+    onHighlightStarted: () => typeAndSelect(),
+    onDeselected: () => cleanupToolbarDemo(),
   },
   {
     element: '#tour-add-to-chat',
