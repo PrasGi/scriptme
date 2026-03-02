@@ -26,7 +26,7 @@ import {
   Receipt,
   MessageSquare,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useSidebar } from '@/contexts/sidebar-context';
 import { usePermissions } from '@/hooks/use-permissions';
@@ -67,15 +67,26 @@ const adminNavItems: NavItem[] = [
 
 interface Project { _id: string; title: string }
 
+const LG_BREAKPOINT = 1024;
+
 export function Sidebar() {
   const pathname = usePathname();
   const router   = useRouter();
-  const { collapsed, toggle } = useSidebar();
+  const { collapsed, toggle, mobileOpen, setMobileOpen } = useSidebar();
   const [pickerOpen,    setPickerOpen]    = useState(false);
   const [projects,      setProjects]      = useState<Project[]>([]);
   const [pickerLoading, setPickerLoading] = useState(false);
+  const [isLg, setIsLg] = useState(false);
   const { user, logout } = useAuth();
   const { hasAnyPermission } = usePermissions();
+
+  useEffect(() => {
+    const m = window.matchMedia(`(min-width: ${LG_BREAKPOINT}px)`);
+    setIsLg(m.matches);
+    const handler = () => setIsLg(m.matches);
+    m.addEventListener('change', handler);
+    return () => m.removeEventListener('change', handler);
+  }, []);
 
   function openPicker() {
     setPickerOpen(true);
@@ -113,21 +124,22 @@ export function Sidebar() {
       <div key={item.href} className="relative flex items-center group/nav w-full">
         <Link
           href={item.href}
+          onClick={() => !isLg && setMobileOpen(false)}
           className={cn(
             'flex flex-1 min-w-0 w-full items-center gap-3 rounded-xl px-3 h-10 text-sm font-medium transition-all duration-150',
             active
-              ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
-              : 'text-[#8B949E] hover:text-white hover:bg-white/[0.05]',
-            collapsed && 'justify-center px-2'
+              ? 'bg-[#7C3AED]/15 text-[#7C3AED]'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60',
+            collapsed && isLg && 'justify-center px-2'
           )}
         >
-          <Icon size={17} className="flex-shrink-0" />
-          {!collapsed && <span className="truncate">{item.label}</span>}
+          <Icon size={17} className="shrink-0" />
+          {(!collapsed || !isLg) && <span className="truncate">{item.label}</span>}
         </Link>
-        {isProjects && !collapsed && (
+        {isProjects && (!collapsed || !isLg) && (
           <button
             onClick={(e) => { e.preventDefault(); openPicker(); }}
-            className="absolute right-1 p-1 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.08] opacity-0 group-hover/nav:opacity-100 transition-all"
+            className="absolute right-1 p-1 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 opacity-0 group-hover/nav:opacity-100 transition-all"
           >
             <Plus size={13} />
           </button>
@@ -138,17 +150,29 @@ export function Sidebar() {
 
   return (
     <>
+    {/* Backdrop when sidebar open on mobile/tablet */}
+    {!isLg && mobileOpen && (
+      <div
+        className="fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+        aria-hidden
+        onClick={() => setMobileOpen(false)}
+      />
+    )}
     <aside
       className={cn(
         'fixed left-0 top-0 h-full z-40 flex flex-col',
-        'border-r border-white/[0.06] bg-[#0D1117]',
+        'border-r border-slate-200/60 bg-white/60 backdrop-blur-xl shadow-lg shadow-slate-200/20',
         'transition-all duration-300 ease-in-out',
-        collapsed ? 'w-16' : 'w-60'
+        'w-60',
+        collapsed && 'lg:w-16',
+        !collapsed && 'lg:w-60',
+        !isLg && !mobileOpen && '-translate-x-full',
+        'lg:translate-x-0'
       )}
     >
-      {/* Logo */}
-      <div className={cn('flex items-center border-b border-white/[0.06] h-16', collapsed ? 'justify-center px-2' : 'px-5')}>
-        {collapsed ? (
+      {/* Logo + mobile close */}
+      <div className={cn('flex items-center border-b border-slate-200/50 h-16', (collapsed && isLg) ? 'justify-center px-2' : 'px-5', !isLg && 'justify-between')}>
+        {(collapsed && isLg) ? (
           <Image
             src="/assets/logo/logo-script-minder.png"
             alt="ScriptMe"
@@ -158,7 +182,17 @@ export function Sidebar() {
             priority
           />
         ) : (
-          <LogoStatic size="lg" />
+          <LogoStatic size="lg" variant="light" />
+        )}
+        {!isLg && (
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-colors"
+            aria-label="Close menu"
+          >
+            <X size={20} />
+          </button>
         )}
       </div>
 
@@ -173,11 +207,11 @@ export function Sidebar() {
           <>
             <div className={cn('pt-4 pb-1', collapsed ? 'px-0' : 'px-2')}>
               {!collapsed && (
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8B949E]/60 mb-1">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 mb-1">
                   Admin
                 </p>
               )}
-              {collapsed && <div className="border-t border-white/[0.06] mb-2" />}
+              {collapsed && <div className="border-t border-slate-200/50 mb-2" />}
             </div>
             {visibleAdmin.map(renderNavItem)}
           </>
@@ -185,16 +219,16 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="border-t border-white/[0.06] p-3 space-y-1">
-        {/* User info */}
-        {!collapsed && (
-          <div className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.04] transition-colors cursor-pointer">
-            <div className="w-8 h-8 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-xs font-bold text-[#7C3AED] flex-shrink-0">
+      <div className="border-t border-slate-200/50 p-3 space-y-1">
+        {/* User info — always show when sidebar expanded (mobile) or not collapsed (desktop) */}
+        {(!collapsed || !isLg) && (
+          <div className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-slate-100/60 transition-colors cursor-pointer">
+            <div className="w-8 h-8 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-xs font-bold text-[#7C3AED] shrink-0">
               {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-white truncate">{user?.name ?? 'Loading…'}</div>
-              <div className="text-xs text-[#8B949E] truncate capitalize">{roleName} Plan</div>
+              <div className="text-sm font-medium text-slate-800 truncate">{user?.name ?? 'Loading…'}</div>
+              <div className="text-xs text-slate-500 truncate capitalize">{roleName} Plan</div>
             </div>
           </div>
         )}
@@ -202,40 +236,42 @@ export function Sidebar() {
         <button
           onClick={() => logout()}
           className={cn(
-            'flex items-center gap-3 w-full rounded-xl px-3 h-9 text-sm text-[#8B949E] hover:text-white hover:bg-white/[0.05] transition-all',
-            collapsed && 'justify-center px-2'
+            'flex items-center gap-3 w-full rounded-xl px-3 h-9 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 transition-all',
+            collapsed && isLg && 'justify-center px-2'
           )}
         >
-          <LogOut size={16} className="flex-shrink-0" />
-          {!collapsed && <span>Sign Out</span>}
+          <LogOut size={16} className="shrink-0" />
+          {(!collapsed || !isLg) && <span>Sign Out</span>}
         </button>
-        {/* Collapse toggle */}
-        <button
-          onClick={toggle}
-          className={cn(
-            'flex items-center gap-3 w-full rounded-xl px-3 h-9 text-sm text-[#8B949E] hover:text-white hover:bg-white/[0.05] transition-all',
-            collapsed && 'justify-center px-2'
-          )}
-        >
-          {collapsed ? <ChevronRight size={16} /> : (
-            <>
-              <ChevronLeft size={16} />
-              <span>Collapse</span>
-            </>
-          )}
-        </button>
+        {/* Collapse toggle — desktop only */}
+        {isLg && (
+          <button
+            onClick={toggle}
+            className={cn(
+              'flex items-center gap-3 w-full rounded-xl px-3 h-9 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 transition-all',
+              collapsed && 'justify-center px-2'
+            )}
+          >
+            {collapsed ? <ChevronRight size={16} /> : (
+              <>
+                <ChevronLeft size={16} />
+                <span>Collapse</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </aside>
 
     {/* Project picker modal */}
     {pickerOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div className="w-full max-w-sm rounded-2xl border border-white/[0.08] bg-[#0D1117] shadow-2xl">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-            <h2 className="text-sm font-semibold text-white">New Script — Pick a Project</h2>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
+        <div className="w-full max-w-sm rounded-2xl border border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-2xl shadow-slate-300/30">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200/50">
+            <h2 className="text-sm font-semibold text-slate-800">New Script — Pick a Project</h2>
             <button
               onClick={() => setPickerOpen(false)}
-              className="text-[#8B949E] hover:text-white transition-colors"
+              className="text-slate-500 hover:text-slate-800 transition-colors"
             >
               <X size={16} />
             </button>
@@ -247,7 +283,7 @@ export function Sidebar() {
               </div>
             )}
             {!pickerLoading && projects.length === 0 && (
-              <p className="text-sm text-[#8B949E] text-center py-6">No projects yet.</p>
+              <p className="text-sm text-slate-500 text-center py-6">No projects yet.</p>
             )}
             {!pickerLoading && projects.map((p) => (
               <button
@@ -256,7 +292,7 @@ export function Sidebar() {
                   setPickerOpen(false);
                   router.push(`/projects/${p._id}/scripts/new`);
                 }}
-                className="w-full text-left px-4 py-3 rounded-xl text-sm text-[#8B949E] hover:text-white hover:bg-white/[0.05] transition-colors"
+                className="w-full text-left px-4 py-3 rounded-xl text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 transition-colors"
               >
                 {p.title}
               </button>
@@ -265,7 +301,7 @@ export function Sidebar() {
           <div className="px-3 pb-3">
             <button
               onClick={() => { setPickerOpen(false); router.push('/projects/new'); }}
-              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-[#7C3AED] border border-[#7C3AED]/20 hover:bg-[#7C3AED]/10 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-[#7C3AED] border border-[#7C3AED]/30 hover:bg-[#7C3AED]/10 transition-colors"
             >
               <Plus size={14} />
               Create new project first

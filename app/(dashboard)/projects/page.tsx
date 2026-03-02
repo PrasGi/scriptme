@@ -97,8 +97,8 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Projects</h1>
-          <p className="text-sm text-[#8B949E] mt-0.5">Manage all your video script projects</p>
+          <h1 className="text-2xl font-bold text-slate-800">Projects</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Manage all your video script projects</p>
         </div>
         <Tooltip content="New Project" description="Create a new project for your scripts" side="left">
           <Button variant="accent" size="md" className="gap-2" onClick={() => router.push('/projects/new')}>
@@ -111,12 +111,12 @@ export default function ProjectsPage() {
       {/* Filters bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B949E]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search projects..."
-            className="w-full h-9 pl-9 pr-4 rounded-xl border border-white/[0.06] bg-white/[0.03] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40 transition-colors"
+            className="w-full h-9 pl-9 pr-4 rounded-xl border border-slate-200/60 bg-white/80 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#7C3AED]/40 transition-colors"
           />
         </div>
 
@@ -128,8 +128,8 @@ export default function ProjectsPage() {
               className={cn(
                 'px-3 h-8 rounded-lg text-xs font-medium border transition-all',
                 filter === opt.key
-                  ? 'bg-[#7C3AED]/10 border-[#7C3AED]/30 text-[#7C3AED]'
-                  : 'bg-white/[0.03] border-white/[0.06] text-[#8B949E] hover:text-white hover:border-white/10'
+                  ? 'bg-[#7C3AED]/15 border-[#7C3AED]/30 text-[#7C3AED]'
+                  : 'bg-slate-100/60 border-slate-200/50 text-slate-600 hover:text-slate-800 hover:border-slate-300/60'
               )}
             >
               {opt.label}
@@ -137,11 +137,11 @@ export default function ProjectsPage() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1 ml-auto border border-white/[0.06] rounded-lg p-1">
+        <div className="flex items-center gap-1 ml-auto border border-slate-200/60 rounded-lg p-1 bg-white/60">
           <Tooltip content="Grid view" description="Show projects in a grid layout" side="bottom">
             <button
               onClick={() => setView('grid')}
-              className={cn('p-1.5 rounded', view === 'grid' ? 'bg-white/[0.08] text-white' : 'text-[#8B949E] hover:text-white')}
+              className={cn('p-1.5 rounded', view === 'grid' ? 'bg-slate-200/60 text-slate-800' : 'text-slate-500 hover:text-slate-800')}
             >
               <Grid size={14} />
             </button>
@@ -149,7 +149,7 @@ export default function ProjectsPage() {
           <Tooltip content="List view" description="Show projects in a list layout" side="bottom">
             <button
               onClick={() => setView('list')}
-              className={cn('p-1.5 rounded', view === 'list' ? 'bg-white/[0.08] text-white' : 'text-[#8B949E] hover:text-white')}
+              className={cn('p-1.5 rounded', view === 'list' ? 'bg-slate-200/60 text-slate-800' : 'text-slate-500 hover:text-slate-800')}
             >
               <List size={14} />
             </button>
@@ -159,11 +159,11 @@ export default function ProjectsPage() {
 
       {/* Stats strip */}
       <div className="flex items-center gap-6">
-        <span className="text-sm text-[#8B949E]">
-          <span className="text-white font-medium">{filtered.length}</span> projects
+        <span className="text-sm text-slate-500">
+          <span className="text-slate-800 font-medium">{filtered.length}</span> projects
         </span>
-        <span className="text-sm text-[#8B949E]">
-          <span className="text-white font-medium">
+        <span className="text-sm text-slate-500">
+          <span className="text-slate-800 font-medium">
             {projects.filter((p) => p.status === 'published').length}
           </span> published
         </span>
@@ -200,28 +200,28 @@ export default function ProjectsPage() {
       {deleteTarget && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="presentation">
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
             onClick={() => !deleting && setDeleteTarget(null)}
             aria-hidden
           />
           <div
-            className="relative z-10 w-full max-w-sm rounded-2xl border border-white/10 bg-[#161B22] shadow-2xl p-5"
+            className="relative z-10 w-full max-w-sm rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-300/30 p-5"
             role="dialog"
             aria-modal="true"
             aria-labelledby="delete-dialog-title"
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500">
                 <Trash2 size={20} />
               </div>
-              <h2 id="delete-dialog-title" className="text-lg font-semibold text-white">
+              <h2 id="delete-dialog-title" className="text-lg font-semibold text-slate-800">
                 Delete project?
               </h2>
             </div>
-            <p className="text-sm text-[#8B949E] mb-1">
+            <p className="text-sm text-slate-600 mb-1">
               &quot;{deleteTarget.title}&quot; and all its scripts will be moved to trash (soft delete). You can&apos;t undo this from here.
             </p>
-            <p className="text-xs text-[#8B949E]/80 mb-5">
+            <p className="text-xs text-slate-500 mb-5">
               The project and scripts are hidden from the list but not permanently removed.
             </p>
             <div className="flex justify-end gap-2">
@@ -253,12 +253,12 @@ export default function ProjectsPage() {
 
       {/* Empty */}
       {!loading && filtered.length === 0 && (
-        <div className="text-center py-20 rounded-2xl border border-white/[0.06] bg-[#161B22]">
+        <div className="text-center py-20 rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md shadow-sm">
           <div className="text-4xl mb-3">📁</div>
-          <div className="text-base font-medium text-white mb-1">
+          <div className="text-base font-medium text-slate-800 mb-1">
             {projects.length === 0 ? 'No projects yet' : 'No projects found'}
           </div>
-          <div className="text-sm text-[#8B949E] mb-4">
+          <div className="text-sm text-slate-500 mb-4">
             {projects.length === 0
               ? 'Create your first project to get started'
               : 'Try adjusting your search or filters'}

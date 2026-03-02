@@ -59,12 +59,12 @@ export default function AdminFeedbackPage() {
   if (!canView) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <MessageSquare size={22} className="text-[#7C3AED]" />
           Feedback
         </h1>
-        <div className="rounded-2xl border border-white/6 bg-[#161B22] p-8 text-center">
-          <p className="text-[#8B949E]">You don&apos;t have permission to view feedback.</p>
+        <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-8 text-center shadow-sm">
+          <p className="text-slate-500">You don&apos;t have permission to view feedback.</p>
         </div>
       </div>
     );
@@ -73,19 +73,19 @@ export default function AdminFeedbackPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <MessageSquare size={22} className="text-[#7C3AED]" />
           User Feedback
         </h1>
-        <p className="text-sm text-[#8B949E] mt-0.5">
+        <p className="text-sm text-slate-500 mt-0.5">
           Feedback submitted by users from the dashboard. Filter by status and mark as read.
         </p>
       </div>
 
       {/* Filter */}
       <div className="flex items-center gap-2 flex-wrap">
-        <Filter size={16} className="text-[#8B949E] shrink-0" />
-        <span className="text-sm text-[#8B949E]">Status:</span>
+        <Filter size={16} className="text-slate-500 shrink-0" />
+        <span className="text-sm text-slate-500">Status:</span>
         {(['all', 'unread', 'read'] as const).map((s) => (
           <button
             key={s}
@@ -95,7 +95,7 @@ export default function AdminFeedbackPage() {
               'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
               statusFilter === s
                 ? 'bg-[#7C3AED] text-white'
-                : 'bg-white/5 text-[#8B949E] hover:text-white hover:bg-white/10 border border-white/6'
+                : 'bg-slate-100/80 text-slate-600 hover:text-slate-800 hover:bg-slate-200/60 border border-slate-200/50'
             )}
           >
             {s === 'all' ? 'All' : s === 'unread' ? 'Unread' : 'Read'}
@@ -104,41 +104,41 @@ export default function AdminFeedbackPage() {
       </div>
 
       {/* List */}
-      <div className="rounded-2xl border border-white/6 bg-[#161B22] overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/50 bg-white/70 backdrop-blur-md overflow-hidden shadow-sm">
         {loading ? (
-          <div className="flex items-center justify-center py-16 text-[#8B949E]">
+          <div className="flex items-center justify-center py-16 text-slate-500">
             <Loader2 size={24} className="animate-spin" />
           </div>
         ) : list.length === 0 ? (
-          <div className="py-16 text-center text-[#8B949E] text-sm">
+          <div className="py-16 text-center text-slate-500 text-sm">
             No feedback {statusFilter !== 'all' ? `(${statusFilter})` : ''}.
           </div>
         ) : (
-          <ul className="divide-y divide-white/6">
+          <ul className="divide-y divide-slate-200/50">
             {list.map((f) => (
-              <li key={f._id} className={cn('p-4', f.status === 'unread' && 'bg-white/[0.02]')}>
+              <li key={f._id} className={cn('p-4', f.status === 'unread' && 'bg-slate-50/60')}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="text-sm font-medium text-white">
+                      <span className="text-sm font-medium text-slate-800">
                         {f.userName || 'Unknown'}
                         {f.userEmail && (
-                          <span className="text-[#8B949E] font-normal ml-1">({f.userEmail})</span>
+                          <span className="text-slate-500 font-normal ml-1">({f.userEmail})</span>
                         )}
                       </span>
                       <span
                         className={cn(
                           'text-[10px] font-medium px-2 py-0.5 rounded uppercase',
                           f.status === 'unread'
-                            ? 'bg-amber-500/20 text-amber-400'
-                            : 'bg-white/10 text-[#8B949E]'
+                            ? 'bg-amber-500/20 text-amber-600'
+                            : 'bg-slate-200/60 text-slate-500'
                         )}
                       >
                         {f.status}
                       </span>
                     </div>
-                    <p className="text-sm text-[#E6EDF3] whitespace-pre-wrap break-words">{f.message}</p>
-                    <p className="text-[10px] text-[#8B949E] mt-1.5">
+                    <p className="text-sm text-slate-700 whitespace-pre-wrap break-words">{f.message}</p>
+                    <p className="text-[10px] text-slate-500 mt-1.5">
                       {new Date(f.createdAt).toLocaleString()}
                       {f.readAt && ` · Read ${new Date(f.readAt).toLocaleString()}`}
                     </p>

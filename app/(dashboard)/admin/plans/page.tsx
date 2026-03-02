@@ -44,11 +44,11 @@ const ACTION_LIMIT_KEYS: { key: 'limitProjectCreate' | 'limitSave' | 'limitExpor
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="w-full max-w-lg my-8 rounded-2xl border border-white/[0.08] bg-[#0D1117] shadow-2xl flex flex-col max-h-[calc(100vh-4rem)]">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] flex-shrink-0">
-          <h2 className="text-base font-semibold text-white">{title}</h2>
-          <button onClick={onClose} className="text-[#8B949E] hover:text-white transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md overflow-y-auto">
+      <div className="w-full max-w-lg my-8 rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-300/30 flex flex-col max-h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50 flex-shrink-0">
+          <h2 className="text-base font-semibold text-slate-800">{title}</h2>
+          <button onClick={onClose} className="text-slate-500 hover:text-slate-800 transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -61,7 +61,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">{label}</label>
+      <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</label>
       {children}
     </div>
   );
@@ -240,11 +240,11 @@ export default function PlansPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
             <CreditCard size={22} className="text-[#7C3AED]" />
             Plans
           </h1>
-          <p className="text-sm text-[#8B949E] mt-0.5">Manage pricing plans for LP and billing</p>
+          <p className="text-sm text-slate-500 mt-0.5">Manage pricing plans for LP and billing</p>
         </div>
         {canUpdate && (
           <Button variant="accent" size="sm" onClick={openCreate} className="gap-1.5">
@@ -254,42 +254,42 @@ export default function PlansPage() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/50 bg-white/70 backdrop-blur-md overflow-hidden shadow-sm shadow-slate-200/20">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.06]">
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase">Name</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase">Price/mo</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase">Token limit</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase">Discounts</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase">CTA</th>
+            <tr className="border-b border-slate-200/50 bg-white/80">
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase">Name</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase">Price/mo</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase">Token limit</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase">Discounts</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase">CTA</th>
               <th className="px-5 py-3" />
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} className="text-center py-16 text-[#8B949E]">Loading…</td></tr>
+              <tr><td colSpan={6} className="text-center py-16 text-slate-500">Loading…</td></tr>
             ) : plans.length === 0 ? (
-              <tr><td colSpan={6} className="text-center py-16 text-[#8B949E]">No plans</td></tr>
+              <tr><td colSpan={6} className="text-center py-16 text-slate-500">No plans</td></tr>
             ) : plans.map((p) => (
-              <tr key={p._id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
+              <tr key={p._id} className="border-b border-slate-200/40 hover:bg-slate-50/60">
                 <td className="px-5 py-3.5">
-                  <span className="font-medium text-white">{p.name}</span>
+                  <span className="font-medium text-slate-800">{p.name}</span>
                   {p.badge && <Badge variant="accent" className="ml-2">{p.badge}</Badge>}
                 </td>
-                <td className="px-5 py-3.5 text-[#8B949E]">{formatRp(p.priceMonthly)}</td>
-                <td className="px-5 py-3.5 text-[#8B949E]">{p.tokenLimitMonthly != null ? p.tokenLimitMonthly.toLocaleString() : '∞'}</td>
-                <td className="px-5 py-3.5 text-[#8B949E] text-xs">{p.discount1Month}% / {p.discount3Months}% / {p.discount6Months}%</td>
-                <td className="px-5 py-3.5 text-[#8B949E]">{p.cta}</td>
+                <td className="px-5 py-3.5 text-slate-600">{formatRp(p.priceMonthly)}</td>
+                <td className="px-5 py-3.5 text-slate-600">{p.tokenLimitMonthly != null ? p.tokenLimitMonthly.toLocaleString() : '∞'}</td>
+                <td className="px-5 py-3.5 text-slate-600 text-xs">{p.discount1Month}% / {p.discount3Months}% / {p.discount6Months}%</td>
+                <td className="px-5 py-3.5 text-slate-600">{p.cta}</td>
                 <td className="px-5 py-3.5">
                   <div className="flex justify-end gap-1">
                     {canUpdate && (
-                      <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.08]" title="Edit">
+                      <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80" title="Edit">
                         <Edit2 size={15} />
                       </button>
                     )}
                     {canDelete && (
-                      <button onClick={() => setDeleteTarget(p)} className="p-1.5 rounded-lg text-[#8B949E] hover:text-red-400 hover:bg-red-500/10" title="Delete">
+                      <button onClick={() => setDeleteTarget(p)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10" title="Delete">
                         <Trash2 size={15} />
                       </button>
                     )}
@@ -304,30 +304,30 @@ export default function PlansPage() {
       {createOpen && (
         <Modal title="Create Plan" onClose={() => setCreateOpen(false)}>
           <form onSubmit={handleCreate} className="space-y-4">
-            {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
-            <Field label="Name"><Input value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); if (!form.slug) setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })); }} required className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Slug"><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="starter" className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Price/mo (IDR)"><Input type="number" min={0} value={form.priceMonthly || ''} onChange={(e) => setForm({ ...form, priceMonthly: parseInt(e.target.value, 10) || 0 })} placeholder="299000" className="bg-[#161B22] border-white/[0.08]" /></Field>
+            {error && <p className="text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+            <Field label="Name"><Input value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); if (!form.slug) setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })); }} required light /></Field>
+            <Field label="Slug"><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="starter" light /></Field>
+            <Field label="Price/mo (IDR)"><Input type="number" min={0} value={form.priceMonthly || ''} onChange={(e) => setForm({ ...form, priceMonthly: parseInt(e.target.value, 10) || 0 })} placeholder="299000" light /></Field>
             <div className="grid grid-cols-3 gap-3">
-              <Field label="Discount 1m %"><Input type="number" min={0} max={100} value={form.discount1Month} onChange={(e) => setForm({ ...form, discount1Month: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-              <Field label="Discount 3m %"><Input type="number" min={0} max={100} value={form.discount3Months} onChange={(e) => setForm({ ...form, discount3Months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-              <Field label="Discount 6m %"><Input type="number" min={0} max={100} value={form.discount6Months} onChange={(e) => setForm({ ...form, discount6Months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
+              <Field label="Discount 1m %"><Input type="number" min={0} max={100} value={form.discount1Month} onChange={(e) => setForm({ ...form, discount1Month: parseInt(e.target.value, 10) || 0 })} light /></Field>
+              <Field label="Discount 3m %"><Input type="number" min={0} max={100} value={form.discount3Months} onChange={(e) => setForm({ ...form, discount3Months: parseInt(e.target.value, 10) || 0 })} light /></Field>
+              <Field label="Discount 6m %"><Input type="number" min={0} max={100} value={form.discount6Months} onChange={(e) => setForm({ ...form, discount6Months: parseInt(e.target.value, 10) || 0 })} light /></Field>
             </div>
-            <Field label="Token limit/month (0 = unlimited)"><Input type="number" min={0} value={form.tokenLimitMonthly || ''} onChange={(e) => setForm({ ...form, tokenLimitMonthly: parseInt(e.target.value, 10) || 0 })} placeholder="500000" className="bg-[#161B22] border-white/[0.08]" /></Field>
+            <Field label="Token limit/month (0 = unlimited)"><Input type="number" min={0} value={form.tokenLimitMonthly || ''} onChange={(e) => setForm({ ...form, tokenLimitMonthly: parseInt(e.target.value, 10) || 0 })} placeholder="500000" light /></Field>
             <div className="space-y-3">
-              <p className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">Action limits (per month)</p>
-              <p className="text-xs text-[#8B949E]">Leave empty or 0 for unlimited</p>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Action limits (per month)</p>
+              <p className="text-xs text-slate-500">Leave empty or 0 for unlimited</p>
               <div className="grid grid-cols-1 gap-2">
                 {ACTION_LIMIT_KEYS.map(({ key, label }) => (
                   <div key={key} className="flex items-center gap-3">
-                    <label className="text-sm text-white w-40 flex-shrink-0">{label}</label>
+                    <label className="text-sm text-slate-800 w-40 flex-shrink-0">{label}</label>
                     <Input
                       type="number"
                       min={0}
                       value={form[key] === '' ? '' : form[key]}
                       onChange={(e) => setForm({ ...form, [key]: e.target.value === '' ? '' : parseInt(e.target.value, 10) || 0 })}
                       placeholder="Unlimited"
-                      className="bg-[#161B22] border-white/[0.08] max-w-32"
+                      className="bg-[#161B22] border-slate-200/60 max-w-32"
                     />
                   </div>
                 ))}
@@ -339,9 +339,9 @@ export default function PlansPage() {
                 Generate features from limits
               </Button>
             </div>
-            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#7C3AED]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
-            <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Badge (optional)"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="Most Popular" className="bg-[#161B22] border-white/[0.08]" /></Field>
+            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 text-sm text-slate-800 focus:border-[#7C3AED]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
+            <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} light /></Field>
+            <Field label="Badge (optional)"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="Most Popular" light /></Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="secondary" onClick={() => setCreateOpen(false)}>Cancel</Button>
               <Button type="submit" variant="accent" disabled={saving}>{saving ? 'Creating…' : 'Create'}</Button>
@@ -353,30 +353,30 @@ export default function PlansPage() {
       {editTarget && (
         <Modal title="Edit Plan" onClose={() => setEditTarget(null)}>
           <form onSubmit={handleEdit} className="space-y-4">
-            {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
-            <Field label="Name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Slug"><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Price/mo (IDR)"><Input type="number" min={0} value={form.priceMonthly || ''} onChange={(e) => setForm({ ...form, priceMonthly: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
+            {error && <p className="text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+            <Field label="Name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required light /></Field>
+            <Field label="Slug"><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} light /></Field>
+            <Field label="Price/mo (IDR)"><Input type="number" min={0} value={form.priceMonthly || ''} onChange={(e) => setForm({ ...form, priceMonthly: parseInt(e.target.value, 10) || 0 })} light /></Field>
             <div className="grid grid-cols-3 gap-3">
-              <Field label="Discount 1m %"><Input type="number" min={0} max={100} value={form.discount1Month} onChange={(e) => setForm({ ...form, discount1Month: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-              <Field label="Discount 3m %"><Input type="number" min={0} max={100} value={form.discount3Months} onChange={(e) => setForm({ ...form, discount3Months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-              <Field label="Discount 6m %"><Input type="number" min={0} max={100} value={form.discount6Months} onChange={(e) => setForm({ ...form, discount6Months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
+              <Field label="Discount 1m %"><Input type="number" min={0} max={100} value={form.discount1Month} onChange={(e) => setForm({ ...form, discount1Month: parseInt(e.target.value, 10) || 0 })} light /></Field>
+              <Field label="Discount 3m %"><Input type="number" min={0} max={100} value={form.discount3Months} onChange={(e) => setForm({ ...form, discount3Months: parseInt(e.target.value, 10) || 0 })} light /></Field>
+              <Field label="Discount 6m %"><Input type="number" min={0} max={100} value={form.discount6Months} onChange={(e) => setForm({ ...form, discount6Months: parseInt(e.target.value, 10) || 0 })} light /></Field>
             </div>
-            <Field label="Token limit/month"><Input type="number" min={0} value={form.tokenLimitMonthly || ''} onChange={(e) => setForm({ ...form, tokenLimitMonthly: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
+            <Field label="Token limit/month"><Input type="number" min={0} value={form.tokenLimitMonthly || ''} onChange={(e) => setForm({ ...form, tokenLimitMonthly: parseInt(e.target.value, 10) || 0 })} light /></Field>
             <div className="space-y-3">
-              <p className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">Action limits (per month)</p>
-              <p className="text-xs text-[#8B949E]">Leave empty or 0 for unlimited</p>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Action limits (per month)</p>
+              <p className="text-xs text-slate-500">Leave empty or 0 for unlimited</p>
               <div className="grid grid-cols-1 gap-2">
                 {ACTION_LIMIT_KEYS.map(({ key, label }) => (
                   <div key={key} className="flex items-center gap-3">
-                    <label className="text-sm text-white w-40 flex-shrink-0">{label}</label>
+                    <label className="text-sm text-slate-800 w-40 flex-shrink-0">{label}</label>
                     <Input
                       type="number"
                       min={0}
                       value={form[key] === '' ? '' : form[key]}
                       onChange={(e) => setForm({ ...form, [key]: e.target.value === '' ? '' : parseInt(e.target.value, 10) || 0 })}
                       placeholder="Unlimited"
-                      className="bg-[#161B22] border-white/[0.08] max-w-32"
+                      className="bg-[#161B22] border-slate-200/60 max-w-32"
                     />
                   </div>
                 ))}
@@ -388,9 +388,9 @@ export default function PlansPage() {
                 Generate features from limits
               </Button>
             </div>
-            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:border-[#7C3AED]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
-            <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-            <Field label="Badge"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
+            <Field label="Features (one per line)"><textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 text-sm text-slate-800 focus:border-[#7C3AED]/50 outline-none resize-none" placeholder="Click Generate or type custom lines" /></Field>
+            <Field label="CTA"><Input value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} light /></Field>
+            <Field label="Badge"><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} light /></Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="secondary" onClick={() => setEditTarget(null)}>Cancel</Button>
               <Button type="submit" variant="accent" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
@@ -403,8 +403,8 @@ export default function PlansPage() {
         <Modal title="Delete Plan" onClose={() => setDeleteTarget(null)}>
           <div className="space-y-4">
             <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-              <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-white">Delete plan <strong>{deleteTarget.name}</strong>? This cannot be undone.</p>
+              <AlertTriangle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-slate-800">Delete plan <strong>{deleteTarget.name}</strong>? This cannot be undone.</p>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setDeleteTarget(null)}>Cancel</Button>

@@ -65,19 +65,19 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const modal = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="presentation">
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
         onClick={handleClose}
         onKeyDown={(e) => e.key === 'Escape' && handleClose()}
         aria-hidden
       />
       <div
-        className="relative z-10 w-full max-w-md rounded-2xl border border-white/10 bg-[#161B22] shadow-2xl"
+        className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200/60 bg-white/85 backdrop-blur-xl shadow-2xl shadow-slate-300/30"
         role="dialog"
         aria-modal="true"
         aria-labelledby="feedback-title"
       >
-        <div className="flex items-center justify-between border-b border-white/6 px-5 py-4">
-          <h2 id="feedback-title" className="text-lg font-semibold text-white flex items-center gap-2">
+        <div className="flex items-center justify-between border-b border-slate-200/50 px-5 py-4">
+          <h2 id="feedback-title" className="text-lg font-semibold text-slate-800 flex items-center gap-2">
             <MessageSquare size={20} className="text-[#7C3AED]" />
             Send feedback
           </h2>
@@ -85,7 +85,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             type="button"
             onClick={handleClose}
             disabled={submitting}
-            className="p-2 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/6 transition-colors disabled:opacity-50"
+            className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-colors disabled:opacity-50"
             aria-label="Close"
           >
             <X size={18} />
@@ -99,7 +99,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
         ) : (
           <form onSubmit={handleSubmit} className="p-5 space-y-4">
             <div>
-              <label htmlFor="feedback-message" className="block text-sm font-medium text-[#E6EDF3] mb-1.5">
+              <label htmlFor="feedback-message" className="block text-sm font-medium text-slate-700 mb-1.5">
                 Your feedback
               </label>
               <textarea
@@ -108,11 +108,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tell us what you think, report a bug, or suggest an improvement..."
                 rows={4}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-[#8B949E]/70 outline-none focus:border-[#7C3AED]/50 resize-none"
+                className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#7C3AED]/50 resize-none"
                 disabled={submitting}
               />
             </div>
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex justify-end gap-2 pt-1">
               <Button type="button" variant="ghost" size="sm" onClick={handleClose} disabled={submitting}>
                 Cancel

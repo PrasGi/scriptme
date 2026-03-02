@@ -119,11 +119,11 @@ function UpgradePageContent() {
   if (plan.priceMonthly == null || plan.priceMonthly === 0) {
     return (
       <div className="space-y-6">
-        <Link href="/billing" className="inline-flex items-center gap-2 text-sm text-[#8B949E] hover:text-white">
+        <Link href="/billing" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800">
           <ArrowLeft size={14} /> Back to Billing
         </Link>
-        <div className="rounded-2xl border border-white/[0.08] bg-[#0D1117] p-8 text-center">
-          <p className="text-[#8B949E]">Enterprise plan — contact us for custom pricing.</p>
+        <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-8 text-center shadow-sm shadow-slate-200/20">
+          <p className="text-slate-600">Enterprise plan — contact us for custom pricing.</p>
           <Button variant="secondary" size="sm" className="mt-4" disabled>Contact Us (coming soon)</Button>
         </div>
       </div>
@@ -133,13 +133,13 @@ function UpgradePageContent() {
   if (transactionId) {
     return (
       <div className="space-y-6">
-        <Link href="/billing" className="inline-flex items-center gap-2 text-sm text-[#8B949E] hover:text-white">
+        <Link href="/billing" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800">
           <ArrowLeft size={14} /> Back to Billing
         </Link>
-        <Card className="p-8 text-center">
-          <h2 className="text-lg font-semibold text-white mb-2">Xendit Payment — Coming Soon</h2>
-          <p className="text-sm text-[#8B949E] mb-4">Payment integration will be embedded here.</p>
-          <p className="text-xs text-[#8B949E] font-mono">Transaction ID: {transactionId}</p>
+        <Card light className="p-8 text-center">
+          <h2 className="text-lg font-semibold text-slate-800 mb-2">Xendit Payment — Coming Soon</h2>
+          <p className="text-sm text-slate-500 mb-4">Payment integration will be embedded here.</p>
+          <p className="text-xs text-slate-500 font-mono">Transaction ID: {transactionId}</p>
           <Link href="/billing"><Button variant="secondary" size="sm" className="mt-4">Back to Billing</Button></Link>
         </Card>
       </div>
@@ -149,16 +149,16 @@ function UpgradePageContent() {
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/billing" className="inline-flex items-center gap-2 text-sm text-[#8B949E] hover:text-white mb-4">
+        <Link href="/billing" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 mb-4">
           <ArrowLeft size={14} /> Back to Billing
         </Link>
-        <h1 className="text-2xl font-bold text-white">Upgrade — {plan.name}</h1>
-        <p className="text-sm text-[#8B949E] mt-0.5">Select package and pay</p>
+        <h1 className="text-2xl font-bold text-slate-800">Upgrade — {plan.name}</h1>
+        <p className="text-sm text-slate-500 mt-0.5">Select package and pay</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <h2 className="text-base font-semibold text-white mb-4">Package</h2>
+          <h2 className="text-base font-semibold text-slate-800 mb-4">Package</h2>
           <div className="flex gap-2">
             {([1, 3, 6] as const).map((m) => {
               const discount = m === 1 ? plan.discount1Month : m === 3 ? plan.discount3Months : plan.discount6Months;
@@ -169,12 +169,12 @@ function UpgradePageContent() {
                   onClick={() => { setSelectedMonths(m); setAppliedCoupon(null); }}
                   className={`flex-1 rounded-xl border p-4 text-left transition-all ${
                     selectedMonths === m
-                      ? 'border-[#7C3AED]/40 bg-[#7C3AED]/10'
-                      : 'border-white/[0.08] bg-[#161B22] hover:border-white/[0.12]'
+                      ? 'border-[#7C3AED]/40 bg-[#7C3AED]/10 text-slate-800'
+                      : 'border-slate-200/50 bg-white/60 backdrop-blur-md hover:border-slate-300/60 text-slate-800'
                   }`}
                 >
-                  <div className="text-sm font-medium text-white">{m} month{m > 1 ? 's' : ''}</div>
-                  <div className="text-xs text-[#8B949E] mt-0.5">
+                  <div className="text-sm font-medium">{m} month{m > 1 ? 's' : ''}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">
                     {discount > 0 ? `${discount}% off · ` : ''}{formatRp(price)}
                   </div>
                 </button>
@@ -183,43 +183,44 @@ function UpgradePageContent() {
           </div>
 
           <div className="mt-4">
-            <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider block mb-2">Coupon</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-2">Coupon</label>
             <div className="flex gap-2">
               <Input
+                light
                 value={couponCode}
                 onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(''); setAppliedCoupon(null); }}
                 placeholder="WELCOME20"
-                className="flex-1 bg-[#161B22] border-white/[0.08] font-mono uppercase"
+                className="flex-1 font-mono uppercase"
               />
               <Button variant="secondary" size="sm" onClick={applyCoupon} disabled={validatingCoupon || !couponCode.trim()}>
                 {validatingCoupon ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
               </Button>
             </div>
-            {couponError && <p className="text-xs text-red-400 mt-1">{couponError}</p>}
+            {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
             {appliedCoupon && appliedCoupon.discountIdr > 0 && (
-              <p className="text-xs text-emerald-400 mt-1">Coupon applied: -{formatRp(appliedCoupon.discountIdr)}</p>
+              <p className="text-xs text-emerald-600 mt-1">Coupon applied: -{formatRp(appliedCoupon.discountIdr)}</p>
             )}
           </div>
         </div>
 
         <div>
-          <Card className="p-6">
-            <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
+          <Card light className="p-6">
+            <h2 className="text-base font-semibold text-slate-800 mb-4 flex items-center gap-2">
               <Zap size={16} className="text-[#7C3AED]" />
               Summary
             </h2>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-[#8B949E]">
+              <div className="flex justify-between text-slate-600">
                 <span>{plan.name} — {selectedMonths} month{selectedMonths > 1 ? 's' : ''}</span>
                 <span>{formatRp(baseAmount)}</span>
               </div>
               {discountFromCoupon > 0 && (
-                <div className="flex justify-between text-emerald-400">
+                <div className="flex justify-between text-emerald-600">
                   <span>Coupon discount</span>
                   <span>-{formatRp(discountFromCoupon)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-white font-semibold pt-2 border-t border-white/[0.06]">
+              <div className="flex justify-between text-slate-800 font-semibold pt-2 border-t border-slate-200/50">
                 <span>Total</span>
                 <span>{formatRp(displayAmount)}</span>
               </div>

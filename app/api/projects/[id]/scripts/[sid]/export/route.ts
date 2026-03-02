@@ -4,6 +4,7 @@ import { connectDB } from '@/lib/db';
 import Script from '@/models/script.model';
 import Project from '@/models/project.model';
 import { checkActionLimit, incrementActionUsage } from '@/lib/subscription';
+import { stripHtml } from '@/lib/utils';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from 'docx';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import path from 'path';
@@ -81,7 +82,7 @@ export async function GET(req: Request, { params }: Params) {
 
     if (format === 'txt') {
       const text = script.lines.length > 0
-        ? (script.lines as ScriptLine[]).map((l) => `${l.startTime} --> ${l.endTime}\n${l.text}`).join('\n\n')
+        ? (script.lines as ScriptLine[]).map((l) => `${l.startTime} --> ${l.endTime}\n${stripHtml(l.text)}`).join('\n\n')
         : script.plainText;
 
       return new Response(text, {
@@ -156,7 +157,7 @@ export async function GET(req: Request, { params }: Params) {
         for (let i = 0; i < scriptLines.length; i++) {
           const line = scriptLines[i];
           const timeStr = `${line.startTime} -> ${line.endTime}`;
-          const text = line.text || '—';
+          const text = stripHtml(line.text) || '—';
           if (contentY > PAGE_HEIGHT - 80) {
             page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
             contentY = 50;
@@ -245,7 +246,7 @@ export async function GET(req: Request, { params }: Params) {
                       ],
                     }),
                     new TableCell({
-                      children: [new Paragraph({ children: [new TextRun(l.text)] })],
+                      children: [new Paragraph({ children: [new TextRun(stripHtml(l.text))] })],
                     }),
                   ],
                 })

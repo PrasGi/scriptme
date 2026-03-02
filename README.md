@@ -55,7 +55,7 @@ ScriptMinder helps content creators write better scripts faster. Create projects
 | Queue | BullMQ + Redis |
 | AI | Google ADK, Gemini 2.5 Flash |
 | TikTok | Cloudflare Workers (proxy + VTT parsing) |
-| Styling | Tailwind CSS (dark theme) |
+| Styling | Tailwind CSS (dashboard: light glass theme; landing/auth: dark) |
 
 ---
 

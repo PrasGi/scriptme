@@ -5,19 +5,23 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   glass?: boolean;
   hover?: boolean;
   noPadding?: boolean;
+  /** Light glass style for dashboard theme */
+  light?: boolean;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className, glass, hover, noPadding, children, ...props }, ref) => {
+  ({ className, glass, hover, noPadding, light, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
           'rounded-2xl border transition-all duration-200',
-          glass
-            ? 'bg-white/[0.03] backdrop-blur-sm border-white/[0.06]'
-            : 'bg-[#161B22] border-white/[0.06]',
-          hover && 'hover:border-white/[0.12] hover:bg-white/[0.05]',
+          light
+            ? 'bg-white/60 backdrop-blur-md border-slate-200/50 shadow-sm shadow-slate-200/20'
+            : glass
+              ? 'bg-white/[0.03] backdrop-blur-sm border-white/[0.06]'
+              : 'bg-[#161B22] border-white/[0.06]',
+          hover && (light ? 'hover:border-slate-300/60 hover:bg-white/80' : 'hover:border-white/[0.12] hover:bg-white/[0.05]'),
           !noPadding && 'p-5',
           className
         )}

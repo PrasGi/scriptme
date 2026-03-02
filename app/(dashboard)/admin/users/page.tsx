@@ -71,11 +71,11 @@ function formatDate(d: string) {
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-2xl border border-white/[0.08] bg-[#0D1117] shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-          <h2 className="text-base font-semibold text-white">{title}</h2>
-          <button onClick={onClose} className="text-[#8B949E] hover:text-white transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+      <div className="w-full max-w-lg rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-300/30">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50">
+          <h2 className="text-base font-semibold text-slate-800">{title}</h2>
+          <button onClick={onClose} className="text-slate-500 hover:text-slate-800 transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -90,7 +90,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">{label}</label>
+      <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</label>
       {children}
     </div>
   );
@@ -302,11 +302,11 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
             <Users size={22} className="text-[#7C3AED]" />
             Users
           </h1>
-          <p className="text-sm text-[#8B949E] mt-0.5">Manage user accounts, roles and permission overrides</p>
+          <p className="text-sm text-slate-500 mt-0.5">Manage user accounts, roles and permission overrides</p>
         </div>
         {canCreate && (
           <Button variant="accent" size="sm" onClick={() => { setCreateOpen(true); setError(''); setForm({ name: '', email: '', password: '', roleId: roles[0]?.id ?? '', isActive: true }); }} className="gap-1.5">
@@ -319,44 +319,45 @@ export default function UsersPage() {
       {/* Filters */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B949E]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
           <Input
+            light
             placeholder="Search name or email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-[#0D1117] border-white/[0.08] text-sm"
+            className="pl-9"
           />
         </div>
-        <span className="text-sm text-[#8B949E]">{total} user{total !== 1 ? 's' : ''}</span>
+        <span className="text-sm text-slate-500">{total} user{total !== 1 ? 's' : ''}</span>
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/50 bg-white/70 backdrop-blur-md overflow-hidden shadow-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.06]">
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase tracking-wider">User</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase tracking-wider">Role</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase tracking-wider">Status</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-[#8B949E] uppercase tracking-wider">Joined</th>
+            <tr className="border-b border-slate-200/50 bg-white/80">
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">User</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Role</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="text-left px-5 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Joined</th>
               <th className="px-5 py-3" />
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} className="text-center py-16 text-[#8B949E]">Loading…</td></tr>
+              <tr><td colSpan={5} className="text-center py-16 text-slate-500">Loading…</td></tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan={5} className="text-center py-16 text-[#8B949E]">No users found</td></tr>
+              <tr><td colSpan={5} className="text-center py-16 text-slate-500">No users found</td></tr>
             ) : users.map((user) => (
-              <tr key={user.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+              <tr key={user.id} className="border-b border-slate-200/40 hover:bg-slate-50/60 transition-colors">
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-xs font-bold text-[#7C3AED] flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-xs font-bold text-[#7C3AED] shrink-0">
                       {initials(user.name)}
                     </div>
                     <div>
-                      <div className="font-medium text-white">{user.name}</div>
-                      <div className="text-xs text-[#8B949E]">{user.email}</div>
+                      <div className="font-medium text-slate-800">{user.name}</div>
+                      <div className="text-xs text-slate-500">{user.email}</div>
                     </div>
                   </div>
                 </td>
@@ -367,17 +368,17 @@ export default function UsersPage() {
                 </td>
                 <td className="px-5 py-3.5">
                   {user.isActive
-                    ? <Badge variant="default" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">Active</Badge>
-                    : <Badge variant="default" className="bg-red-500/10 text-red-400 border-red-500/20">Inactive</Badge>
+                    ? <Badge variant="default" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">Active</Badge>
+                    : <Badge variant="default" className="bg-red-500/10 text-red-500 border-red-500/20">Inactive</Badge>
                   }
                 </td>
-                <td className="px-5 py-3.5 text-[#8B949E]">{formatDate(user.createdAt)}</td>
+                <td className="px-5 py-3.5 text-slate-500">{formatDate(user.createdAt)}</td>
                 <td className="px-5 py-3.5">
                   <div className="flex items-center justify-end gap-1">
                     {canUpdate && (
                       <button
                         onClick={() => { setGrantTarget(user); setGrantForm({ planId: plans[0]?._id ?? '', months: 1, days: '' }); setError(''); }}
-                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-emerald-400 hover:bg-emerald-500/10 transition-all"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 transition-all"
                         title="Give subscription"
                       >
                         <Gift size={15} />
@@ -386,7 +387,7 @@ export default function UsersPage() {
                     {canUpdate && (
                       <button
                         onClick={() => openPermissions(user)}
-                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-all"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-all"
                         title="Manage permissions"
                       >
                         <ShieldCheck size={15} />
@@ -395,7 +396,7 @@ export default function UsersPage() {
                     {canUpdate && (
                       <button
                         onClick={() => openEdit(user)}
-                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.08] transition-all"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-all"
                         title="Edit user"
                       >
                         <Edit2 size={15} />
@@ -404,7 +405,7 @@ export default function UsersPage() {
                     {canDelete && (
                       <button
                         onClick={() => setDeleteTarget(user)}
-                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-red-400 hover:bg-red-500/10 transition-all"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
                         title="Delete user"
                       >
                         <Trash2 size={15} />
@@ -419,20 +420,20 @@ export default function UsersPage() {
 
         {/* Pagination */}
         {pages > 1 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.06]">
-            <span className="text-xs text-[#8B949E]">Page {page} of {pages}</span>
+          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-200/50 bg-white/80">
+            <span className="text-xs text-slate-500">Page {page} of {pages}</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft size={15} />
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(pages, p + 1))}
                 disabled={page === pages}
-                className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronRight size={15} />
               </button>
@@ -445,22 +446,22 @@ export default function UsersPage() {
       {createOpen && (
         <Modal title="Create User" onClose={() => setCreateOpen(false)}>
           <form onSubmit={handleCreate} className="space-y-4">
-            {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+            {error && <p className="text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
             <Field label="Full Name">
-              <Input placeholder="Jane Doe" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" />
+              <Input light placeholder="Jane Doe" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             </Field>
             <Field label="Email">
-              <Input type="email" placeholder="jane@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" />
+              <Input light type="email" placeholder="jane@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </Field>
             <Field label="Password">
-              <Input type="password" placeholder="Min. 8 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" />
+              <Input light type="password" placeholder="Min. 8 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
             </Field>
             <Field label="Role">
               <select
                 value={form.roleId}
                 onChange={(e) => setForm({ ...form, roleId: e.target.value })}
                 required
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
+                className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">Select a role…</option>
                 {roles.map((r) => <option key={r.id} value={r.id} className="capitalize">{r.name}</option>)}
@@ -468,7 +469,7 @@ export default function UsersPage() {
             </Field>
             <div className="flex items-center gap-2 pt-1">
               <input type="checkbox" id="is-active-create" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#7C3AED]" />
-              <label htmlFor="is-active-create" className="text-sm text-[#8B949E]">Active account</label>
+              <label htmlFor="is-active-create" className="text-sm text-slate-500">Active account</label>
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setCreateOpen(false)}>Cancel</Button>
@@ -482,25 +483,25 @@ export default function UsersPage() {
       {editTarget && (
         <Modal title="Edit User" onClose={() => setEditTarget(null)}>
           <form onSubmit={handleEdit} className="space-y-4">
-            {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+            {error && <p className="text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
             <Field label="Full Name">
-              <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" />
+              <Input light value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             </Field>
             <Field label="Email">
-              <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required className="bg-[#161B22] border-white/[0.08]" />
+              <Input light type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </Field>
             <Field label="Role">
               <select
                 value={form.roleId}
                 onChange={(e) => setForm({ ...form, roleId: e.target.value })}
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
+                className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#7C3AED]/50"
               >
                 {roles.map((r) => <option key={r.id} value={r.id} className="capitalize">{r.name}</option>)}
               </select>
             </Field>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="is-active-edit" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-[#7C3AED]" />
-              <label htmlFor="is-active-edit" className="text-sm text-[#8B949E]">Active account</label>
+              <label htmlFor="is-active-edit" className="text-sm text-slate-500">Active account</label>
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setEditTarget(null)}>Cancel</Button>
@@ -514,23 +515,23 @@ export default function UsersPage() {
       {grantTarget && (
         <Modal title="Give Subscription" onClose={() => setGrantTarget(null)}>
           <div className="space-y-4">
-            {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
-            <p className="text-sm text-[#8B949E]">Grant subscription to <strong className="text-white">{grantTarget.name}</strong></p>
+            {error && <p className="text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+            <p className="text-sm text-slate-500">Grant subscription to <strong className="text-slate-800">{grantTarget.name}</strong></p>
             <Field label="Plan">
               <select
                 value={grantForm.planId}
                 onChange={(e) => setGrantForm({ ...grantForm, planId: e.target.value })}
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
+                className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">Select plan…</option>
                 {plans.map((p) => <option key={p._id} value={p._id}>{p.name}</option>)}
               </select>
             </Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Months"><Input type="number" min={0} value={grantForm.months} onChange={(e) => setGrantForm({ ...grantForm, months: parseInt(e.target.value, 10) || 0 })} className="bg-[#161B22] border-white/[0.08]" /></Field>
-              <Field label="Days"><Input type="number" min={0} placeholder="30" value={grantForm.days || ''} onChange={(e) => setGrantForm({ ...grantForm, days: e.target.value })} className="bg-[#161B22] border-white/[0.08]" /></Field>
+              <Field label="Months"><Input light type="number" min={0} value={grantForm.months} onChange={(e) => setGrantForm({ ...grantForm, months: parseInt(e.target.value, 10) || 0 })} /></Field>
+              <Field label="Days"><Input light type="number" min={0} placeholder="30" value={grantForm.days || ''} onChange={(e) => setGrantForm({ ...grantForm, days: e.target.value })} /></Field>
             </div>
-            <p className="text-xs text-[#8B949E]">Use months (e.g. 1, 3, 6) or days. Months take precedence if both set.</p>
+            <p className="text-xs text-slate-500">Use months (e.g. 1, 3, 6) or days. Months take precedence if both set.</p>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" onClick={() => setGrantTarget(null)}>Cancel</Button>
               <Button variant="accent" disabled={saving || !grantForm.planId} onClick={handleGrantSubscription}>{saving ? 'Granting…' : 'Grant Subscription'}</Button>
@@ -546,9 +547,9 @@ export default function UsersPage() {
             <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
               <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm text-white font-medium">Are you sure you want to delete this user?</p>
-                <p className="text-sm text-[#8B949E] mt-1">
-                  <span className="text-white font-medium">{deleteTarget.name}</span> ({deleteTarget.email}) will be soft-deleted and lose access immediately. This action can be reversed by re-activating the account.
+                <p className="text-sm text-slate-700 font-medium">Are you sure you want to delete this user?</p>
+                <p className="text-sm text-slate-500 mt-1">
+                  <span className="text-slate-800 font-medium">{deleteTarget.name}</span> ({deleteTarget.email}) will be soft-deleted and lose access immediately. This action can be reversed by re-activating the account.
                 </p>
               </div>
             </div>
@@ -568,29 +569,29 @@ export default function UsersPage() {
 
       {/* ── Permissions Modal ───────────────────────────────────────────────── */}
       {permTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/[0.08] bg-[#0D1117] shadow-2xl flex flex-col max-h-[85vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-300/30 flex flex-col max-h-[85vh]">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] flex-shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50 flex-shrink-0">
               <div>
-                <h2 className="text-base font-semibold text-white">Permission Overrides</h2>
-                <p className="text-xs text-[#8B949E] mt-0.5">
+                <h2 className="text-base font-semibold text-slate-800">Permission Overrides</h2>
+                <p className="text-xs text-slate-500 mt-0.5">
                   {permTarget.name} · <span className="capitalize">{roleName(permTarget)}</span> role
                 </p>
               </div>
-              <button onClick={() => setPermTarget(null)} className="text-[#8B949E] hover:text-white"><X size={18} /></button>
+              <button onClick={() => setPermTarget(null)} className="text-slate-500 hover:text-slate-800"><X size={18} /></button>
             </div>
 
             {/* Search + Filter */}
-            <div className="px-6 py-3 border-b border-white/[0.04] flex-shrink-0 space-y-2">
+            <div className="px-6 py-3 border-b border-slate-200/40 flex-shrink-0 space-y-2">
               <div className="relative">
-                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B949E]" />
+                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="text"
                   placeholder="Search resource, action, scope…"
                   value={permSearch}
                   onChange={(e) => setPermSearch(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#161B22] border border-white/[0.08] text-sm text-white placeholder-[#8B949E] focus:outline-none focus:border-[#7C3AED]/50"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/80 border border-slate-200/60 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#7C3AED]/50"
                 />
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
@@ -601,7 +602,7 @@ export default function UsersPage() {
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all capitalize ${
                       permFilter === f
                         ? 'bg-[#7C3AED]/20 text-[#7C3AED] border border-[#7C3AED]/40'
-                        : 'text-[#8B949E] hover:text-white hover:bg-white/[0.05] border border-transparent'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-slate-100/80 border border-transparent'
                     }`}
                   >
                     {f === 'all' ? `All (${permRows.length})` :
@@ -613,7 +614,7 @@ export default function UsersPage() {
                 ))}
               </div>
               {/* Legend */}
-              <div className="flex items-center gap-3 pt-0.5 text-xs text-[#8B949E]">
+              <div className="flex items-center gap-3 pt-0.5 text-xs text-slate-500">
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-emerald-500/20 border border-emerald-500/40" /> Role default</span>
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[#7C3AED]/20 border border-[#7C3AED]/40" /> Override: granted</span>
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-red-500/20 border border-red-500/40" /> Override: revoked</span>
@@ -623,21 +624,21 @@ export default function UsersPage() {
             {/* Body */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
               {permLoading ? (
-                <p className="text-center text-[#8B949E] py-8">Loading permissions…</p>
+                <p className="text-center text-slate-500 py-8">Loading permissions…</p>
               ) : Object.keys(permGroups).length === 0 ? (
-                <p className="text-center text-[#8B949E] py-8">No permissions match your search</p>
+                <p className="text-center text-slate-500 py-8">No permissions match your search</p>
               ) : Object.entries(permGroups).map(([resource, rows]) => (
                 <div key={resource}>
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-[#8B949E] mb-2">{resource}</h3>
-                  <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">{resource}</h3>
+                  <div className="rounded-xl border border-slate-200/50 overflow-hidden bg-white/80">
                     {rows.map((row, i) => (
                       <div
                         key={row.id}
-                        className={`flex items-center justify-between px-4 py-2.5 ${i > 0 ? 'border-t border-white/[0.04]' : ''}`}
+                        className={`flex items-center justify-between px-4 py-2.5 ${i > 0 ? 'border-t border-slate-200/40' : ''}`}
                       >
                         <div>
-                          <span className="text-sm text-white font-mono">{row.action}:{row.scope}</span>
-                          <span className="text-xs text-[#8B949E] ml-2">{row.description}</span>
+                          <span className="text-sm text-slate-800 font-mono">{row.action}:{row.scope}</span>
+                          <span className="text-xs text-slate-500 ml-2">{row.description}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           {/* Grant override */}
@@ -646,7 +647,7 @@ export default function UsersPage() {
                             className={`p-1.5 rounded-lg transition-all text-xs ${
                               row.override === true
                                 ? 'bg-[#7C3AED]/20 text-[#7C3AED] border border-[#7C3AED]/40'
-                                : 'text-[#8B949E] hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]'
+                                : 'text-slate-500 hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]'
                             }`}
                             title="Grant override"
                           >
@@ -657,15 +658,15 @@ export default function UsersPage() {
                             onClick={() => togglePermOverride(row, row.override === false ? null : false)}
                             className={`p-1.5 rounded-lg transition-all ${
                               row.override === false
-                                ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                                : 'text-[#8B949E] hover:bg-red-500/10 hover:text-red-400'
+                                ? 'bg-red-500/20 text-red-500 border border-red-500/30'
+                                : 'text-slate-500 hover:bg-red-500/10 hover:text-red-500'
                             }`}
                             title="Revoke override"
                           >
                             <Minus size={13} />
                           </button>
                           {/* Effective badge */}
-                          <span className={`ml-1 w-2 h-2 rounded-full flex-shrink-0 ${row.effective ? 'bg-emerald-400' : 'bg-[#8B949E]/30'}`} title={row.effective ? 'Effective' : 'Not effective'} />
+                          <span className={`ml-1 w-2 h-2 rounded-full flex-shrink-0 ${row.effective ? 'bg-emerald-500' : 'bg-slate-300'}`} title={row.effective ? 'Effective' : 'Not effective'} />
                         </div>
                       </div>
                     ))}
@@ -674,7 +675,7 @@ export default function UsersPage() {
               ))}
             </div>
 
-            <div className="px-6 py-4 border-t border-white/[0.06] flex justify-end flex-shrink-0">
+            <div className="px-6 py-4 border-t border-slate-200/50 flex justify-end flex-shrink-0">
               <Button variant="secondary" onClick={() => setPermTarget(null)}>Done</Button>
             </div>
           </div>

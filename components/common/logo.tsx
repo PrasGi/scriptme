@@ -6,6 +6,8 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   href?: string;
+  /** Use 'light' when the logo is on a light background so "Script" is readable (dark text). Default 'dark' for white text. */
+  variant?: 'light' | 'dark';
 }
 
 const sizeMap = {
@@ -14,8 +16,9 @@ const sizeMap = {
   lg: { img: 56, text: 'text-xl',  gap: 'gap-2.5'  },
 };
 
-function LogoContent({ size = 'md', className }: { size?: LogoProps['size']; className?: string }) {
+function LogoContent({ size = 'md', className, variant = 'dark' }: { size?: LogoProps['size']; className?: string; variant?: LogoProps['variant'] }) {
   const s = sizeMap[size ?? 'md'];
+  const scriptColor = variant === 'light' ? 'text-slate-800' : 'text-white';
   return (
     <div className={cn('flex items-center', s.gap, className)}>
       <Image
@@ -26,21 +29,21 @@ function LogoContent({ size = 'md', className }: { size?: LogoProps['size']; cla
         className="object-contain"
         priority
       />
-      <span className={cn('font-bold text-white', s.text)}>
+      <span className={cn('font-bold', scriptColor, s.text)}>
         Script<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] to-[#2563EB]">Me</span>
       </span>
     </div>
   );
 }
 
-export function Logo({ size = 'md', className, href = '/' }: LogoProps) {
+export function Logo({ size = 'md', className, href = '/', variant }: LogoProps) {
   return (
     <Link href={href} className="outline-none">
-      <LogoContent size={size} className={className} />
+      <LogoContent size={size} className={className} variant={variant} />
     </Link>
   );
 }
 
-export function LogoStatic({ size = 'md', className }: Omit<LogoProps, 'href'>) {
-  return <LogoContent size={size} className={className} />;
+export function LogoStatic({ size = 'md', className, variant }: Omit<LogoProps, 'href'>) {
+  return <LogoContent size={size} className={className} variant={variant} />;
 }

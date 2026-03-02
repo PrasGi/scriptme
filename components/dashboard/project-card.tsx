@@ -61,22 +61,22 @@ export function ProjectCard({
     <div
       onClick={onClick}
       className={cn(
-        'rounded-2xl border border-white/[0.06] bg-[#161B22] p-5',
-        'hover:border-white/[0.12] transition-all duration-200 group',
+        'rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-5 shadow-sm shadow-slate-200/20',
+        'hover:border-slate-300/60 hover:bg-white/80 transition-all duration-200 group',
         onClick && 'cursor-pointer',
         className
       )}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center text-[#7C3AED]">
+          <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/15 flex items-center justify-center text-[#7C3AED]">
             <FileText size={18} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white group-hover:text-[#7C3AED] transition-colors line-clamp-1">
+            <h3 className="text-sm font-semibold text-slate-800 group-hover:text-[#7C3AED] transition-colors line-clamp-1">
               {title}
             </h3>
-            {platform && <p className="text-xs text-[#8B949E]">{platform}</p>}
+            {platform && <p className="text-xs text-slate-500">{platform}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2 relative" ref={menuRef}>
@@ -84,7 +84,7 @@ export function ProjectCard({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setMenuOpen((o) => !o); }}
-            className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/6 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-colors"
             aria-haspopup="true"
             aria-expanded={menuOpen}
           >
@@ -92,14 +92,14 @@ export function ProjectCard({
           </button>
           {menuOpen && (
             <div
-              className="absolute right-0 top-full mt-1 min-w-[120px] rounded-xl border border-white/10 bg-[#161B22] shadow-xl py-1 z-10"
+              className="absolute right-0 top-full mt-1 min-w-[120px] rounded-xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-xl shadow-slate-300/30 py-1 z-10"
               role="menu"
             >
               <button
                 type="button"
                 role="menuitem"
                 onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit?.(); }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-[#E6EDF3] hover:bg-white/6 transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100/80 transition-colors"
               >
                 <Pencil size={14} />
                 Edit
@@ -108,7 +108,7 @@ export function ProjectCard({
                 type="button"
                 role="menuitem"
                 onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onRequestDelete?.(); }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-red-500 hover:bg-red-500/10 transition-colors"
               >
                 <Trash2 size={14} />
                 Delete
@@ -119,24 +119,24 @@ export function ProjectCard({
       </div>
 
       {description && (
-        <p className="text-xs text-[#8B949E] leading-relaxed line-clamp-2 mb-4">{description}</p>
+        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">{description}</p>
       )}
 
-      <div className="flex items-center justify-between pt-3 border-t border-white/[0.04]">
+      <div className="flex items-center justify-between pt-3 border-t border-slate-200/40">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 text-xs text-[#8B949E]">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500">
             <FileText size={12} />
             <span>{scripts} script{scripts !== 1 ? 's' : ''}</span>
           </div>
           {score !== undefined && (
-            <div className="flex items-center gap-1.5 text-xs text-[#8B949E]">
+            <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <BarChart2 size={12} />
               <span>{score}/100</span>
             </div>
           )}
         </div>
         {updatedAt && (
-          <div className="flex items-center gap-1.5 text-xs text-[#8B949E]">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500">
             <Calendar size={12} />
             <span>{updatedAt}</span>
           </div>
@@ -147,7 +147,7 @@ export function ProjectCard({
         <Button
           variant="secondary"
           size="sm"
-          className="flex-1 min-w-0 text-xs"
+          className="flex-1 min-w-0 text-xs !text-slate-800 !bg-slate-100/90 hover:!bg-slate-200/80 !border-slate-200/60"
           onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
           type="button"
         >

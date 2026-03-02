@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Plus, Trash2, Check, Bot, X, Loader2, Tag, ChevronLeft } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Plus, Trash2, Check, Bot, X, Loader2, Tag, MessageSquarePlus } from 'lucide-react';
+import { cn, ensureHtml, stripHtml } from '@/lib/utils';
 import { getNextTimestamps } from '@/lib/parse-script';
+import { TiptapLine } from './tiptap-line';
 
 export interface ScriptLine {
   startTime:  string;
@@ -25,17 +25,17 @@ interface ScriptLineEditorProps {
   lines:           ScriptLine[];
   onChange:        (lines: ScriptLine[]) => void;
   className?:      string;
-  /** Per-line AI analysis. Displayed inline below each line. */
   analyzeResult?:  AnalyzeLine[] | null;
-  /** Called when user clicks Implement on an actionable suggestion. Only shown for type "actionable". */
   onImplementSuggestion?: (item: AnalyzeLine) => void;
-  /** The suggestion currently being implemented (shows loading on that button). */
   implementingItem?: AnalyzeLine | null;
-  /** Called when user clicks delete suggestion for a line. */
   onDeleteSuggestion?:   (item: AnalyzeLine) => void;
-  /** True while analysis is in progress (e.g. show loading for lines) */
   analyzing?:      boolean;
+  onAddToChat?:    (context: { lineIndex: number; text: string }) => void;
 }
+
+const PRESET_COLORS = [
+  '#EF4444', '#F97316', '#EAB308', '#22C55E', '#7C3AED', '#3B82F6', '#8B5CF6', '#EC4899',
+];
 
 export function ScriptLineEditor({
   lines,
@@ -46,14 +46,14 @@ export function ScriptLineEditor({
   onDeleteSuggestion,
   implementingItem = null,
   analyzing = false,
+  onAddToChat,
 }: ScriptLineEditorProps) {
   function getAnalysisForLine(i: number): AnalyzeLine | undefined {
     return analyzeResult?.find((a) => a.lineIndex === i);
   }
+
   function updateLine(i: number, updates: Partial<ScriptLine>) {
-    onChange(
-      lines.map((l, idx) => (idx === i ? { ...l, ...updates } : l))
-    );
+    onChange(lines.map((l, idx) => (idx === i ? { ...l, ...updates } : l)));
   }
 
   function removeLine(i: number) {
@@ -69,236 +69,265 @@ export function ScriptLineEditor({
   }
 
   const [openFlagIndex, setOpenFlagIndex] = useState<number | null>(null);
-  const textareaRefs = useRef<Map<number, HTMLTextAreaElement>>(new Map());
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [addedLineIndex, setAddedLineIndex] = useState<number | null>(null);
 
-  function autoResizeTextarea(el: HTMLTextAreaElement | null) {
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = `${Math.max(44, el.scrollHeight)}px`;
+  function handleDragStart(e: React.DragEvent, i: number) {
+    const plainText = stripHtml(lines[i].text);
+    e.dataTransfer.setData(
+      'application/x-script-line',
+      JSON.stringify({ lineIndex: i, text: plainText })
+    );
+    e.dataTransfer.setData('text/plain', plainText);
+    e.dataTransfer.effectAllowed = 'copy';
+    setDragIndex(i);
   }
 
-  useEffect(() => {
-    textareaRefs.current.forEach((el) => autoResizeTextarea(el));
-  }, [lines]);
-
-  const PRESET_COLORS = [
-    '#EF4444', '#F97316', '#EAB308', '#22C55E', '#7C3AED', '#3B82F6', '#8B5CF6', '#EC4899',
-  ];
+  function handleDragEnd() {
+    setDragIndex(null);
+  }
 
   return (
     <div className={className}>
-      <div className="space-y-3">
-        {lines.map((line, i) => (
-          <div
-            key={i}
-            className={cn(
-              'rounded-xl border bg-[#161B22] pt-2 px-4 pb-4 space-y-2 transition-colors',
-              line.flagColor ? 'border-l-4 border-white/[0.08]' : 'border border-white/[0.08]'
-            )}
-            style={line.flagColor ? { borderLeftColor: line.flagColor, borderLeftWidth: 4 } : undefined}
-          >
-            <span className="text-[10px] text-[#8B949E]/60 tabular-nums block -mt-0.5">
-              Line {i + 1}
-            </span>
-            {/* Script text — primary focus, auto-grows with content */}
-            <textarea
-              value={line.text}
-              onChange={(e) => {
-                updateLine(i, { text: e.target.value });
-                autoResizeTextarea(e.target);
-              }}
-              ref={(el) => {
-                if (el) {
-                  textareaRefs.current.set(i, el);
-                  autoResizeTextarea(el);
-                } else {
-                  textareaRefs.current.delete(i);
-                }
-              }}
-              placeholder="Script text…"
-              rows={1}
-              className="w-full min-h-[44px] rounded-lg border border-white/[0.05] bg-white/[0.04] px-3 py-2.5 text-sm text-[#E6EDF3] placeholder:text-[#8B949E]/40 outline-none focus:border-[#7C3AED]/40 focus:ring-1 focus:ring-[#7C3AED]/15 focus:bg-white/[0.06] transition-[height,background-color,border-color] duration-150 ease-out overflow-y-auto resize-none"
-            />
+      <div className="divide-y divide-slate-100">
+        {lines.map((line, i) => {
+          const analysis = getAnalysisForLine(i);
+          const isImplementing =
+            !!implementingItem &&
+            implementingItem.lineIndex === i &&
+            implementingItem.suggestion === analysis?.suggestion;
+          const isDragging = dragIndex === i;
 
-            {/* Times — compact, subtle, still editable */}
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5">
-                <input
-                  value={line.startTime}
-                  onChange={(e) => updateLine(i, { startTime: e.target.value })}
-                  placeholder="00:00:00.000"
-                  className="w-[95px] min-w-[95px] h-7 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[11px] text-[#8B949E] font-mono tabular-nums placeholder:text-[#8B949E]/40 outline-none focus:border-[#7C3AED]/40 focus:text-white focus:bg-white/[0.05] transition-colors"
-                  title="Start time"
+          return (
+            <div
+              key={i}
+              className={cn(
+                'group/line relative transition-colors hover:bg-slate-50/50',
+                isDragging && 'opacity-40'
+              )}
+            >
+              {/* Flag accent bar */}
+              {line.flagColor && (
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-[3px] rounded-full"
+                  style={{ backgroundColor: line.flagColor }}
                 />
-                <span className="text-[#8B949E]/40 text-[10px]">→</span>
-                <input
-                  value={line.endTime}
-                  onChange={(e) => updateLine(i, { endTime: e.target.value })}
-                  placeholder="00:00:01.360"
-                  className="w-[95px] min-w-[95px] h-7 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[11px] text-[#8B949E] font-mono tabular-nums placeholder:text-[#8B949E]/40 outline-none focus:border-[#7C3AED]/40 focus:text-white focus:bg-white/[0.05] transition-colors"
-                  title="End time"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                {/* Flag color palette — opens to the left of Tag trigger */}
-                <div className="flex items-center overflow-hidden">
-                  <div
-                    className={cn(
-                      'flex items-center gap-2 overflow-hidden transition-all duration-200 ease-out',
-                      openFlagIndex === i ? 'max-w-[320px] opacity-100 mr-1' : 'max-w-0 opacity-0 mr-0'
-                    )}
-                  >
-                    {PRESET_COLORS.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => updateLine(i, { flagColor: line.flagColor === c ? undefined : c })}
-                        className={cn(
-                          'w-6 h-6 rounded-lg border-2 transition-all duration-150 shrink-0 hover:scale-110',
-                          line.flagColor === c ? 'ring-2 ring-offset-2 ring-offset-[#161B22] ring-white/40' : 'border-transparent opacity-90 hover:opacity-100'
-                        )}
-                        style={{ backgroundColor: c, borderColor: line.flagColor === c ? c : 'transparent' }}
-                        title={c}
-                      />
-                    ))}
-                    <input
-                      type="color"
-                      value={line.flagColor ?? '#808080'}
-                      onChange={(e) => updateLine(i, { flagColor: e.target.value })}
-                      className="w-6 h-6 rounded-lg border border-white/10 cursor-pointer bg-transparent p-0 shrink-0 opacity-90 hover:opacity-100 [&::-webkit-color-swatch-wrapper]:p-0.5 [&::-webkit-color-swatch]:rounded-md [&::-webkit-color-swatch]:border-0"
-                      title="Custom color"
-                    />
-                    {line.flagColor && (
-                      <button
-                        type="button"
-                        onClick={() => { updateLine(i, { flagColor: undefined }); setOpenFlagIndex(null); }}
-                        className="text-[10px] px-2 py-1 rounded-md text-[#8B949E] hover:text-white hover:bg-white/10 transition-colors shrink-0"
-                        title="Clear flag"
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
-                  {/* Flag trigger — compact button */}
+              )}
+
+              <div className={cn('py-3 pr-3', line.flagColor ? 'pl-4' : 'pl-1')}>
+                {/* Main content row */}
+                <div className="flex items-start gap-1">
+                  {/* Add to AI chat */}
                   <button
                     type="button"
-                    onClick={() => setOpenFlagIndex(openFlagIndex === i ? null : i)}
-                    title="Flag line with color"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, i)}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => {
+                      if (onAddToChat) {
+                        const plainText = stripHtml(lines[i].text);
+                        if (plainText.trim()) {
+                          onAddToChat({ lineIndex: i, text: plainText.trim() });
+                          setAddedLineIndex(i);
+                          setTimeout(() => setAddedLineIndex(null), 800);
+                        }
+                      }
+                    }}
                     className={cn(
-                      'flex items-center gap-1.5 px-2 py-1 rounded-lg border transition-all duration-200 shrink-0',
-                      line.flagColor
-                        ? 'border-white/10 bg-white/5'
-                        : 'border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.05]'
+                      'pt-2 shrink-0 transition-all cursor-pointer',
+                      addedLineIndex === i
+                        ? 'opacity-100 scale-125'
+                        : 'opacity-0 group-hover/line:opacity-100'
                     )}
+                    title="Add line to AI chat"
                   >
-                    {line.flagColor ? (
-                      <div
-                        className="w-4 h-4 rounded-md shrink-0"
-                        style={{ backgroundColor: line.flagColor }}
-                      />
-                    ) : (
-                      <Tag size={12} className="text-[#8B949E] shrink-0" />
-                    )}
-                    <ChevronLeft
-                      size={10}
+                    <MessageSquarePlus
+                      size={14}
                       className={cn(
-                        'text-[#8B949E] shrink-0 transition-transform duration-200',
-                        openFlagIndex === i && 'rotate-180'
+                        'transition-colors',
+                        addedLineIndex === i
+                          ? 'text-[#7C3AED]'
+                          : 'text-slate-300 hover:text-[#7C3AED]'
                       )}
                     />
                   </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeLine(i)}
-                  className="p-1 rounded text-[#8B949E] hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  title="Remove line"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            </div>
 
-            {/* Per-line AI analysis */}
-            {analyzing && !getAnalysisForLine(i) && (
-              <div className="flex items-center gap-2 mt-2 py-2 px-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                <Bot size={12} className="text-[#7C3AED] animate-pulse shrink-0" />
-                <span className="text-xs text-[#8B949E]">Analyzing…</span>
-              </div>
-            )}
-            {!analyzing && getAnalysisForLine(i) && (() => {
-              const analysis = getAnalysisForLine(i)!;
-              return (
-                <div className="mt-2 rounded-lg border border-white/[0.08] bg-[#0D1117]/80 overflow-hidden">
-                  <div className="px-3 py-2.5 space-y-1.5">
+                  {/* Gutter: line number */}
+                  <span className="text-[10px] text-slate-300 tabular-nums pt-2 w-5 text-right shrink-0 select-none group-hover/line:text-slate-400 transition-colors">
+                    {i + 1}
+                  </span>
+
+                  {/* Rich text editor */}
+                  <TiptapLine
+                    content={ensureHtml(line.text)}
+                    onChange={(html) => updateLine(i, { text: html })}
+                    lineIndex={i}
+                    onAddToChat={onAddToChat}
+                  />
+
+                  {/* Actions — show on line hover */}
+                  <div className="flex items-center gap-0.5 pt-1.5 shrink-0 opacity-0 group-hover/line:opacity-100 transition-opacity">
+                    {/* Flag trigger */}
+                    <button
+                      type="button"
+                      onClick={() => setOpenFlagIndex(openFlagIndex === i ? null : i)}
+                      title="Flag line"
+                      className={cn(
+                        'p-1.5 rounded-lg transition-all',
+                        line.flagColor
+                          ? 'hover:bg-slate-100/80'
+                          : 'text-slate-500 hover:text-[#7C3AED] hover:bg-[#7C3AED]/10'
+                      )}
+                    >
+                      {line.flagColor ? (
+                        <div className="w-4 h-4 rounded" style={{ backgroundColor: line.flagColor }} />
+                      ) : (
+                        <Tag size={14} />
+                      )}
+                    </button>
+                    {/* Delete line */}
+                    <button
+                      type="button"
+                      onClick={() => removeLine(i)}
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                      title="Delete line"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Meta row: timestamps + flag picker */}
+                <div className="flex items-center gap-2 mt-1 ml-12">
+                  {/* Timestamps */}
+                  <div className="flex items-center gap-1">
+                    <input
+                      value={line.startTime}
+                      onChange={(e) => updateLine(i, { startTime: e.target.value })}
+                      placeholder="00:00:00.000"
+                      className="w-20 h-5 bg-transparent border-0 border-b border-transparent focus:border-slate-200 px-0 text-[10px] text-slate-400 font-mono tabular-nums placeholder:text-slate-300 outline-none transition-colors"
+                      title="Start time"
+                    />
+                    <span className="text-slate-300 text-[9px]">-</span>
+                    <input
+                      value={line.endTime}
+                      onChange={(e) => updateLine(i, { endTime: e.target.value })}
+                      placeholder="00:00:01.360"
+                      className="w-20 h-5 bg-transparent border-0 border-b border-transparent focus:border-slate-200 px-0 text-[10px] text-slate-400 font-mono tabular-nums placeholder:text-slate-300 outline-none transition-colors"
+                      title="End time"
+                    />
+                  </div>
+
+                  {/* Flag color palette — expand left */}
+                  {openFlagIndex === i && (
+                    <div className="flex items-center gap-1.5 ml-2 animate-in fade-in slide-in-from-right-2 duration-150">
+                      {PRESET_COLORS.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => updateLine(i, { flagColor: line.flagColor === c ? undefined : c })}
+                          className={cn(
+                            'w-5 h-5 rounded-md transition-all duration-150 shrink-0 hover:scale-110 shadow-sm',
+                            line.flagColor === c ? 'ring-2 ring-offset-1 ring-offset-white ring-[#7C3AED]/60 scale-110' : 'hover:shadow-md'
+                          )}
+                          style={{ backgroundColor: c }}
+                          title={c}
+                        />
+                      ))}
+                      <input
+                        type="color"
+                        value={line.flagColor ?? '#808080'}
+                        onChange={(e) => updateLine(i, { flagColor: e.target.value })}
+                        className="w-5 h-5 rounded-md cursor-pointer bg-transparent p-0 shrink-0 shadow-sm hover:shadow-md [&::-webkit-color-swatch-wrapper]:p-0.5 [&::-webkit-color-swatch]:rounded-sm [&::-webkit-color-swatch]:border-0"
+                        title="Custom color"
+                      />
+                      {line.flagColor && (
+                        <button
+                          type="button"
+                          onClick={() => { updateLine(i, { flagColor: undefined }); setOpenFlagIndex(null); }}
+                          className="text-[10px] font-medium px-2 py-0.5 rounded-md text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-colors shrink-0"
+                          title="Clear flag"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* AI analysis */}
+                {analyzing && !analysis && (
+                  <div className="flex items-center gap-2 mt-2 ml-12 py-1.5">
+                    <Bot size={12} className="text-[#7C3AED] animate-pulse shrink-0" />
+                    <span className="text-[11px] text-slate-400">Analyzing...</span>
+                  </div>
+                )}
+                {!analyzing && analysis && (
+                  <div className="group/suggestion mt-2 ml-12 rounded-lg border-l-2 border-[#7C3AED]/30 bg-[#7C3AED]/3 px-3 py-2.5 space-y-1">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Bot size={12} className="text-[#7C3AED] shrink-0" />
+                        <Bot size={11} className="text-[#7C3AED] shrink-0" />
                         <span
                           className={cn(
-                            'text-[10px] font-medium px-1.5 py-0.5 rounded',
+                            'text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded',
                             analysis.type === 'actionable'
-                              ? 'bg-[#7C3AED]/15 text-[#7C3AED]'
-                              : 'bg-white/5 text-[#8B949E]'
+                              ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
+                              : 'bg-slate-100 text-slate-500'
                           )}
                         >
-                          {analysis.type === 'actionable' ? 'Actionable' : 'Suggestion'}
+                          {analysis.type === 'actionable' ? 'Fix' : 'Tip'}
                         </span>
                       </div>
                       {onDeleteSuggestion && (
                         <button
                           type="button"
                           onClick={() => onDeleteSuggestion(analysis)}
-                          className="p-1 rounded text-[#8B949E] hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                          title="Delete suggestion"
+                          className="p-1 rounded text-slate-300 opacity-0 group-hover/suggestion:opacity-100 hover:text-red-400 transition-all"
+                          title="Dismiss"
                         >
-                          <X size={12} />
+                          <X size={11} />
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-[#E6EDF3]">{analysis.suggestion}</p>
-                    <p className="text-[11px] text-[#8B949E]">{analysis.reason}</p>
+                    <p className="text-xs text-slate-700 leading-relaxed">{analysis.suggestion}</p>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">{analysis.reason}</p>
                     {analysis.type === 'actionable' && onImplementSuggestion && (
-                      <Button
-                        variant="accent"
-                        size="sm"
+                      <button
+                        type="button"
                         onClick={() => onImplementSuggestion(analysis)}
-                        disabled={
-                          !!implementingItem &&
-                          implementingItem.lineIndex === analysis.lineIndex &&
-                          implementingItem.suggestion === analysis.suggestion
-                        }
-                        className="mt-1.5 h-7 text-xs gap-1"
+                        disabled={isImplementing}
+                        className={cn(
+                          'mt-1 inline-flex items-center gap-1.5 h-6 px-3 rounded-full text-[11px] font-medium transition-colors',
+                          'bg-[#7C3AED] text-white hover:bg-[#6D28D9] disabled:opacity-50 disabled:cursor-not-allowed'
+                        )}
                       >
-                        {implementingItem &&
-                        implementingItem.lineIndex === analysis.lineIndex &&
-                        implementingItem.suggestion === analysis.suggestion ? (
-                          <Loader2 size={11} className="animate-spin" />
+                        {isImplementing ? (
+                          <Loader2 size={10} className="animate-spin" />
                         ) : (
                           <>
-                            <Check size={11} />
+                            <Check size={10} />
                             Implement
                           </>
                         )}
-                      </Button>
+                      </button>
                     )}
                   </div>
-                </div>
-              );
-            })()}
-          </div>
-        ))}
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <Button
+
+      {/* Add line */}
+      <button
         type="button"
-        variant="secondary"
-        size="sm"
         onClick={addLine}
-        className="mt-3 gap-2 w-full border border-dashed border-white/[0.12]"
+        className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-slate-300/60 text-slate-500 hover:text-[#7C3AED] hover:border-[#7C3AED]/40 hover:bg-[#7C3AED]/5 transition-all"
       >
-        <Plus size={14} />
-        Add line
-      </Button>
+        <Plus size={15} />
+        <span className="text-sm font-medium">Add line</span>
+      </button>
     </div>
   );
 }

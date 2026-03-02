@@ -146,22 +146,22 @@ export default function SettingsPage() {
   return (
     <div className="w-full max-w-full space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-white">Settings</h1>
-        <p className="mt-1 text-[#8B949E]">
+        <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
+        <p className="mt-1 text-slate-500">
           Manage your profile, account, and preferences.
         </p>
       </div>
 
       {/* Profile */}
-      <Card>
+      <Card light>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-              <User size={20} className="text-[#8B949E]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80">
+              <User size={20} className="text-slate-500" />
             </div>
             <div>
-              <CardTitle>Profile</CardTitle>
-              <CardDescription>Update your display name and email.</CardDescription>
+              <CardTitle className="text-slate-800">Profile</CardTitle>
+              <CardDescription className="text-slate-500">Update your display name and email.</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -177,12 +177,13 @@ export default function SettingsPage() {
                   className="rounded-full"
                 />
               ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/[0.08] text-xl font-semibold text-white">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-200/60 text-xl font-semibold text-slate-800">
                   {(me.name || me.email)?.[0]?.toUpperCase() ?? '?'}
                 </div>
               )}
               <div className="flex-1 space-y-4">
                 <Input
+                  light
                   label="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -190,6 +191,7 @@ export default function SettingsPage() {
                   required
                 />
                 <Input
+                  light
                   label="Email"
                   type="email"
                   value={email}
@@ -200,7 +202,7 @@ export default function SettingsPage() {
               </div>
             </div>
             {profileError && (
-              <p className="text-sm text-red-400">{profileError}</p>
+              <p className="text-sm text-red-500">{profileError}</p>
             )}
           </CardContent>
           <CardFooter className="flex items-center gap-3">
@@ -214,21 +216,22 @@ export default function SettingsPage() {
 
       {/* Change password */}
       {me.hasPassword && (
-        <Card>
+        <Card light>
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                <Key size={20} className="text-[#8B949E]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80">
+                <Key size={20} className="text-slate-500" />
               </div>
               <div>
-                <CardTitle>Change password</CardTitle>
-                <CardDescription>Update your password for credential sign-in.</CardDescription>
+                <CardTitle className="text-slate-800">Change password</CardTitle>
+                <CardDescription className="text-slate-500">Update your password for credential sign-in.</CardDescription>
               </div>
             </div>
           </CardHeader>
           <form onSubmit={savePassword}>
             <CardContent className="space-y-4">
               <Input
+                light
                 label="Current password"
                 type="password"
                 value={currentPassword}
@@ -237,6 +240,7 @@ export default function SettingsPage() {
                 required
               />
               <Input
+                light
                 label="New password"
                 type="password"
                 value={newPassword}
@@ -245,6 +249,7 @@ export default function SettingsPage() {
                 minLength={8}
               />
               <Input
+                light
                 label="Confirm new password"
                 type="password"
                 value={confirmPassword}
@@ -252,7 +257,7 @@ export default function SettingsPage() {
                 placeholder="••••••••"
               />
               {passwordError && (
-                <p className="text-sm text-red-400">{passwordError}</p>
+                <p className="text-sm text-red-500">{passwordError}</p>
               )}
             </CardContent>
             <CardFooter>
@@ -266,27 +271,27 @@ export default function SettingsPage() {
       )}
 
       {/* Account info */}
-      <Card>
+      <Card light>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-              <Shield size={20} className="text-[#8B949E]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80">
+              <Shield size={20} className="text-slate-500" />
             </div>
             <div>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>Your account details and quick links.</CardDescription>
+              <CardTitle className="text-slate-800">Account</CardTitle>
+              <CardDescription className="text-slate-500">Your account details and quick links.</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-wrap gap-6">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-[#8B949E]">Role</p>
-              <p className="mt-1 text-white">{roleName}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Role</p>
+              <p className="mt-1 text-slate-800">{roleName}</p>
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-[#8B949E]">Member since</p>
-              <p className="mt-1 text-white">{formatDate(me.createdAt)}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Member since</p>
+              <p className="mt-1 text-slate-800">{formatDate(me.createdAt)}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-3 pt-2">
@@ -301,16 +306,16 @@ export default function SettingsPage() {
       </Card>
 
       {/* Sign out */}
-      <Card className="border-red-500/20">
+      <Card light className="border-red-500/20">
         <CardContent className="pt-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10">
-                <LogOut size={20} className="text-red-400" />
+                <LogOut size={20} className="text-red-500" />
               </div>
               <div>
-                <p className="font-medium text-white">Sign out</p>
-                <p className="text-sm text-[#8B949E]">Sign out of your account on this device.</p>
+                <p className="font-medium text-slate-800">Sign out</p>
+                <p className="text-sm text-slate-500">Sign out of your account on this device.</p>
               </div>
             </div>
             <Button variant="danger" onClick={() => logout()}>

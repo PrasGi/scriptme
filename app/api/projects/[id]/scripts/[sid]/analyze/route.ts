@@ -16,7 +16,7 @@ type ScriptLine = { startTime: string; endTime: string; text: string };
  * A BullMQ worker processes the job in the background and updates the script in DB.
  * Client should poll GET /api/projects/[id]/scripts/[sid] until status is 'ready'.
  *
- * Body: { lines?: ScriptLine[] } — use current lines (e.g. unsaved edits).
+ * Body: { lines?: ScriptLine[]; characterId?: string } — use current lines and optionally the character selected in the UI (for style consistency).
  */
 export async function POST(req: Request, { params }: Params) {
   const session = await auth();
@@ -25,10 +25,14 @@ export async function POST(req: Request, { params }: Params) {
   const { id: projectId, sid } = await params;
 
   let bodyLines: ScriptLine[] | undefined;
+  let bodyCharacterId: string | undefined;
   try {
     const body = await req.json().catch(() => ({}));
     if (Array.isArray(body.lines) && body.lines.length > 0) {
       bodyLines = body.lines;
+    }
+    if (typeof body.characterId === 'string' && body.characterId) {
+      bodyCharacterId = body.characterId;
     }
   } catch { /* ignore */ }
 
@@ -61,8 +65,19 @@ export async function POST(req: Request, { params }: Params) {
       ? linesToAnalyze.map((l) => `${l.startTime} --> ${l.endTime}\n${l.text}`).join('\n\n')
       : plainFallback;
 
-    const char = script.characterId as { description?: string } | null;
-    const characterContext = char?.description ?? undefined;
+    let characterContext: string | undefined;
+    if (bodyCharacterId) {
+      const char = await Character.findOne({
+        _id:    bodyCharacterId,
+        userId: session.user.id,
+        deletedAt: null,
+      }).select('description').lean();
+      if (char?.description) characterContext = char.description;
+    }
+    if (characterContext === undefined) {
+      const scriptChar = script.characterId as { description?: string } | null;
+      characterContext = scriptChar?.description ?? undefined;
+    }
 
     await Script.findByIdAndUpdate(sid, { $set: { status: 'analyzing' } });
 

@@ -5,15 +5,18 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 interface SidebarContextValue {
   collapsed: boolean;
   toggle: () => void;
+  mobileOpen: boolean;
+  setMobileOpen: (open: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const toggle = useCallback(() => setCollapsed((c) => !c), []);
   return (
-    <SidebarContext.Provider value={{ collapsed, toggle }}>
+    <SidebarContext.Provider value={{ collapsed, toggle, mobileOpen, setMobileOpen }}>
       {children}
     </SidebarContext.Provider>
   );

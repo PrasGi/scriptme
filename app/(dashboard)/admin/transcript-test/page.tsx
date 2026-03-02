@@ -61,36 +61,36 @@ export default function TranscriptTestPage() {
     <div className="space-y-6 max-w-3xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <FileText size={22} className="text-[#7C3AED]" />
           TikTok Transcript Test
         </h1>
-        <p className="text-sm text-[#8B949E] mt-0.5">
+        <p className="text-sm text-slate-500 mt-0.5">
           Fetch captions / transcript from a TikTok video via Cloudflare proxy workers
         </p>
       </div>
 
       {/* Form */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] p-5 space-y-4">
+      <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-5 space-y-4 shadow-sm shadow-slate-200/20">
         <form onSubmit={handleFetch} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">TikTok Video URL</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">TikTok Video URL</label>
             <Input
               placeholder="https://www.tiktok.com/@user/video/1234567890"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               required
-              className="bg-[#161B22] border-white/[0.08] font-mono text-sm"
+              className="bg-white/80 border-slate-200/60 font-mono text-sm text-slate-800"
             />
           </div>
 
           <div className="flex items-end gap-3">
             <div className="space-y-1.5 flex-1 max-w-[160px]">
-              <label className="text-xs font-medium text-[#8B949E] uppercase tracking-wider">Preferred Language</label>
+              <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Preferred Language</label>
               <select
                 value={lang}
                 onChange={(e) => setLang(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.08] bg-[#161B22] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7C3AED]/50"
+                className="w-full rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#7C3AED]/50"
               >
                 <option value="">Auto</option>
                 <option value="eng">English (eng)</option>
@@ -122,27 +122,27 @@ export default function TranscriptTestPage() {
       {result && (
         <div className="space-y-4">
           {/* Meta */}
-          <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-white">Video Info</h2>
+          <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-5 space-y-3 shadow-sm shadow-slate-200/20">
+            <h2 className="text-sm font-semibold text-slate-800">Video Info</h2>
             <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
               <div>
-                <span className="text-[#8B949E]">Video ID</span>
-                <p className="text-white font-mono mt-0.5">{result.videoId || '—'}</p>
+                <span className="text-slate-500">Video ID</span>
+                <p className="text-slate-800 font-mono mt-0.5">{result.videoId || '—'}</p>
               </div>
               <div>
-                <span className="text-[#8B949E]">Author</span>
-                <p className="text-white mt-0.5">@{result.author || '—'}</p>
+                <span className="text-slate-500">Author</span>
+                <p className="text-slate-800 mt-0.5">@{result.author || '—'}</p>
               </div>
               <div className="col-span-2">
-                <span className="text-[#8B949E]">Description</span>
-                <p className="text-white mt-0.5 line-clamp-2">{result.description || '—'}</p>
+                <span className="text-slate-500">Description</span>
+                <p className="text-slate-800 mt-0.5 line-clamp-2">{result.description || '—'}</p>
               </div>
               <div>
-                <span className="text-[#8B949E]">Transcript Language</span>
-                <p className="text-white font-mono mt-0.5">{result.language}</p>
+                <span className="text-slate-500">Transcript Language</span>
+                <p className="text-slate-800 font-mono mt-0.5">{result.language}</p>
               </div>
               <div>
-                <span className="text-[#8B949E]">Available Captions</span>
+                <span className="text-slate-500">Available Captions</span>
                 <div className="flex flex-wrap gap-1 mt-0.5">
                   {result.subtitles.map((s) => (
                     <span key={s.language} className="px-2 py-0.5 rounded-md bg-[#7C3AED]/10 text-[#7C3AED] text-xs font-mono border border-[#7C3AED]/20">
@@ -155,38 +155,38 @@ export default function TranscriptTestPage() {
           </div>
 
           {/* Transcript */}
-          <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
-              <h2 className="text-sm font-semibold text-white">Transcript</h2>
+          <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md overflow-hidden shadow-sm shadow-slate-200/20">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200/50 bg-white/80">
+              <h2 className="text-sm font-semibold text-slate-800">Transcript</h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={copyTranscript}
-                className="gap-1.5 text-xs text-[#8B949E] hover:text-white"
+                className="gap-1.5 text-xs text-slate-500 hover:text-slate-800"
               >
-                {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                {copied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 {copied ? 'Copied!' : 'Copy'}
               </Button>
             </div>
             <div className="p-5">
-              <p className="text-sm text-[#E6EDF3] leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
                 {result.transcript || 'No transcript text found.'}
               </p>
             </div>
           </div>
 
           {/* Raw VTT toggle */}
-          <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] overflow-hidden">
+          <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md overflow-hidden shadow-sm shadow-slate-200/20">
             <button
               onClick={() => setShowRaw((v) => !v)}
-              className="flex items-center justify-between w-full px-5 py-3 text-sm text-[#8B949E] hover:text-white transition-colors"
+              className="flex items-center justify-between w-full px-5 py-3 text-sm text-slate-500 hover:text-slate-800 transition-colors bg-white/80"
             >
               <span>Raw VTT / SRT</span>
               {showRaw ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
             </button>
             {showRaw && (
-              <div className="border-t border-white/[0.06] p-5">
-                <pre className="text-xs text-[#8B949E] font-mono overflow-x-auto whitespace-pre-wrap">
+              <div className="border-t border-slate-200/50 p-5">
+                <pre className="text-xs text-slate-600 font-mono overflow-x-auto whitespace-pre-wrap">
                   {result.raw}
                 </pre>
               </div>

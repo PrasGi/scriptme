@@ -91,12 +91,12 @@ export default function AdminNotificationsPage() {
   if (!canSend) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <Bell size={22} className="text-[#7C3AED]" />
           Notifications
         </h1>
-        <div className="rounded-2xl border border-white/6 bg-[#161B22] p-8 text-center">
-          <p className="text-[#8B949E]">You don&apos;t have permission to send notifications.</p>
+        <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-8 text-center shadow-sm shadow-slate-200/20">
+          <p className="text-slate-500">You don&apos;t have permission to send notifications.</p>
         </div>
       </div>
     );
@@ -105,41 +105,41 @@ export default function AdminNotificationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <Bell size={22} className="text-[#7C3AED]" />
           Send Notification
         </h1>
-        <p className="text-sm text-[#8B949E] mt-0.5">
+        <p className="text-sm text-slate-500 mt-0.5">
           Send notifications to all users or specific users. Recipients can read them from the bell dropdown in the navbar.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="rounded-2xl border border-white/6 bg-[#161B22] p-6 space-y-5 max-w-2xl">
+      <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-6 space-y-5 max-w-2xl shadow-sm shadow-slate-200/20">
         {error && (
-          <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-2 text-sm text-red-400">
+          <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-2 text-sm text-red-500">
             {error}
           </div>
         )}
         {success && (
-          <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm text-emerald-400">
+          <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm text-emerald-600">
             {success}
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-medium text-[#8B949E] uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">
             Title
           </label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. New features available"
-            className="w-full h-10 px-3 rounded-xl border border-white/6 bg-[#0D1117] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40"
+            className="w-full h-10 px-3 rounded-xl border border-slate-200/60 bg-white/80 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#7C3AED]/40"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-[#8B949E] uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">
             Message
           </label>
           <textarea
@@ -147,12 +147,12 @@ export default function AdminNotificationsPage() {
             onChange={(e) => setBody(e.target.value)}
             placeholder="Write your notification message..."
             rows={4}
-            className="w-full px-3 py-2.5 rounded-xl border border-white/6 bg-[#0D1117] text-sm text-white placeholder:text-[#8B949E]/60 outline-none focus:border-[#7C3AED]/40 resize-none"
+            className="w-full px-3 py-2.5 rounded-xl border border-slate-200/60 bg-white/80 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#7C3AED]/40 resize-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-[#8B949E] uppercase tracking-wider mb-2">
+          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
             Send to
           </label>
           <div className="flex gap-4">
@@ -162,9 +162,9 @@ export default function AdminNotificationsPage() {
                 name="target"
                 checked={target === 'all'}
                 onChange={() => setTarget('all')}
-                className="w-4 h-4 rounded-full border-white/6 bg-[#0D1117] text-[#7C3AED] focus:ring-[#7C3AED]/40"
+                className="w-4 h-4 rounded-full border-slate-200/60 bg-white/80 text-[#7C3AED] focus:ring-[#7C3AED]/40"
               />
-              <span className="text-sm text-white flex items-center gap-1.5">
+              <span className="text-sm text-slate-800 flex items-center gap-1.5">
                 <Users size={14} />
                 All users
               </span>
@@ -175,9 +175,9 @@ export default function AdminNotificationsPage() {
                 name="target"
                 checked={target === 'users'}
                 onChange={() => setTarget('users')}
-                className="w-4 h-4 rounded-full border-white/6 bg-[#0D1117] text-[#7C3AED] focus:ring-[#7C3AED]/40"
+                className="w-4 h-4 rounded-full border-slate-200/60 bg-white/80 text-[#7C3AED] focus:ring-[#7C3AED]/40"
               />
-              <span className="text-sm text-white flex items-center gap-1.5">
+              <span className="text-sm text-slate-800 flex items-center gap-1.5">
                 <User size={14} />
                 Specific users
               </span>
@@ -187,38 +187,38 @@ export default function AdminNotificationsPage() {
 
         {target === 'users' && (
           <div>
-            <label className="block text-xs font-medium text-[#8B949E] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">
               Select users
             </label>
-            <div className="rounded-xl border border-white/6 bg-[#0D1117] max-h-48 overflow-y-auto p-2">
+            <div className="rounded-xl border border-slate-200/60 bg-white/80 max-h-48 overflow-y-auto p-2">
               {usersLoading ? (
-                <div className="flex items-center justify-center py-8 text-[#8B949E]">
+                <div className="flex items-center justify-center py-8 text-slate-500">
                   <Loader2 size={18} className="animate-spin" />
                 </div>
               ) : users.length === 0 ? (
-                <p className="text-sm text-[#8B949E] text-center py-6">No users found</p>
+                <p className="text-sm text-slate-500 text-center py-6">No users found</p>
               ) : (
                 <div className="space-y-0.5">
                   {users.map((u) => (
                     <label
                       key={u.id}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/4 cursor-pointer transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100/60 cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={selectedUserIds.includes(u.id)}
                         onChange={() => toggleUser(u.id)}
-                        className="w-4 h-4 rounded border-white/6 bg-[#161B22] text-[#7C3AED] focus:ring-[#7C3AED]/40"
+                        className="w-4 h-4 rounded border-slate-200/60 bg-white text-[#7C3AED] focus:ring-[#7C3AED]/40"
                       />
-                      <span className="text-sm text-white">{u.name}</span>
-                      <span className="text-xs text-[#8B949E]">{u.email}</span>
+                      <span className="text-sm text-slate-800">{u.name}</span>
+                      <span className="text-xs text-slate-500">{u.email}</span>
                     </label>
                   ))}
                 </div>
               )}
             </div>
             {selectedUserIds.length > 0 && (
-              <p className="text-xs text-[#8B949E] mt-1.5">
+              <p className="text-xs text-slate-500 mt-1.5">
                 {selectedUserIds.length} user(s) selected
               </p>
             )}

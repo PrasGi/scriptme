@@ -181,60 +181,60 @@ export default function AiUsagePage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <Bot size={22} className="text-[#7C3AED]" />
           AI Usage
         </h1>
-        <p className="text-sm text-[#8B949E] mt-0.5">
+        <p className="text-sm text-slate-500 mt-0.5">
           All AI chat interactions with token usage and cost (Gemini 2.5 Flash)
         </p>
       </div>
 
       {/* Summary widget with filters */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#161B22] overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
+      <div className="rounded-2xl border border-slate-200/50 bg-white/70 backdrop-blur-md overflow-hidden shadow-sm shadow-slate-200/20">
+        <div className="px-5 py-4 border-b border-slate-200/50 flex items-center gap-2 bg-white/80">
           <BarChart3 size={18} className="text-[#7C3AED]" />
-          <span className="text-sm font-medium text-white">Summary</span>
+          <span className="text-sm font-medium text-slate-800">Summary</span>
         </div>
         <div className="p-5 space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
-              <Filter size={14} className="text-[#8B949E]" />
-              <span className="text-xs text-[#8B949E]">Filters:</span>
+              <Filter size={14} className="text-slate-500" />
+              <span className="text-xs text-slate-500">Filters:</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-[#8B949E] focus:outline-none focus:border-[#7C3AED]/50"
+                className="h-8 px-3 rounded-lg text-xs bg-white/80 border border-slate-200/60 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#7C3AED]/50"
                 placeholder="From"
               />
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-[#8B949E] focus:outline-none focus:border-[#7C3AED]/50"
+                className="h-8 px-3 rounded-lg text-xs bg-white/80 border border-slate-200/60 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#7C3AED]/50"
                 placeholder="To"
               />
               <select
                 value={modeFilter}
                 onChange={(e) => { setModeFilter(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-[#161B22] border border-white/8 text-white focus:outline-none focus:border-[#7C3AED]/50"
+                className="h-8 px-3 rounded-lg text-xs bg-white/80 border border-slate-200/60 text-slate-800 focus:outline-none focus:border-[#7C3AED]/50"
               >
-                <option value="" className="bg-[#161B22] text-white">All modes</option>
+                <option value="">All modes</option>
                 {Object.entries(MODE_LABELS).map(([k, v]) => (
-                  <option key={k} value={k} className="bg-[#161B22] text-white">{v}</option>
+                  <option key={k} value={k}>{v}</option>
                 ))}
               </select>
               <select
                 value={userIdFilter}
                 onChange={(e) => { setUserIdFilter(e.target.value); setPage(1); }}
-                className="h-8 px-3 rounded-lg text-xs bg-[#161B22] border border-white/8 text-white focus:outline-none focus:border-[#7C3AED]/50 min-w-[160px]"
+                className="h-8 px-3 rounded-lg text-xs bg-white/80 border border-slate-200/60 text-slate-800 focus:outline-none focus:border-[#7C3AED]/50 min-w-[160px]"
               >
-                <option value="" className="bg-[#161B22] text-white">All users</option>
+                <option value="">All users</option>
                 {users.map((u) => (
-                  <option key={u.id} value={u.id} className="bg-[#161B22] text-white">{u.name} {u.email ? `(${u.email})` : ''}</option>
+                  <option key={u.id} value={u.id}>{u.name} {u.email ? `(${u.email})` : ''}</option>
                 ))}
               </select>
             </div>
@@ -272,7 +272,7 @@ export default function AiUsagePage() {
               />
             </div>
           ) : (
-            <p className="text-sm text-[#8B949E] py-4">No summary data</p>
+            <p className="text-sm text-slate-500 py-4">No summary data</p>
           )}
         </div>
       </div>
@@ -280,8 +280,8 @@ export default function AiUsagePage() {
       {/* Log list filters */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <Filter size={14} className="text-[#8B949E]" />
-          <span className="text-xs text-[#8B949E]">Mode:</span>
+          <Filter size={14} className="text-slate-500" />
+          <span className="text-xs text-slate-500">Mode:</span>
         </div>
         {(['', 'generate', 'analyze', 'regenerate', 'chat'] as const).map((m) => (
           <button
@@ -291,7 +291,7 @@ export default function AiUsagePage() {
               'px-3 h-8 rounded-lg text-xs font-medium border transition-all',
               modeFilter === m
                 ? 'bg-[#7C3AED]/10 border-[#7C3AED]/30 text-[#7C3AED]'
-                : 'bg-white/[0.03] border-white/[0.06] text-[#8B949E] hover:text-white'
+                : 'bg-white/70 border-slate-200/50 text-slate-600 hover:text-slate-800'
             )}
           >
             {m || 'All'}
@@ -300,18 +300,18 @@ export default function AiUsagePage() {
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0D1117] overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/50 bg-white/70 backdrop-blur-md overflow-hidden shadow-sm shadow-slate-200/20">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
           </div>
         ) : logs.length === 0 ? (
-          <div className="py-16 text-center text-[#8B949E]">
+          <div className="py-16 text-center text-slate-500">
             <MessageSquare size={32} className="mx-auto mb-2 opacity-50" />
             <p>No AI usage recorded yet</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-slate-200/40">
             {logs.map((log) => {
               const isExpanded = expandedId === log._id;
               const inputT  = log.inputTokens ?? 0;
@@ -321,22 +321,22 @@ export default function AiUsagePage() {
                 <div key={log._id} className="overflow-hidden">
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : log._id)}
-                    className="w-full flex items-start gap-4 px-5 py-4 text-left hover:bg-white/[0.02] transition-colors"
+                    className="w-full flex items-start gap-4 px-5 py-4 text-left hover:bg-slate-50/60 transition-colors"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="text-sm font-medium text-white">{userName(log.userId)}</span>
+                        <span className="text-sm font-medium text-slate-800">{userName(log.userId)}</span>
                         {userEmail(log.userId) && (
-                          <span className="text-xs text-[#8B949E]">{userEmail(log.userId)}</span>
+                          <span className="text-xs text-slate-500">{userEmail(log.userId)}</span>
                         )}
                         <Badge variant={MODE_VARIANTS[log.mode] ?? 'default'}>
                           {MODE_LABELS[log.mode] ?? log.mode}
                         </Badge>
                       </div>
-                      <p className="text-xs text-[#8B949E] leading-relaxed line-clamp-2">
+                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
                         {truncate(log.message, 120)}
                       </p>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-[#8B949E]/80">
+                      <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
                         <span className="flex items-center gap-1">
                           <Calendar size={11} />
                           {formatDate(log.createdAt)}
@@ -345,7 +345,7 @@ export default function AiUsagePage() {
                           <Hash size={11} />
                           {formatTokens(inputT)} in · {formatTokens(outputT)} out
                         </span>
-                        <span className="flex items-center gap-1 text-emerald-400/90" title="Estimated cost">
+                        <span className="flex items-center gap-1 text-emerald-600" title="Estimated cost">
                           <Coins size={11} />
                           {formatCost(cost)}
                         </span>
@@ -353,44 +353,44 @@ export default function AiUsagePage() {
                     </div>
                     <ChevronDown
                       size={16}
-                      className={cn('text-[#8B949E] shrink-0 mt-1 transition-transform', isExpanded && 'rotate-180')}
+                      className={cn('text-slate-500 shrink-0 mt-1 transition-transform', isExpanded && 'rotate-180')}
                     />
                   </button>
 
                   {isExpanded && (
-                    <div className="border-t border-white/[0.04] px-5 py-4 bg-[#161B22]/50 space-y-4">
+                    <div className="border-t border-slate-200/40 px-5 py-4 bg-slate-50/60 space-y-4">
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                        <div className="rounded-lg bg-black/20 p-3">
-                          <div className="text-[#8B949E] mb-0.5">Input tokens</div>
-                          <div className="font-mono text-white">{inputT.toLocaleString()}</div>
+                        <div className="rounded-lg bg-white/80 border border-slate-200/50 p-3">
+                          <div className="text-slate-500 mb-0.5">Input tokens</div>
+                          <div className="font-mono text-slate-800">{inputT.toLocaleString()}</div>
                         </div>
-                        <div className="rounded-lg bg-black/20 p-3">
-                          <div className="text-[#8B949E] mb-0.5">Output tokens</div>
-                          <div className="font-mono text-white">{outputT.toLocaleString()}</div>
+                        <div className="rounded-lg bg-white/80 border border-slate-200/50 p-3">
+                          <div className="text-slate-500 mb-0.5">Output tokens</div>
+                          <div className="font-mono text-slate-800">{outputT.toLocaleString()}</div>
                         </div>
-                        <div className="rounded-lg bg-black/20 p-3">
-                          <div className="text-[#8B949E] mb-0.5">Total tokens</div>
-                          <div className="font-mono text-white">{(inputT + outputT).toLocaleString()}</div>
+                        <div className="rounded-lg bg-white/80 border border-slate-200/50 p-3">
+                          <div className="text-slate-500 mb-0.5">Total tokens</div>
+                          <div className="font-mono text-slate-800">{(inputT + outputT).toLocaleString()}</div>
                         </div>
-                        <div className="rounded-lg bg-black/20 p-3">
-                          <div className="text-[#8B949E] mb-0.5">Est. cost (USD)</div>
-                          <div className="font-mono text-emerald-400">{formatCost(cost)}</div>
+                        <div className="rounded-lg bg-white/80 border border-slate-200/50 p-3">
+                          <div className="text-slate-500 mb-0.5">Est. cost (USD)</div>
+                          <div className="font-mono text-emerald-600">{formatCost(cost)}</div>
                         </div>
                       </div>
                       <div>
-                        <div className="text-xs font-medium text-[#8B949E] uppercase mb-1.5">User Input</div>
-                        <pre className="text-xs text-[#E6EDF3] whitespace-pre-wrap break-words max-h-48 overflow-y-auto rounded-lg bg-black/20 p-3">
+                        <div className="text-xs font-medium text-slate-500 uppercase mb-1.5">User Input</div>
+                        <pre className="text-xs text-slate-700 whitespace-pre-wrap break-words max-h-48 overflow-y-auto rounded-lg bg-white/80 border border-slate-200/50 p-3">
                           {log.message || '—'}
                         </pre>
                       </div>
                       <div>
-                        <div className="text-xs font-medium text-[#8B949E] uppercase mb-1.5">AI Response</div>
-                        <pre className="text-xs text-[#E6EDF3] whitespace-pre-wrap break-words max-h-64 overflow-y-auto rounded-lg bg-black/20 p-3">
+                        <div className="text-xs font-medium text-slate-500 uppercase mb-1.5">AI Response</div>
+                        <pre className="text-xs text-slate-700 whitespace-pre-wrap break-words max-h-64 overflow-y-auto rounded-lg bg-white/80 border border-slate-200/50 p-3">
                           {log.response || '—'}
                         </pre>
                       </div>
                       {(log.projectId || log.scriptId) && (
-                        <div className="text-xs text-[#8B949E]">
+                        <div className="text-xs text-slate-500">
                           Project: {log.projectId ?? '—'} · Script: {log.scriptId ?? '—'}
                         </div>
                       )}
@@ -404,22 +404,22 @@ export default function AiUsagePage() {
 
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.06]">
-            <span className="text-xs text-[#8B949E]">
+          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-200/50">
+            <span className="text-xs text-slate-500">
               Page {pagination.page} of {pagination.totalPages} · {pagination.total} total
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="px-3 h-8 rounded-lg text-xs font-medium border border-white/[0.08] text-[#8B949E] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-3 h-8 rounded-lg text-xs font-medium border border-slate-200/60 text-slate-600 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
                 disabled={page >= pagination.totalPages}
-                className="px-3 h-8 rounded-lg text-xs font-medium border border-white/[0.08] text-[#8B949E] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-3 h-8 rounded-lg text-xs font-medium border border-slate-200/60 text-slate-600 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Next
               </button>

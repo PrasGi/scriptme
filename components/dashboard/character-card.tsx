@@ -49,8 +49,8 @@ export function CharacterCard({
   return (
     <div
       className={cn(
-        'rounded-2xl border border-white/[0.06] bg-[#161B22] p-5',
-        'hover:border-white/[0.12] transition-all duration-200 group',
+        'rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-5 shadow-sm shadow-slate-200/20',
+        'hover:border-slate-300/60 hover:bg-white/80 transition-all duration-200 group',
         className
       )}
     >
@@ -63,8 +63,8 @@ export function CharacterCard({
             {avatarInitial ?? name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white">{name}</h3>
-            {platform && <p className="text-xs text-[#8B949E]">{platform}</p>}
+            <h3 className="text-sm font-semibold text-slate-800">{name}</h3>
+            {platform && <p className="text-xs text-slate-500">{platform}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -79,18 +79,18 @@ export function CharacterCard({
                 <button
                   type="button"
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="text-[#8B949E] hover:text-white transition-colors p-1 rounded"
+                  className="text-slate-500 hover:text-slate-800 transition-colors p-1 rounded"
                 >
                   <MoreHorizontal size={16} />
                 </button>
               </Tooltip>
               {menuOpen && (
-                <div className="absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-white/10 bg-[#161B22] shadow-xl z-10">
+                <div className="absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-xl shadow-slate-300/30 z-10">
                   {onEdit && (
                     <button
                       type="button"
                       onClick={() => { setMenuOpen(false); onEdit(); }}
-                      className="w-full px-3 py-2 text-left text-sm text-white hover:bg-white/5 flex items-center gap-2"
+                      className="w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100/80 flex items-center gap-2"
                     >
                       <Pencil size={14} />
                       Edit
@@ -100,7 +100,7 @@ export function CharacterCard({
                     <button
                       type="button"
                       onClick={async () => { setMenuOpen(false); await onDelete(); }}
-                      className="w-full px-3 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2"
+                      className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-red-500/10 flex items-center gap-2"
                     >
                       <Trash2 size={14} />
                       Delete
@@ -114,18 +114,18 @@ export function CharacterCard({
       </div>
 
       {description && (
-        <p className="text-xs text-[#8B949E] leading-relaxed line-clamp-3 mb-4">{description}</p>
+        <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 mb-4">{description}</p>
       )}
 
       {sourceUrl && (
-        <div className="flex items-center gap-1.5 text-xs text-[#8B949E] mb-4 p-2 rounded-lg bg-white/[0.03] border border-white/[0.05]">
-          <Link2 size={11} className="flex-shrink-0" />
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-4 p-2 rounded-lg bg-slate-100/60 border border-slate-200/40">
+          <Link2 size={11} className="shrink-0" />
           <span className="truncate">{sourceUrl}</span>
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-3 border-t border-white/[0.04]">
-        <span className="text-xs text-[#8B949E]">Used in {uses} script{uses !== 1 ? 's' : ''}</span>
+      <div className="flex items-center justify-between pt-3 border-t border-slate-200/40">
+        <span className="text-xs text-slate-500">Used in {uses} script{uses !== 1 ? 's' : ''}</span>
       </div>
 
       {(onApply || onEdit) && (

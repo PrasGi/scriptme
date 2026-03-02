@@ -64,11 +64,11 @@ const EXPORT_FORMATS = [
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0D1117] shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-          <h2 className="text-base font-semibold text-white">{title}</h2>
-          <button onClick={onClose} className="text-[#8B949E] hover:text-white"><X size={18} /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-300/30">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50">
+          <h2 className="text-base font-semibold text-slate-800">{title}</h2>
+          <button onClick={onClose} className="text-slate-500 hover:text-slate-800"><X size={18} /></button>
         </div>
         <div className="p-6">{children}</div>
       </div>
@@ -148,7 +148,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   if (!project) {
     return (
       <div className="text-center py-32">
-        <p className="text-[#8B949E]">Project not found.</p>
+        <p className="text-slate-500">Project not found.</p>
         <Button variant="ghost" className="mt-4" onClick={() => router.push('/projects')}>
           Back to Projects
         </Button>
@@ -159,32 +159,32 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const pst = projectStatusConfig[project.status];
 
   return (
-    <div className="space-y-6 w-full max-w-full">
+    <div className="space-y-6 w-full max-w-full min-w-0">
       {/* Header */}
-      <div className="flex items-start gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-start gap-3">
         <Tooltip content="Back to projects" description="Return to your project list" side="bottom">
           <button
             onClick={() => router.push('/projects')}
-            className="mt-1 p-2 rounded-xl text-[#8B949E] hover:text-white hover:bg-white/[0.05] transition-all"
+            className="mt-1 p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-all"
           >
             <ArrowLeft size={18} />
           </button>
         </Tooltip>
-        <div className="flex-1">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-bold text-white">{project.title}</h1>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-800 truncate min-w-0">{project.title}</h1>
             <Badge variant={pst.variant}>{pst.label}</Badge>
             {project.platform !== 'other' && (
-              <span className="text-xs text-[#8B949E] capitalize">{project.platform}</span>
+              <span className="text-xs text-slate-500 capitalize">{project.platform}</span>
             )}
           </div>
           {project.description && (
-            <p className="text-sm text-[#8B949E] mt-1">{project.description}</p>
+            <p className="text-sm text-slate-500 mt-1">{project.description}</p>
           )}
           {project.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
               {project.tags.map((tag) => (
-                <span key={tag} className="px-2 py-0.5 rounded-md bg-white/[0.05] text-[#8B949E] text-xs">
+                <span key={tag} className="px-2 py-0.5 rounded-md bg-slate-100/80 text-slate-600 text-xs">
                   #{tag}
                 </span>
               ))}
@@ -196,18 +196,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             <Button
               variant="secondary"
               size="sm"
-              className="gap-2"
+              className="gap-1.5 sm:gap-2"
               onClick={() => router.push(`/projects/${id}/edit`)}
             >
               <Edit2 size={14} />
-              Edit Project
+              <span className="hidden sm:inline">Edit</span>
             </Button>
           </Tooltip>
           <Tooltip content="New Script" description="Add a new script to this project" side="bottom">
             <Button
               variant="accent"
               size="sm"
-              className="gap-2"
+              className="gap-1.5 sm:gap-2"
               onClick={() => router.push(`/projects/${id}/scripts/new`)}
             >
               <Plus size={14} />
@@ -220,17 +220,17 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
       {/* Scripts section */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-white">
+          <h2 className="text-sm font-semibold text-slate-800">
             Scripts
-            <span className="ml-2 text-[#8B949E] font-normal">({project.scripts.length})</span>
+            <span className="ml-2 text-slate-500 font-normal">({project.scripts.length})</span>
           </h2>
         </div>
 
         {project.scripts.length === 0 ? (
-          <div className="text-center py-16 rounded-2xl border border-white/[0.06] bg-[#161B22]">
-            <FileText size={32} className="mx-auto mb-3 text-[#8B949E]/40" />
-            <p className="text-sm font-medium text-white mb-1">No scripts yet</p>
-            <p className="text-xs text-[#8B949E] mb-4">Add your first script to this project</p>
+          <div className="text-center py-16 rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md shadow-sm shadow-slate-200/20">
+            <FileText size={32} className="mx-auto mb-3 text-slate-400" />
+            <p className="text-sm font-medium text-slate-800 mb-1">No scripts yet</p>
+            <p className="text-xs text-slate-500 mb-4">Add your first script to this project</p>
             <Button
               variant="accent"
               size="sm"
@@ -249,36 +249,38 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                 <div
                   key={script._id}
                   className={cn(
-                    'flex items-center gap-4 p-4 rounded-2xl border border-white/[0.06] bg-[#161B22]',
-                    'hover:border-white/[0.12] transition-all group'
+                    'flex items-center gap-3 sm:gap-4 px-4 py-3 sm:p-4 rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md',
+                    'hover:border-slate-300/60 hover:bg-white/80 transition-all group shadow-sm shadow-slate-200/20'
                   )}
                 >
                   <div className="w-9 h-9 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center text-[#7C3AED] shrink-0">
                     <FileText size={16} />
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium text-white truncate">{script.title}</span>
-                      <Badge variant={sst.variant} >{sst.label}</Badge>
-                      <span className="text-xs text-[#8B949E]/60">{sourceTypeLabel[script.sourceType] ?? script.sourceType}</span>
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <div className="flex items-center gap-2 flex-wrap gap-y-1">
+                      <span className="text-sm font-medium text-slate-800 truncate min-w-0 max-w-full" title={script.title}>{script.title}</span>
+                      <span className="flex items-center gap-1.5 shrink-0">
+                        <Badge variant={sst.variant}>{sst.label}</Badge>
+                        <span className="text-xs text-slate-500 whitespace-nowrap">{sourceTypeLabel[script.sourceType] ?? script.sourceType}</span>
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 mt-0.5">
-                      <span className="text-xs text-[#8B949E] flex items-center gap-1">
+                      <span className="text-xs text-slate-500 flex items-center gap-1">
                         <FileText size={11} />
                         {script.lines.length} lines
                       </span>
-                      <span className="text-xs text-[#8B949E] flex items-center gap-1">
+                      <span className="text-xs text-slate-500 flex items-center gap-1">
                         <Clock size={11} />
                         {timeAgo(script.updatedAt)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1 sm:gap-2 shrink-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => router.push(`/projects/${id}/scripts/${script._id}`)}
-                      className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.05] transition-all"
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-all"
                       title="Open script"
                     >
                       <ExternalLink size={14} />
@@ -286,7 +288,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                     <button
                       onClick={() => setDeleteTarget(script)}
                       disabled={deleting === script._id}
-                      className="p-1.5 rounded-lg text-[#8B949E] hover:text-red-400 hover:bg-red-500/10 transition-all"
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
                       title="Delete script"
                     >
                       {deleting === script._id
@@ -300,14 +302,14 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                     >
                       <button
                         onClick={() => setExportMenuId((prev) => (prev === script._id ? null : script._id))}
-                        className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/[0.05] transition-all"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 transition-all"
                         title="Export options"
                       >
                         <MoreHorizontal size={14} />
                       </button>
                       {exportMenuId === script._id && (
-                        <div className="absolute right-0 top-full mt-1 w-44 rounded-xl border border-white/8 bg-[#161B22] shadow-xl z-10 overflow-hidden">
-                          <div className="px-3 py-2 text-xs font-medium text-[#8B949E] border-b border-white/[0.06] flex items-center gap-1.5">
+                        <div className="absolute right-0 top-full mt-1 w-44 rounded-xl border border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-xl shadow-slate-300/30 z-10 overflow-hidden">
+                          <div className="px-3 py-2 text-xs font-medium text-slate-500 border-b border-slate-200/50 flex items-center gap-1.5">
                             <Download size={12} />
                             Export
                           </div>
@@ -315,7 +317,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                             <button
                               key={f.value}
                               onClick={() => exportScript(script._id, f.value)}
-                              className="w-full text-left px-4 py-2.5 text-sm text-[#8B949E] hover:text-white hover:bg-white/5 transition-colors"
+                              className="w-full text-left px-4 py-2.5 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-50/80 transition-colors"
                             >
                               {f.label}
                             </button>
@@ -336,9 +338,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         <Modal title="Delete Script" onClose={() => setDeleteTarget(null)}>
           <div className="space-y-4">
             <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-              <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-[#8B949E]">
-                Delete script <span className="text-white font-medium">{deleteTarget.title}</span>? This action cannot be undone.
+              <AlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
+              <p className="text-sm text-slate-600">
+                Delete script <span className="text-slate-800 font-medium">{deleteTarget.title}</span>? This action cannot be undone.
               </p>
             </div>
             <div className="flex justify-end gap-2">

@@ -118,10 +118,10 @@ export default function DashboardPage() {
       {/* Header: greeting + primary CTA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-slate-800">
             {greeting}, {stats.userName} 👋
           </h1>
-          <p className="text-sm text-[#8B949E] mt-0.5">Overview of your content pipeline</p>
+          <p className="text-sm text-slate-500 mt-0.5">Overview of your content pipeline</p>
         </div>
         <Link href="/projects/new">
           <Button variant="accent" size="md" className="gap-2 shrink-0">
@@ -140,7 +140,7 @@ export default function DashboardPage() {
 
       {/* Quick Actions — above Recent Projects */}
       <div>
-        <h2 className="text-base font-semibold text-white mb-3">Quick Actions</h2>
+        <h2 className="text-base font-semibold text-slate-800 mb-3">Quick Actions</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {quickActions.map((action) => {
             const Icon = action.icon;
@@ -148,7 +148,7 @@ export default function DashboardPage() {
               <Link
                 key={action.label}
                 href={action.href}
-                className="flex items-center gap-4 p-4 rounded-2xl border border-white/6 bg-[#161B22] hover:border-white/12 hover:bg-white/4 transition-all group"
+                className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md hover:border-slate-300/60 hover:bg-white/80 transition-all group shadow-sm shadow-slate-200/20"
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
@@ -157,10 +157,10 @@ export default function DashboardPage() {
                   <Icon size={22} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium text-white group-hover:text-[#7C3AED] transition-colors">
+                  <div className="text-sm font-medium text-slate-800 group-hover:text-[#7C3AED] transition-colors">
                     {action.label}
                   </div>
-                  <div className="text-xs text-[#8B949E] truncate">{action.desc}</div>
+                  <div className="text-xs text-slate-500 truncate">{action.desc}</div>
                 </div>
               </Link>
             );
@@ -171,16 +171,16 @@ export default function DashboardPage() {
       {/* Recent projects */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-white">Recent Projects</h2>
+          <h2 className="text-base font-semibold text-slate-800">Recent Projects</h2>
           <Link href="/projects" className="flex items-center gap-1 text-sm text-[#7C3AED] hover:underline">
             View all <ArrowRight size={14} />
           </Link>
         </div>
         {stats.recentProjects.length === 0 ? (
-          <div className="rounded-2xl border border-white/6 bg-[#161B22] p-12 text-center">
-            <FileText size={32} className="mx-auto mb-3 text-[#8B949E]/40" />
-            <p className="text-sm font-medium text-white mb-1">No projects yet</p>
-            <p className="text-xs text-[#8B949E] mb-4">Create your first project to get started</p>
+          <div className="rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-md p-12 text-center shadow-sm shadow-slate-200/20">
+            <FileText size={32} className="mx-auto mb-3 text-slate-400" />
+            <p className="text-sm font-medium text-slate-800 mb-1">No projects yet</p>
+            <p className="text-xs text-slate-500 mb-4">Create your first project to get started</p>
             <Link href="/projects/new">
               <Button variant="accent" size="sm" className="gap-2">
                 <Plus size={13} />
@@ -208,19 +208,19 @@ export default function DashboardPage() {
       </div>
 
       {/* AI tip */}
-      <div className="rounded-2xl border border-[#7C3AED]/20 bg-[#7C3AED]/5 p-6">
+      <div className="rounded-2xl border border-[#7C3AED]/25 bg-[#7C3AED]/[0.07] backdrop-blur-md shadow-sm shadow-slate-200/20 p-6">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/20 flex items-center justify-center text-[#7C3AED] shrink-0">
             <TrendingUp size={18} />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-white mb-1">Tip from ScriptMe AI</h3>
-            <p className="text-sm text-[#8B949E] leading-relaxed">
+            <h3 className="text-sm font-semibold text-slate-800 mb-1">Tip from ScriptMe AI</h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
               Your best-performing scripts start with a pattern-interrupt hook in the first 3 seconds.
               Try opening your next video with a shocking statistic or a bold counter-intuitive statement.
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-[#8B949E] shrink-0">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 shrink-0">
             <Clock size={12} />
             <span>Just now</span>
           </div>
