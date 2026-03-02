@@ -170,3 +170,76 @@ body {
   padding: 0;
   background: none;
 }
+
+/* driver.js tutorial popover — purple accent theme */
+.script-tutorial-popover {
+  background: #ffffff;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  border-radius: 16px;
+  box-shadow:
+    0 20px 50px rgba(124, 58, 237, 0.12),
+    0 8px 20px rgba(0, 0, 0, 0.06);
+  padding: 0;
+  max-width: 340px;
+}
+.script-tutorial-popover .driver-popover-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  padding: 18px 20px 4px;
+  letter-spacing: -0.01em;
+}
+.script-tutorial-popover .driver-popover-description {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #475569;
+  padding: 4px 20px 6px;
+  letter-spacing: 0.005em;
+}
+.script-tutorial-popover .driver-popover-close-btn {
+  color: #94a3b8;
+  font-size: 18px;
+  top: 14px;
+  right: 14px;
+}
+.script-tutorial-popover .driver-popover-close-btn:hover {
+  color: #475569;
+}
+.script-tutorial-popover .driver-popover-footer {
+  padding: 10px 20px 16px;
+  border-top: none;
+}
+.script-tutorial-popover .driver-popover-progress-text {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.script-tutorial-popover .driver-popover-prev-btn,
+.script-tutorial-popover .driver-popover-next-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-shadow: none;
+}
+.script-tutorial-popover .driver-popover-prev-btn {
+  background: #f1f5f9;
+  color: #475569;
+}
+.script-tutorial-popover .driver-popover-prev-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+.script-tutorial-popover .driver-popover-next-btn {
+  background: #7C3AED;
+  color: #ffffff;
+}
+.script-tutorial-popover .driver-popover-next-btn:hover {
+  background: #6D28D9;
+}
+.script-tutorial-popover .driver-popover-arrow {
+  border: 1px solid rgba(124, 58, 237, 0.1);
+}

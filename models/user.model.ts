@@ -14,6 +14,7 @@ export interface IUser extends Document {
   isActive:        boolean;
   deletedAt:       Date | null;  // soft delete — null means active
   emailVerified:   Date | null;
+  tutorialCompleted: boolean;
   createdAt:       Date;
   updatedAt:       Date;
   comparePassword(candidate: string): Promise<boolean>;
@@ -33,6 +34,7 @@ const UserSchema = new Schema<IUser>(
     isActive:      { type: Boolean, default: true },
     deletedAt:     { type: Date, default: null },
     emailVerified: { type: Date, default: null },
+    tutorialCompleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

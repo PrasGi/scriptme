@@ -8,13 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
   ArrowLeft, FilePlus, Loader2, Link2, Bot, User, Send, Save, Sparkles,
-  Download, ChevronDown, Check, AlertTriangle, X, Trash2, BookOpen, UserCircle2, Undo2, Redo2, Pencil,
+  Download, ChevronDown, Check, AlertTriangle, X, Trash2, BookOpen, UserCircle2, Undo2, Redo2, Pencil, HelpCircle,
 } from 'lucide-react';
 import { cn, stripHtml } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/tooltip';
 import { parseScriptLines, hasTimestampedScript } from '@/lib/parse-script';
 import { ScriptLineEditor, type ScriptLine, type AnalyzeLine } from '@/components/script/script-line-editor';
 import { ReadModeModal } from '@/components/script/read-mode-modal';
+import { ScriptTutorial } from '@/components/script/script-tutorial';
 import ReactMarkdown from 'react-markdown';
 
 interface ChatContext {
@@ -124,6 +125,9 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
   const TITLE_MAX_LENGTH = 80;
   const TITLE_DISPLAY_MAX = 36;
 
+  const [showTutorial, setShowTutorial] = useState(false);
+  const tutorialChecked = useRef(false);
+
   const lastSavedRef = useRef<string | null>(null);
   const actionHandledRef = useRef(false);
 
@@ -212,6 +216,21 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
       .then((r) => r.json())
       .then((json) => {
         if (json.success) setAiSessionId(json.data.sessionId);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (tutorialChecked.current) return;
+    tutorialChecked.current = true;
+    fetch('/api/users/tutorial')
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.success && j.data?.tutorialCompleted) {
+          // already completed — skip
+        } else {
+          setShowTutorial(true);
+        }
       })
       .catch(() => {});
   }, []);
@@ -1162,6 +1181,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {isCreate ? (
             <Button
+              id="tour-save-btn"
               variant="secondary"
               size="sm"
               disabled={!canSave || saving || !!atCreateScriptLimit}
@@ -1174,6 +1194,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
           ) : (
             <Tooltip content="Save" description="Save your script changes" side="bottom">
               <Button
+                id="tour-save-btn"
                 variant="secondary"
                 size="sm"
                 onClick={() => saveScriptEdit()}
@@ -1192,7 +1213,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
             </Tooltip>
           )}
 
-          <div className="relative shrink-0" ref={exportRef}>
+          <div id="tour-export-btn" className="relative shrink-0" ref={exportRef}>
             <Tooltip content="Export" description="Download as TXT, JSON, Word, or PDF" side="bottom">
               <Button
                 variant="ghost"
@@ -1226,7 +1247,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
 
           <div className="h-6 w-px bg-slate-200/80 shrink-0 mx-0.5" aria-hidden />
 
-          <div className="relative" ref={characterRef}>
+          <div id="tour-character-select" className="relative" ref={characterRef}>
             {!characterOpen ? (
               <Tooltip content="Character" description="Used as context for AI" side="bottom">
                 <button
@@ -1317,6 +1338,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
 
           {isCreate ? (
             <Button
+              id="tour-analyze-btn"
               variant="ghost"
               size="sm"
               onClick={() => ensureSavedAndRedirect('analyze')}
@@ -1329,6 +1351,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
           ) : (
             <Tooltip content="Analyze" description="Get AI feedback and suggestions for each line" side="bottom">
               <Button
+                id="tour-analyze-btn"
                 variant="ghost"
                 size="sm"
                 onClick={runAnalyze}
@@ -1355,6 +1378,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
 
           <Tooltip content="Read mode" description="Preview your script in a focused reading view" side="bottom">
             <Button
+              id="tour-readmode-btn"
               variant="ghost"
               size="sm"
               onClick={openReadMode}
@@ -1365,12 +1389,26 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
               <span className="hidden sm:inline">Read mode</span>
             </Button>
           </Tooltip>
+
+          <div className="h-6 w-px bg-slate-200/80 shrink-0 mx-0.5" aria-hidden />
+
+          <Tooltip content="Tutorial" description="Replay the guided tour of the editor" side="bottom">
+            <button
+              id="tour-help-btn"
+              type="button"
+              onClick={() => setShowTutorial(true)}
+              className="p-2 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-all shrink-0"
+            >
+              <HelpCircle size={16} />
+            </button>
+          </Tooltip>
         </div>
       </header>
 
       <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
         <div className="flex-1 flex flex-col min-w-0 min-h-0 lg:max-w-[45%] order-last lg:order-first">
           <div
+            id="tour-ai-chat"
             className={cn(
               'mt-6 rounded-2xl border bg-white/70 backdrop-blur-md overflow-hidden flex-1 flex flex-col min-h-0 shadow-sm shadow-slate-200/20 transition-colors',
               chatDragOver
@@ -1726,7 +1764,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
           )}
         </div>
 
-        <aside className="w-full lg:min-w-[55%] lg:flex-1 shrink-0 order-first lg:order-last flex flex-col min-h-0">
+        <aside id="tour-script-lines" className="w-full lg:min-w-[55%] lg:flex-1 shrink-0 order-first lg:order-last flex flex-col min-h-0">
           <div className="mt-4 flex-1 min-h-0 flex flex-col">
             {/* Toolbar */}
             <div className="flex items-center justify-between gap-2 flex-wrap pb-2 mb-1 border-b border-slate-200/40 shrink-0">
@@ -1796,6 +1834,11 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
         onClose={() => setReadModeOpen(false)}
         title={title || (script?.title ?? 'Script')}
         lines={lines}
+      />
+
+      <ScriptTutorial
+        shouldRun={showTutorial}
+        onComplete={() => setShowTutorial(false)}
       />
 
       {tiktokModalOpen && (

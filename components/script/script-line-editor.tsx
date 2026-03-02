@@ -101,6 +101,7 @@ export function ScriptLineEditor({
           return (
             <div
               key={i}
+              {...(i === 0 ? { id: 'tour-first-line' } : {})}
               className={cn(
                 'group/line relative transition-colors hover:bg-slate-50/50',
                 isDragging && 'opacity-40'
@@ -120,6 +121,7 @@ export function ScriptLineEditor({
                   {/* Add to AI chat */}
                   <button
                     type="button"
+                    {...(i === 0 ? { id: 'tour-add-to-chat' } : {})}
                     draggable
                     onDragStart={(e) => handleDragStart(e, i)}
                     onDragEnd={handleDragEnd}
@@ -166,7 +168,10 @@ export function ScriptLineEditor({
                   />
 
                   {/* Actions — show on line hover */}
-                  <div className="flex items-center gap-0.5 pt-1.5 shrink-0 opacity-0 group-hover/line:opacity-100 transition-opacity">
+                  <div
+                    {...(i === 0 ? { id: 'tour-line-actions' } : {})}
+                    className="flex items-center gap-0.5 pt-1.5 shrink-0 opacity-0 group-hover/line:opacity-100 transition-opacity"
+                  >
                     {/* Flag trigger */}
                     <button
                       type="button"
