@@ -64,7 +64,7 @@ Two Cloudflare Workers must be deployed before using this library:
 | **Worker 2** — TikTok proxy | Same as Worker 1 but sends TikTok-specific browser headers to avoid bot-blocking | `CLOUDFLARE_TIKTOK_URL` |
 
 Worker 2 sets the following headers on every outgoing request:
-- `User-Agent` — Chrome 125 on Windows
+- `User-Agent` — Chrome on Windows (see `docs/tiktok-proxy-worker.js` for a ready-to-deploy script)
 - `Referer: https://www.tiktok.com/`
 - `sec-ch-ua`, `sec-ch-ua-mobile`, `sec-ch-ua-platform`
 - `Sec-Fetch-Dest`, `Sec-Fetch-Mode`, `Sec-Fetch-Site`

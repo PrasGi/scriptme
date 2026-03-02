@@ -457,9 +457,6 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
       } catch { /* try next */ }
     }
     return null;
-    } catch {
-      return null;
-    }
   }
 
   interface LineEdit {
@@ -483,9 +480,6 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
       } catch { /* try next */ }
     }
     return null;
-    } catch {
-      return null;
-    }
   }
 
   function applyFlagUpdatesToLines(
