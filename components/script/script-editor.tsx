@@ -434,8 +434,12 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
   function messageContentForDisplay(aiText: string): string {
     return aiText
       .replace(/```[\s\S]*?```/g, (block) => (block.includes('flagUpdates') || block.includes('lineEdits') ? '' : block))
-      .replace(/\{\s*"lineEdits"\s*:\s*\[[\s\S]*?\]\s*\}/g, '')
-      .replace(/\{\s*"flagUpdates"\s*:\s*\[[\s\S]*?\]\s*\}/g, '')
+      // Greedy match so whole array is removed (non-greedy left partial JSON visible)
+      .replace(/\{\s*"lineEdits"\s*:\s*\[[\s\S]*\]\s*\}/g, '')
+      .replace(/\{\s*"flagUpdates"\s*:\s*\[[\s\S]*\]\s*\}/g, '')
+      // Strip truncated/incomplete JSON at end (e.g. streamed response cut off)
+      .replace(/\n?\s*\{\s*"lineEdits"\s*:\s*\[[\s\S]*$/g, '')
+      .replace(/\n?\s*\{\s*"flagUpdates"\s*:\s*\[[\s\S]*$/g, '')
       .replace(/\n{3,}/g, '\n\n')
       .trim();
   }
