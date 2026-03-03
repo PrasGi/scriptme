@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, use } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, use } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,7 @@ import { Tooltip } from '@/components/ui/tooltip';
 import {
   ArrowLeft, Plus, FileText, Clock, Loader2,
   MoreHorizontal, Trash2, ExternalLink, Edit2,
-  AlertTriangle, X, Download,
+  AlertTriangle, X, Download, Braces, FileType, FileImage,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -56,10 +57,10 @@ const sourceTypeLabel: Record<string, string> = {
 };
 
 const EXPORT_FORMATS = [
-  { value: 'txt',  label: 'Plain Text (.txt)' },
-  { value: 'json', label: 'JSON (.json)' },
-  { value: 'docx', label: 'Word (.docx)' },
-  { value: 'pdf',  label: 'PDF (.pdf)' },
+  { value: 'txt',  label: 'Plain text',  description: 'Timestamped .txt',       icon: FileText },
+  { value: 'json', label: 'JSON',        description: 'Structured data',        icon: Braces },
+  { value: 'docx', label: 'Word document', description: 'Editable .docx',      icon: FileType },
+  { value: 'pdf',  label: 'PDF',         description: 'Print-ready with logo',    icon: FileImage },
 ];
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
@@ -96,7 +97,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const [deleting,       setDeleting]       = useState<string | null>(null);
   const [deleteTarget,   setDeleteTarget]   = useState<Script | null>(null);
   const [exportMenuId,   setExportMenuId]   = useState<string | null>(null);
+  const [exportMenuRect, setExportMenuRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const exportMenuRef    = useRef<HTMLDivElement | null>(null);
+  const exportDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (exportMenuId) {
+      const rect = exportMenuRef.current?.getBoundingClientRect();
+      setExportMenuRect(rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : null);
+    } else {
+      setExportMenuRect(null);
+    }
+  }, [exportMenuId]);
 
   useEffect(() => {
     fetch(`/api/projects/${id}`)
@@ -108,9 +120,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
 
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
-        setExportMenuId(null);
-      }
+      const target = e.target as Node;
+      if (
+        exportMenuRef.current?.contains(target) ||
+        exportDropdownRef.current?.contains(target)
+      ) return;
+      setExportMenuId(null);
     }
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -307,23 +322,6 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                       >
                         <MoreHorizontal size={14} />
                       </button>
-                      {exportMenuId === script._id && (
-                        <div className="absolute right-0 top-full mt-1 w-44 rounded-xl border border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-xl shadow-slate-300/30 z-10 overflow-hidden">
-                          <div className="px-3 py-2 text-xs font-medium text-slate-500 border-b border-slate-200/50 flex items-center gap-1.5">
-                            <Download size={12} />
-                            Export
-                          </div>
-                          {EXPORT_FORMATS.map((f) => (
-                            <button
-                              key={f.value}
-                              onClick={() => exportScript(script._id, f.value)}
-                              className="w-full text-left px-4 py-2.5 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-50/80 transition-colors"
-                            >
-                              {f.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -332,6 +330,43 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           </div>
         )}
       </div>
+
+      {/* Export dropdown portal */}
+      {exportMenuId && exportMenuRect && typeof document !== 'undefined' && createPortal(
+        <div
+          ref={exportDropdownRef}
+          className="fixed min-w-[220px] w-56 rounded-xl border border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-xl shadow-slate-300/30 z-[9999] overflow-hidden py-2"
+          style={{
+            top: exportMenuRect.top + exportMenuRect.height + 4,
+            left: Math.max(8, exportMenuRect.left + exportMenuRect.width - 224),
+          }}
+        >
+          <div className="px-3 py-1.5 mb-1 text-xs font-medium text-slate-500 flex items-center gap-1.5">
+            <Download size={12} />
+            Export
+          </div>
+          {EXPORT_FORMATS.map((f) => {
+            const Icon = f.icon;
+            return (
+              <button
+                key={f.value}
+                type="button"
+                onClick={() => exportScript(exportMenuId, f.value)}
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg mx-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100/80">
+                  <Icon size={16} className="text-slate-600" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-sm">{f.label}</p>
+                  <p className="text-xs text-slate-500 truncate">{f.description}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>,
+        document.body
+      )}
 
       {/* Delete script confirmation */}
       {deleteTarget && (

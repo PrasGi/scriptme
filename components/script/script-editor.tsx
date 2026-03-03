@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowLeft, FilePlus, Loader2, Link2, Bot, User, Send, Save, Sparkles,
   Download, ChevronDown, Check, AlertTriangle, X, Trash2, BookOpen, UserCircle2, Undo2, Redo2, Pencil, HelpCircle,
+  FileText, Braces, FileType, FileImage,
 } from 'lucide-react';
 import { cn, stripHtml } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -50,10 +51,10 @@ interface Script {
 }
 
 const EXPORT_FORMATS = [
-  { value: 'txt', label: 'Plain Text (.txt)' },
-  { value: 'json', label: 'JSON (.json)' },
-  { value: 'docx', label: 'Word (.docx)' },
-  { value: 'pdf', label: 'PDF (.pdf)' },
+  { value: 'txt', label: 'Plain text', description: 'Timestamped .txt', icon: FileText },
+  { value: 'json', label: 'JSON', description: 'Structured data', icon: Braces },
+  { value: 'docx', label: 'Word document', description: 'Editable .docx', icon: FileType },
+  { value: 'pdf', label: 'PDF', description: 'Print-ready with logo', icon: FileImage },
 ];
 
 export interface ScriptEditorProps {
@@ -103,7 +104,9 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
   const [implementingItem, setImplementingItem] = useState<AnalyzeLine | null>(null);
 
   const [exportOpen, setExportOpen] = useState(false);
+  const [exportDropdownRect, setExportDropdownRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
+  const exportDropdownRef = useRef<HTMLDivElement>(null);
   const [characterOpen, setCharacterOpen] = useState(false);
   const characterRef = useRef<HTMLDivElement>(null);
   const characterDropdownRef = useRef<HTMLDivElement>(null);
@@ -260,10 +263,21 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
     }
   }, [aiMessages, aiLoading, pendingLineEdits]);
 
+  useLayoutEffect(() => {
+    if (exportOpen && exportRef.current) {
+      const rect = exportRef.current.getBoundingClientRect();
+      setExportDropdownRect({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+    } else {
+      setExportDropdownRect(null);
+    }
+  }, [exportOpen]);
+
   useEffect(() => {
     function handler(e: MouseEvent) {
       const target = e.target as HTMLElement;
-      if (exportRef.current && !exportRef.current.contains(target)) setExportOpen(false);
+      const inExportTrigger = exportRef.current?.contains(target);
+      const inExportDropdown = exportDropdownRef.current?.contains(target);
+      if (!inExportTrigger && !inExportDropdown) setExportOpen(false);
       const inCharacterTrigger = characterRef.current?.contains(target);
       const inCharacterDropdown = target.closest?.('[data-character-dropdown]');
       if (!inCharacterTrigger && !inCharacterDropdown) setCharacterOpen(false);
@@ -1238,24 +1252,42 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
                 <ChevronDown size={12} className="hidden sm:block shrink-0" />
               </Button>
             </Tooltip>
-            {exportOpen && (
-              <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl border border-slate-200/60 bg-white shadow-xl shadow-slate-300/40 z-20 overflow-hidden py-1.5">
-                {EXPORT_FORMATS.map((f) => (
+          </div>
+          {exportOpen && exportDropdownRect && typeof document !== 'undefined' && createPortal(
+            <div
+              ref={exportDropdownRef}
+              className="fixed min-w-[240px] w-64 rounded-2xl border border-slate-200/60 bg-white shadow-xl shadow-slate-300/40 z-[9999] overflow-hidden py-2"
+              style={{
+                top: exportDropdownRect.top + exportDropdownRect.height + 8,
+                left: Math.max(8, exportDropdownRect.left + exportDropdownRect.width - 256),
+              }}
+            >
+              {EXPORT_FORMATS.map((f) => {
+                const Icon = f.icon;
+                return (
                   <button
                     key={f.value}
+                    type="button"
                     onClick={() => {
                       setExportOpen(false);
                       if (isCreate) ensureSavedAndRedirect('export', f.value);
                       else exportScript(f.value);
                     }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-slate-600 hover:text-slate-800 hover:bg-[#7C3AED]/5 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl mx-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors"
                   >
-                    {f.label}
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100/80">
+                      <Icon size={18} className="text-slate-600" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm">{f.label}</p>
+                      <p className="text-xs text-slate-500 truncate">{f.description}</p>
+                    </div>
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
+                );
+              })}
+            </div>,
+            document.body
+          )}
 
           <div className="h-6 w-px bg-slate-200/80 shrink-0 mx-0.5" aria-hidden />
 
