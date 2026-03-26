@@ -38,7 +38,14 @@ export function getCorsAllowedOrigin(req: NextRequest): string | null {
       const app = new URL(authUrl);
       if (u.origin === app.origin) return origin;
     }
-    if (u.hostname === 'scriptme.id' || u.hostname.endsWith('.scriptme.id')) return origin;
+    if (
+      u.hostname === 'scriptme.id' ||
+      u.hostname.endsWith('.scriptme.id') ||
+      u.hostname === 'scriptme.cloud' ||
+      u.hostname.endsWith('.scriptme.cloud')
+    ) {
+      return origin;
+    }
   } catch {
     return null;
   }
