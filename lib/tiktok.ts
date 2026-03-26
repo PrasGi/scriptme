@@ -49,10 +49,7 @@ export async function fetchTikTokPage(tiktokVideoUrl: string): Promise<string> {
   if (!worker) throw new Error('CLOUDFLARE_TIKTOK_URL is not configured');
 
   const res = await fetch(`${worker}?url=${encodeURIComponent(tiktokVideoUrl)}`);
-  // #region agent log
   const bodyText = await res.text();
-  fetch('http://127.0.0.1:7444/ingest/41f18561-93f4-4bf7-95f1-47f94826092a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a096b4'},body:JSON.stringify({sessionId:'a096b4',runId:'rerun_headers_probe',location:'tiktok.ts:fetchTikTokPage',message:'Worker 2 response',data:{status:res.status,ok:res.ok,htmlLen:bodyText.length,contentType:res.headers.get('content-type'),server:res.headers.get('server'),cfRay:res.headers.get('cf-ray'),cfCacheStatus:res.headers.get('cf-cache-status'),finalUrl:res.url,challengeMarkers:{hasSlardarWaf:bodyText.includes('SlardarWAF'),hasTiktokLoginStatic:bodyText.includes('tiktok_web_login_static'),hasPleaseWait:bodyText.includes('Please wait')},snippet:bodyText.slice(0,400)},hypothesisId:'H6,H7,H8',timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
   if (!res.ok) {
     throw new Error(`Worker 2 returned ${res.status}: ${bodyText}`);
   }
@@ -66,9 +63,6 @@ export function extractVideoData(html: string): TikTokVideoMeta {
   const match = html.match(
     /<script[^>]+id=["']__UNIVERSAL_DATA_FOR_REHYDRATION__["'][^>]*>([\s\S]*?)<\/script>/i
   );
-  // #region agent log
-  fetch('http://127.0.0.1:7444/ingest/41f18561-93f4-4bf7-95f1-47f94826092a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a096b4'},body:JSON.stringify({sessionId:'a096b4',location:'tiktok.ts:extractVideoData',message:'Rehydration script check',data:{scriptFound:!!match?.[1]},hypothesisId:'H2',timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
   if (!match?.[1]) {
     throw new Error('Could not find __UNIVERSAL_DATA_FOR_REHYDRATION__ script tag in page HTML');
   }
@@ -81,16 +75,10 @@ export function extractVideoData(html: string): TikTokVideoMeta {
     (scope?.['webapp.video-detail'] as Record<string, unknown>)
     ?? (scope?.['webapp.rehydration'] as Record<string, unknown>)
   );
-  // #region agent log
-  fetch('http://127.0.0.1:7444/ingest/41f18561-93f4-4bf7-95f1-47f94826092a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a096b4'},body:JSON.stringify({sessionId:'a096b4',location:'tiktok.ts:extractVideoData',message:'JSON scope check',data:{topLevelKeys:Object.keys(json),scopeKeys:scope?Object.keys(scope):null,hasVideoDetail:!!videoDetail},hypothesisId:'H3',timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
   if (!videoDetail) throw new Error('webapp.video-detail not found in JSON scope');
 
   const itemInfo  = videoDetail['itemInfo'] as Record<string, unknown>;
   const itemStruct = (itemInfo?.['itemStruct'] ?? videoDetail['itemStruct']) as Record<string, unknown>;
-  // #region agent log
-  fetch('http://127.0.0.1:7444/ingest/41f18561-93f4-4bf7-95f1-47f94826092a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a096b4'},body:JSON.stringify({sessionId:'a096b4',location:'tiktok.ts:extractVideoData',message:'itemStruct check',data:{hasItemStruct:!!itemStruct,videoDetailKeys:Object.keys(videoDetail)},hypothesisId:'H4',timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
   if (!itemStruct) throw new Error('itemStruct not found in video detail');
 
   const video  = itemStruct['video'] as Record<string, unknown>;
@@ -161,9 +149,6 @@ export async function getTikTokTranscript(
 ): Promise<TranscriptResult> {
   // 1. Fetch page
   const html = await fetchTikTokPage(tiktokVideoUrl);
-  // #region agent log
-  fetch('http://127.0.0.1:7444/ingest/41f18561-93f4-4bf7-95f1-47f94826092a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a096b4'},body:JSON.stringify({sessionId:'a096b4',location:'tiktok.ts:getTikTokTranscript',message:'After fetchTikTokPage',data:{htmlLen:html.length,hasRehydration:html.includes('__UNIVERSAL_DATA_FOR_REHYDRATION__')},hypothesisId:'H1,H2',timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
 
   // Detect TikTok login/WAF page (Slardar) — return clearer error than generic "couldn't parse"
   if (!html.includes('__UNIVERSAL_DATA_FOR_REHYDRATION__') && (html.includes('SlardarWAF') || html.includes('tiktok_web_login'))) {

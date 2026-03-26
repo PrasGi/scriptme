@@ -22,22 +22,6 @@ export async function getAuthSession(): Promise<Session | null> {
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
   const h = await headers();
 
-  // #region agent log
-  const authzPresent = Boolean(h.get('authorization') ?? h.get('Authorization'));
-  fetch('http://127.0.0.1:7444/ingest/c52b058c-998f-46c8-a602-4c73a0ed7fc0', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'dd82dd' },
-    body: JSON.stringify({
-      sessionId: 'dd82dd',
-      location: 'lib/auth-session.ts:getAuthSession',
-      message: 'headers snapshot',
-      data: { authzPresent, hypothesisId: 'H-bearer-decode' },
-      timestamp: Date.now(),
-      hypothesisId: 'H-bearer-decode',
-    }),
-  }).catch(() => {});
-  // #endregion
-
   if (secret) {
     const authz = h.get('authorization') ?? h.get('Authorization');
     if (authz?.startsWith('Bearer ')) {
@@ -64,24 +48,7 @@ export async function getAuthSession(): Promise<Session | null> {
               expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             };
           }
-        } catch (e) {
-          // #region agent log
-          fetch('http://127.0.0.1:7444/ingest/c52b058c-998f-46c8-a602-4c73a0ed7fc0', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'dd82dd' },
-            body: JSON.stringify({
-              sessionId: 'dd82dd',
-              location: 'lib/auth-session.ts:decode',
-              message: 'Bearer JWT decode threw',
-              data: {
-                err: e instanceof Error ? e.message : 'unknown',
-                hypothesisId: 'H-decode',
-              },
-              timestamp: Date.now(),
-              hypothesisId: 'H-decode',
-            }),
-          }).catch(() => {});
-          // #endregion
+        } catch {
           /* fall through to getToken / auth */
         }
       }

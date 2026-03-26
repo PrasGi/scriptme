@@ -117,28 +117,6 @@ export async function POST(req: NextRequest) {
       maxAge: 30 * 24 * 60 * 60,
     });
 
-    // #region agent log
-    fetch('http://127.0.0.1:7444/ingest/c52b058c-998f-46c8-a602-4c73a0ed7fc0', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'dd82dd' },
-      body: JSON.stringify({
-        sessionId: 'dd82dd',
-        location: 'app/api/mobile/login/route.ts:POST',
-        message: 'mobile login Set-Cookie',
-        data: {
-          cookieName,
-          secure,
-          sameSite,
-          crossSite,
-          origin: req.headers.get('origin') ?? '',
-          hypothesisId: 'H5',
-        },
-        timestamp: Date.now(),
-        hypothesisId: 'H5',
-      }),
-    }).catch(() => {});
-    // #endregion
-
     return res;
   } catch (err) {
     console.error('[mobile/login]', err);
