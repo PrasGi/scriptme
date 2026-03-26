@@ -13,6 +13,9 @@ import {
   getCorsAllowedOrigin,
 } from '@/lib/cors';
 
+/** Must match `encode({ salt })` in `/api/mobile/login` — not the `__Secure-authjs.session-token` cookie name. */
+const AUTH_JWT_SALT = 'authjs.session-token';
+
 const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
 
 /** Routes that require a specific permission to access */
@@ -58,11 +61,18 @@ export default async function middleware(req: NextRequest) {
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
   const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? true;
   // getToken only reads headers; avoid `new NextRequest(...)` here — it breaks Next 16 / next-auth typings in CI.
-  const token = await getToken({
-    req: { headers: mergedHeaders } as NextRequest,
-    secret: secret!,
-    secureCookie: useSecureCookies,
-  });
+  const token =
+    (await getToken({
+      req: { headers: mergedHeaders } as NextRequest,
+      secret: secret!,
+      secureCookie: useSecureCookies,
+      salt: AUTH_JWT_SALT,
+    })) ??
+    (await getToken({
+      req: { headers: mergedHeaders } as NextRequest,
+      secret: secret!,
+      secureCookie: useSecureCookies,
+    }));
 
   if (!token) {
     if (pathname.startsWith('/api/')) {
