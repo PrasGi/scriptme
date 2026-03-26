@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, notFound, created, forbidden, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Project from '@/models/project.model';
@@ -13,7 +13,7 @@ type Params = { params: Promise<{ id: string }> };
  * Create a new script inside a project.
  */
 export async function POST(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id: projectId } = await params;

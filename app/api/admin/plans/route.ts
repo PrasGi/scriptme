@@ -4,13 +4,13 @@
  * POST /api/admin/plans
  * Admin — create plan.
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, badRequest, created, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Plan from '@/models/plan.model';
 
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   const perms = (session.user as { permissions?: string[] }).permissions ?? [];
   if (!perms.includes('role:read:all')) return forbidden('Admin required');
@@ -25,7 +25,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   const perms = (session.user as { permissions?: string[] }).permissions ?? [];
   if (!perms.includes('role:read:all')) return forbidden('Admin required');

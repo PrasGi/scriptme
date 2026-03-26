@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
@@ -13,7 +13,7 @@ interface Ctx { params: Promise<{ id: string }> }
  * Users who signed up via OAuth (no password) cannot use this.
  */
 export async function PATCH(req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;

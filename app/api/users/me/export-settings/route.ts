@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, unauthorized, badRequest, serverError } from '@/lib/response';
@@ -8,7 +8,7 @@ const FORMALITY_VALUES: ExportFormality[] = ['minimal', 'standard', 'formal'];
 
 /** GET /api/users/me/export-settings — get current user's export settings */
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {
@@ -41,7 +41,7 @@ export async function GET() {
 
 /** PUT /api/users/me/export-settings — update current user's export settings */
 export async function PUT(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: {

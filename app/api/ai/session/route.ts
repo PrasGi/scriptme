@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, created, serverError } from '@/lib/response';
 import { createAiSession } from '@/lib/ai-agent';
 import { randomUUID } from 'crypto';
@@ -9,7 +9,7 @@ import { randomUUID } from 'crypto';
  * Returns a sessionId the client uses for all subsequent /api/ai/chat calls.
  */
 export async function POST() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {

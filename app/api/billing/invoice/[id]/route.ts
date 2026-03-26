@@ -2,7 +2,7 @@
  * GET /api/billing/invoice/[id]
  * Returns invoice PDF for a transaction.
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, notFound, badRequest } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Transaction from '@/models/transaction.model';
@@ -31,7 +31,7 @@ const PAGE_HEIGHT = 842;
 const MARGIN = 50;
 
 export async function GET(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;

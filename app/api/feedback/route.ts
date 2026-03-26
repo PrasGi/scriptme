@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, created, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Feedback from '@/models/feedback.model';
@@ -8,7 +8,7 @@ import Feedback from '@/models/feedback.model';
  * Submit feedback from the current user (shown to admin).
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: { message?: string };

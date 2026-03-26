@@ -2,7 +2,7 @@
  * POST /api/admin/transactions/[id]/complete
  * Admin — set transaction completed, grant subscription, increment voucher usage.
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, ok, notFound, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Transaction from '@/models/transaction.model';
@@ -13,7 +13,7 @@ import { Types } from 'mongoose';
 type Params = { params: Promise<{ id: string }> };
 
 export async function POST(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   const perms = (session.user as { permissions?: string[] }).permissions ?? [];
   if (!perms.includes('role:read:all')) return forbidden('Admin required');

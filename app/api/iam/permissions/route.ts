@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, created, unauthorized, forbidden, badRequest, serverError } from '@/lib/response';
@@ -6,7 +6,7 @@ import Permission from '@/models/permission.model';
 
 /** GET /api/iam/permissions — list all permissions */
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('permission:read:all')) return forbidden();
 
@@ -29,7 +29,7 @@ export async function GET() {
 
 /** POST /api/iam/permissions — create a new permission */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('permission:create:all')) return forbidden();
 

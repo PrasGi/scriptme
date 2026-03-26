@@ -2,12 +2,12 @@
  * GET /api/billing/usage
  * Returns token usage for current billing period (month).
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, ok, serverError } from '@/lib/response';
 import { getEffectivePlan, checkTokenLimit } from '@/lib/subscription';
 
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { ok, unauthorized } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import User from '@/models/user.model';
@@ -10,7 +10,7 @@ import { getUserPermissions } from '@/lib/permissions';
  * Returns the current authenticated user with resolved permissions.
  */
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   await connectDB();

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import AiChatLog from '@/models/ai-chat-log.model';
@@ -10,7 +10,7 @@ import { computeUsage } from '@/lib/ai-cost';
  * Query: page=1, limit=20, userId=..., mode=...
  */
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const perms = session.user.permissions ?? [];

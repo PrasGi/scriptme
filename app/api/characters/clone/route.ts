@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, forbidden, created, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Character from '@/models/character.model';
@@ -15,7 +15,7 @@ import { randomUUID } from 'crypto';
  * Body: { url: string, lang?: string }
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: { url?: string; lang?: string };

@@ -1,10 +1,10 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { ok, unauthorized, serverError } from '@/lib/response';
 import User from '@/models/user.model';
 
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {
@@ -17,7 +17,7 @@ export async function GET() {
 }
 
 export async function PATCH() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {

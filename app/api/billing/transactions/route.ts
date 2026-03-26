@@ -2,14 +2,14 @@
  * GET /api/billing/transactions
  * Returns transaction history for the user.
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Transaction from '@/models/transaction.model';
 import { Types } from 'mongoose';
 
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { searchParams } = new URL(req.url);

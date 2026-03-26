@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Feedback from '@/models/feedback.model';
@@ -9,7 +9,7 @@ import Feedback from '@/models/feedback.model';
  * Requires user:read:all (admin).
  */
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const perms = (session.user.permissions as string[] | undefined) ?? [];

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, notFound, badRequest, forbidden, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Script from '@/models/script.model';
@@ -66,7 +66,7 @@ const COLORS = {
  * pdf  — styled PDF with logo and script content
  */
 export async function GET(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id: projectId, sid } = await params;

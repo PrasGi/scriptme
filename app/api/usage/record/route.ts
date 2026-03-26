@@ -3,14 +3,14 @@
  * Record usage for a limit-counted action (e.g. read_mode). Check limit first, then increment.
  * Body: { action: 'read_mode' }
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, forbidden, ok, serverError } from '@/lib/response';
 import { checkActionLimit, incrementActionUsage, type PlanActionName } from '@/lib/subscription';
 
 const ALLOWED_ACTIONS: PlanActionName[] = ['read_mode'];
 
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: { action?: string };

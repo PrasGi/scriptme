@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Project from '@/models/project.model';
@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
  * Search projects, scripts, and characters (scoped to own data unless admin).
  */
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const url = new URL(req.url);

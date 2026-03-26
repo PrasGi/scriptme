@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, badRequest, created, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Notification from '@/models/notification.model';
@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
  * Requires user:read:all (admin).
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const perms = session.user.permissions ?? [];

@@ -3,7 +3,7 @@
  * Create pending transaction (plan, months, optional coupon). Returns transaction summary.
  * Body: { planSlug, months, couponCode? }
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Plan from '@/models/plan.model';
@@ -19,7 +19,7 @@ function computeBaseAmount(plan: { priceMonthly: number | null; discount1Month?:
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: { planSlug?: string; months?: number; couponCode?: string };

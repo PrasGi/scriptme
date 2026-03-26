@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
@@ -10,7 +10,7 @@ interface Ctx { params: Promise<{ id: string }> }
 
 /** GET /api/iam/roles/[id] */
 export async function GET(_req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('role:read:all')) return forbidden();
 
@@ -28,7 +28,7 @@ export async function GET(_req: Request, { params }: Ctx) {
 
 /** PUT /api/iam/roles/[id] */
 export async function PUT(req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('role:update:all')) return forbidden();
 
@@ -54,7 +54,7 @@ export async function PUT(req: Request, { params }: Ctx) {
 
 /** DELETE /api/iam/roles/[id] */
 export async function DELETE(_req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('role:delete:all')) return forbidden();
 

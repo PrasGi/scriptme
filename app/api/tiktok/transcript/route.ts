@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, badRequest, ok } from '@/lib/response';
 import { getTikTokTranscript } from '@/lib/tiktok';
 import { logger } from '@/lib/logger';
@@ -11,7 +11,7 @@ import { checkActionLimit, incrementActionUsage } from '@/lib/subscription';
  * Authenticated users; plan limit applies (admins with role:read:all bypass limit).
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const isAdmin = (session.user.permissions ?? []).includes('role:read:all');

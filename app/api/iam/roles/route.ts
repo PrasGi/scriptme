@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, created, unauthorized, forbidden, badRequest, serverError } from '@/lib/response';
@@ -6,7 +6,7 @@ import Role from '@/models/role.model';
 
 /** GET /api/iam/roles — list all roles */
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const perms = session.user.permissions ?? [];
@@ -30,7 +30,7 @@ export async function GET() {
 
 /** POST /api/iam/roles — create a new role */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const perms = session.user.permissions ?? [];

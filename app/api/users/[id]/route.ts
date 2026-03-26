@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
@@ -10,7 +10,7 @@ interface Ctx { params: Promise<{ id: string }> }
 
 /** GET /api/users/[id] */
 export async function GET(_req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;
@@ -49,7 +49,7 @@ export async function GET(_req: Request, { params }: Ctx) {
 
 /** PUT /api/users/[id] — update name, email, roleId, isActive */
 export async function PUT(req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;
@@ -103,7 +103,7 @@ export async function PUT(req: Request, { params }: Ctx) {
 
 /** DELETE /api/users/[id] — soft delete (sets deletedAt + isActive=false) */
 export async function DELETE(_req: Request, { params }: Ctx) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;

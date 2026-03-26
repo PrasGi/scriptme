@@ -2,14 +2,14 @@
  * GET /api/admin/transactions
  * Admin — list transactions with filters.
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Transaction from '@/models/transaction.model';
 import { Types } from 'mongoose';
 
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   const perms = (session.user as { permissions?: string[] }).permissions ?? [];
   if (!perms.includes('role:read:all')) return forbidden('Admin required');

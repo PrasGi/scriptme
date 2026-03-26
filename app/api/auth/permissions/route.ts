@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { ok, unauthorized, badRequest } from '@/lib/response';
 import { getUserPermissions, hasPermission } from '@/lib/permissions';
 
@@ -12,7 +12,7 @@ import { getUserPermissions, hasPermission } from '@/lib/permissions';
  *   → returns { has: true|false }
  */
 export async function GET(req: NextRequest) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { searchParams } = new URL(req.url);

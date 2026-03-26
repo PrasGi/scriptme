@@ -3,7 +3,7 @@
  * Admin — grant subscription to user (months or days).
  * Body: { planId, months?, days? }
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, badRequest, ok, notFound, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import User from '@/models/user.model';
@@ -14,7 +14,7 @@ import { Types } from 'mongoose';
 type Params = { params: Promise<{ id: string }> };
 
 export async function POST(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   const perms = (session.user as { permissions?: string[] }).permissions ?? [];
   if (!perms.includes('role:read:all')) return forbidden('Admin required');

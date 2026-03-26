@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, notFound, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import { decrementActionUsage } from '@/lib/subscription';
@@ -13,7 +13,7 @@ type Params = { params: Promise<{ id: string }> };
  * Get a project and its scripts.
  */
 export async function GET(_req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;
@@ -45,7 +45,7 @@ export async function GET(_req: Request, { params }: Params) {
  * Update a project's fields.
  */
 export async function PATCH(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;
@@ -91,7 +91,7 @@ export async function PATCH(req: Request, { params }: Params) {
  * Soft-delete a project (and its scripts).
  */
 export async function DELETE(_req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id } = await params;

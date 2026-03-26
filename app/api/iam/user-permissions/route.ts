@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, created, unauthorized, forbidden, badRequest, serverError } from '@/lib/response';
@@ -12,7 +12,7 @@ import mongoose, { Types } from 'mongoose';
  * Optional query: ?userId=<id>
  */
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('user:read:all')) return forbidden();
 
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
  * Body: { userId, permissionId, granted }
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('user:update:all')) return forbidden();
 

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, forbidden } from '@/lib/response';
 import { runAgent, createAiSession, type AiMode } from '@/lib/ai-agent';
 import { connectDB } from '@/lib/db';
@@ -27,7 +27,7 @@ import { checkFeatureAccess, checkTokenLimit, getEffectivePlan } from '@/lib/sub
  *   data: {"error":"..."}   — error occurred
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   const userId = session.user.id;
 

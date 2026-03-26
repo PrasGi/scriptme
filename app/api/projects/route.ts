@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, created, forbidden, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Project from '@/models/project.model';
@@ -10,7 +10,7 @@ import type { ProjectPlatform } from '@/models/project.model';
  * List all active projects for the authenticated user, with script count per project.
  */
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {
@@ -49,7 +49,7 @@ export async function GET() {
  * Create a new project.
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: { title?: string; description?: string; platform?: ProjectPlatform; tags?: string[] };

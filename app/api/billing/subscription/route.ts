@@ -2,13 +2,13 @@
  * GET /api/billing/subscription
  * Returns current subscription and effective plan for the user.
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, ok, serverError } from '@/lib/response';
 import { getUserSubscription, getEffectivePlan } from '@/lib/subscription';
 import { connectDB } from '@/lib/db';
 
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {

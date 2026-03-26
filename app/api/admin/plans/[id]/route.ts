@@ -3,7 +3,7 @@
  * PUT /api/admin/plans/[id]
  * DELETE /api/admin/plans/[id]
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, badRequest, ok, notFound, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Plan from '@/models/plan.model';
@@ -11,7 +11,7 @@ import Plan from '@/models/plan.model';
 type Params = { params: Promise<{ id: string }> };
 
 async function ensureAdmin() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return { error: unauthorized() };
   const perms = (session.user as { permissions?: string[] }).permissions ?? [];
   if (!perms.includes('role:read:all')) return { error: forbidden('Admin required') };

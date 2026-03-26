@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, badRequest, created, forbidden, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Character from '@/models/character.model';
@@ -11,7 +11,7 @@ import type { CharacterPlatform } from '@/models/character.model';
  * Query: sourceType=cloned|custom (optional)
  */
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { searchParams } = new URL(req.url);
@@ -43,7 +43,7 @@ export async function GET(req: Request) {
  * Body: { name, description, platform?, accentColor? }
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   let body: {

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, notFound, ok, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import Feedback from '@/models/feedback.model';
@@ -11,7 +11,7 @@ type Params = { params: Promise<{ id: string }> };
  * Requires user:read:all (admin).
  */
 export async function PATCH(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const perms = (session.user.permissions as string[] | undefined) ?? [];

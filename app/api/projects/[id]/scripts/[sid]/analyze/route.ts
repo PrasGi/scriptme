@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import { checkFeatureAccess, checkTokenLimit, checkActionLimit, incrementActionUsage, getEffectivePlan } from '@/lib/subscription';
@@ -19,7 +19,7 @@ type ScriptLine = { startTime: string; endTime: string; text: string };
  * Body: { lines?: ScriptLine[]; characterId?: string } — use current lines and optionally the character selected in the UI (for style consistency).
  */
 export async function POST(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id: projectId, sid } = await params;

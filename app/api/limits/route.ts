@@ -2,12 +2,12 @@
  * GET /api/limits
  * Returns current user's action limit status for actions that the UI needs (e.g. create script).
  */
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { ok, unauthorized, serverError } from '@/lib/response';
 import { checkActionLimit } from '@/lib/subscription';
 
 export async function GET() {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   try {

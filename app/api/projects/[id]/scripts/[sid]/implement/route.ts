@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { unauthorized, forbidden, notFound, badRequest, serverError } from '@/lib/response';
 import { connectDB } from '@/lib/db';
 import { checkFeatureAccess, checkTokenLimit, getEffectivePlan } from '@/lib/subscription';
@@ -19,7 +19,7 @@ type Params = { params: Promise<{ id: string; sid: string }> };
  * Body: { lineIndex: number, suggestion: string, text: string, scriptContext: string }
  */
 export async function POST(req: Request, { params }: Params) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
 
   const { id: projectId, sid } = await params;

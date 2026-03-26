@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/auth-session';
 import { connectDB } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ok, created, unauthorized, forbidden, badRequest, conflict, serverError } from '@/lib/response';
@@ -12,7 +12,7 @@ import mongoose, { Types } from 'mongoose';
  * Optional query: ?roleId=<id>
  */
 export async function GET(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('role:read:all')) return forbidden();
 
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
  * Body: { roleId, permissionId }
  */
 export async function POST(req: Request) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) return unauthorized();
   if (!(session.user.permissions ?? []).includes('role:update:all')) return forbidden();
 
