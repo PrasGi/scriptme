@@ -57,9 +57,9 @@ export default async function middleware(req: NextRequest) {
 
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
   const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? true;
-  const fauxReq = new NextRequest(req.url, { headers: mergedHeaders, method: req.method });
+  // getToken only reads headers; avoid `new NextRequest(...)` here — it breaks Next 16 / next-auth typings in CI.
   const token = await getToken({
-    req: fauxReq,
+    req: { headers: mergedHeaders } as NextRequest,
     secret: secret!,
     secureCookie: useSecureCookies,
   });
