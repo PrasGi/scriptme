@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { X, Play, Square, ChevronDown, ChevronUp, BookOpen, Clock } from 'lucide-react';
-import { cn, stripHtml } from '@/lib/utils';
+import { X, Play, Square, ChevronDown, ChevronUp, BookOpen, Video } from 'lucide-react';
+import { RecordModeModal } from '@/components/script/record-mode-modal';
+import { cn } from '@/lib/utils';
 import { parseTimestampToSeconds } from '@/lib/parse-script';
 
 export interface ScriptLine {
@@ -20,6 +21,7 @@ interface ReadModeModalProps {
 }
 
 export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalProps) {
+  const [recordOpen, setRecordOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -87,6 +89,7 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
     if (index < 0 || index >= lines.length) return;
     const start = parseTimestampToSeconds(lines[index].startTime);
     if (isPlaying) {
+      /* eslint-disable-next-line react-hooks/purity -- seek sync uses wall clock in click handler */
       startTimeRef.current = performance.now() - start * 1000;
     }
     setCurrentTime(start);
@@ -147,7 +150,17 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-end">
+              {lines.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setRecordOpen(true)}
+                  className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium bg-white/10 text-white/90 hover:bg-white/15 ring-1 ring-white/10 transition-all"
+                >
+                  <Video size={13} />
+                  Record
+                </button>
+              )}
               {hasTimestamps && (
                 <>
                   <button
@@ -315,6 +328,14 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
           </div>
         </div>
       </div>
+
+      {recordOpen && (
+        <RecordModeModal
+          onClose={() => setRecordOpen(false)}
+          title={title}
+          lines={lines}
+        />
+      )}
     </div>
   );
 }
