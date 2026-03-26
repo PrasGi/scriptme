@@ -30,6 +30,7 @@
     "docx": "^9.5.3",
     "driver.js": "^1.4.0",
     "framer-motion": "^12.34.3",
+    "google-auth-library": "^9.15.1",
     "ioredis": "^5.9.3",
     "lucide-react": "^0.575.0",
     "mongoose": "^9.2.1",

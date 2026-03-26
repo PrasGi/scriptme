@@ -8,44 +8,49 @@ import { NextRequest, NextResponse } from 'next/server';
 import { encode } from '@auth/core/jwt';
 import bcrypt from 'bcryptjs';
 import { Types } from 'mongoose';
+import { applyCorsHeaders, handleCorsPreflight, jsonWithCors } from '@/lib/cors';
 import { connectDB } from '@/lib/db';
 import User from '@/models/user.model';
 import { getUserPermissions } from '@/lib/permissions';
 
 const AUTH_SALT = 'authjs.session-token';
 
+export async function OPTIONS(req: NextRequest) {
+  return handleCorsPreflight(req);
+}
+
 export async function POST(req: NextRequest) {
   let body: { email?: string; password?: string };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ success: false, message: 'Invalid JSON' }, { status: 400 });
+    return jsonWithCors(req, { success: false, message: 'Invalid JSON' }, { status: 400 });
   }
 
   const email = (body.email ?? '').trim().toLowerCase();
   const password = body.password ?? '';
   if (!email || !password) {
-    return NextResponse.json({ success: false, message: 'email and password required' }, { status: 400 });
+    return jsonWithCors(req, { success: false, message: 'email and password required' }, { status: 400 });
   }
 
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
   if (!secret) {
-    return NextResponse.json({ success: false, message: 'Server misconfigured' }, { status: 500 });
+    return jsonWithCors(req, { success: false, message: 'Server misconfigured' }, { status: 500 });
   }
 
   try {
     await connectDB();
     const user = await User.findOne({ email }).select('+password').populate('roleId').lean();
     if (!user) {
-      return NextResponse.json({ success: false, message: 'Invalid email or password' }, { status: 401 });
+      return jsonWithCors(req, { success: false, message: 'Invalid email or password' }, { status: 401 });
     }
     if (!user.isActive) {
-      return NextResponse.json({ success: false, message: 'Invalid email or password' }, { status: 401 });
+      return jsonWithCors(req, { success: false, message: 'Invalid email or password' }, { status: 401 });
     }
 
     const valid = await bcrypt.compare(password, user.password ?? '');
     if (!valid) {
-      return NextResponse.json({ success: false, message: 'Invalid email or password' }, { status: 401 });
+      return jsonWithCors(req, { success: false, message: 'Invalid email or password' }, { status: 401 });
     }
 
     const populated = user.roleId as unknown as { _id: Types.ObjectId; name: string };
@@ -87,6 +92,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    applyCorsHeaders(req, res);
+
     res.cookies.set(cookieName, jwt, {
       httpOnly: true,
       secure: useHttps,
@@ -98,6 +105,6 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (err) {
     console.error('[mobile/login]', err);
-    return NextResponse.json({ success: false, message: 'Sign-in failed' }, { status: 500 });
+    return jsonWithCors(req, { success: false, message: 'Sign-in failed' }, { status: 500 });
   }
 }

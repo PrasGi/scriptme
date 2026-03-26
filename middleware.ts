@@ -6,6 +6,12 @@ import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+import {
+  applyCorsHeaders,
+  corsHeadersForOrigin,
+  getCorsAllowedOrigin,
+} from '@/lib/cors';
+
 const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
 
 /** Routes that require a specific permission to access */
@@ -15,42 +21,8 @@ const PERMISSION_GUARDED: Array<{ prefix: string; permission: string }> = [
   { prefix: '/admin/transcript-test', permission: 'role:read:all' },
 ];
 
-function getAllowedOrigin(req: NextRequest): string | null {
-  const origin = req.headers.get('origin');
-  if (!origin) return null;
-  try {
-    const u = new URL(origin);
-    if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') return origin;
-    const authUrl = process.env.NEXTAUTH_URL || process.env.AUTH_URL;
-    if (authUrl) {
-      const app = new URL(authUrl);
-      if (u.origin === app.origin) return origin;
-    }
-    if (u.hostname === 'scriptme.id' || u.hostname.endsWith('.scriptme.id')) return origin;
-  } catch {
-    return null;
-  }
-  return null;
-}
-
-function buildCorsHeaders(origin: string): Record<string, string> {
-  return {
-    'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers':
-      'Content-Type, Authorization, Cookie, X-Requested-With',
-  };
-}
-
 function withCors(res: NextResponse, req: NextRequest): NextResponse {
-  const origin = getAllowedOrigin(req);
-  if (origin) {
-    const h = buildCorsHeaders(origin);
-    for (const [k, v] of Object.entries(h)) {
-      res.headers.set(k, v);
-    }
-  }
+  applyCorsHeaders(req, res);
   return res;
 }
 
@@ -59,11 +31,11 @@ export default async function middleware(req: NextRequest) {
 
   // Browser CORS preflight for API (e.g. Flutter web on localhost → HTTPS API)
   if (pathname.startsWith('/api/') && req.method === 'OPTIONS') {
-    const origin = getAllowedOrigin(req);
+    const origin = getCorsAllowedOrigin(req);
     if (!origin) {
       return new NextResponse(null, { status: 403 });
     }
-    return new NextResponse(null, { status: 204, headers: buildCorsHeaders(origin) });
+    return new NextResponse(null, { status: 204, headers: corsHeadersForOrigin(origin) });
   }
 
   const isPublic =

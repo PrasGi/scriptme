@@ -373,6 +373,7 @@ function RegisterForm() {
 | `POST` | `/api/auth/[...nextauth]` | No | NextAuth handler (login, OAuth, signout, session) |
 | `POST` | `/api/auth/register` | No | Create a new user account |
 | `POST` | `/api/mobile/login` | No | **Mobile (Flutter)**: JSON `{ email, password }` — sets the same Auth.js session cookie as credentials login |
+| `POST` | `/api/mobile/auth/google` | No | **Mobile (Flutter)**: JSON `{ idToken }` — verifies Google ID token, syncs user like web Google OAuth, sets session cookie |
 | `GET` | `/api/auth/me` | Yes | Returns current user + resolved permissions |
 | `GET` | `/api/auth/permissions` | Yes | List all permissions or check a single one |
 
@@ -397,6 +398,18 @@ Success (`200`):
 ```
 
 Failure: `401` with `{ "success": false, "message": "Invalid email or password" }`.
+
+### `POST /api/mobile/auth/google`
+
+For native/mobile clients using **Google Sign-In**. Verifies the ID token with `google-auth-library` (audiences: `AUTH_GOOGLE_ID` and optional `AUTH_GOOGLE_ANDROID_CLIENT_ID` / `AUTH_GOOGLE_IOS_CLIENT_ID`), then **find-or-create / link** the user the same way as the Google OAuth `signIn` callback in `auth.ts`.
+
+Request body:
+
+```json
+{ "idToken": "<Google ID token>" }
+```
+
+Requires **`AUTH_GOOGLE_ID`** (and matching Flutter `GOOGLE_CLIENT_ID` / `serverClientId`) on the server. Success response shape matches `POST /api/mobile/login`.
 
 ### `POST /api/auth/register`
 
