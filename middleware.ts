@@ -6,6 +6,7 @@ import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+import { mergeBearerIntoCookieHeaders } from '@/lib/bearer-session-cookie';
 import {
   applyCorsHeaders,
   corsHeadersForOrigin,
@@ -28,6 +29,7 @@ function withCors(res: NextResponse, req: NextRequest): NextResponse {
 
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const mergedHeaders = mergeBearerIntoCookieHeaders(req);
 
   // Browser CORS preflight for API (e.g. Flutter web on localhost → HTTPS API)
   if (pathname.startsWith('/api/') && req.method === 'OPTIONS') {
@@ -49,14 +51,15 @@ export default async function middleware(req: NextRequest) {
     pathname.includes('.');
 
   if (isPublic) {
-    const res = NextResponse.next();
+    const res = NextResponse.next({ request: { headers: mergedHeaders } });
     return pathname.startsWith('/api/') ? withCors(res, req) : res;
   }
 
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
   const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? true;
+  const fauxReq = new NextRequest(req.url, { headers: mergedHeaders, method: req.method });
   const token = await getToken({
-    req,
+    req: fauxReq,
     secret: secret!,
     secureCookie: useSecureCookies,
   });
@@ -97,7 +100,7 @@ export default async function middleware(req: NextRequest) {
     }
   }
 
-  const res = NextResponse.next();
+  const res = NextResponse.next({ request: { headers: mergedHeaders } });
   return pathname.startsWith('/api/') ? withCors(res, req) : res;
 }
 

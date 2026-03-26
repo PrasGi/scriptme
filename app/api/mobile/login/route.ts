@@ -84,15 +84,27 @@ export async function POST(req: NextRequest) {
     const secure = useSameSiteNone ? true : useHttps;
     const cookieName = secure ? '__Secure-authjs.session-token' : 'authjs.session-token';
 
+    const data: {
+      id: string;
+      name: string;
+      email: string;
+      roleName: string;
+      sessionToken?: string;
+    } = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      roleName,
+    };
+    // Flutter web: browsers may block cross-site cookies; client sends Authorization Bearer instead.
+    if (req.headers.get('origin')) {
+      data.sessionToken = jwt;
+    }
+
     const res = NextResponse.json({
       success: true,
       message: 'Signed in',
-      data: {
-        id: user._id.toString(),
-        name: user.name,
-        email: user.email,
-        roleName,
-      },
+      data,
     });
 
     applyCorsHeaders(req, res);

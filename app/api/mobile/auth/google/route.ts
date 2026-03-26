@@ -109,15 +109,26 @@ export async function POST(req: NextRequest) {
     const secure = useSameSiteNone ? true : useHttps;
     const cookieName = secure ? '__Secure-authjs.session-token' : 'authjs.session-token';
 
+    const data: {
+      id: string;
+      name: string;
+      email: string;
+      roleName: string;
+      sessionToken?: string;
+    } = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      roleName: user.roleName,
+    };
+    if (req.headers.get('origin')) {
+      data.sessionToken = jwt;
+    }
+
     const res = NextResponse.json({
       success: true,
       message: 'Signed in',
-      data: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        roleName: user.roleName,
-      },
+      data,
     });
 
     applyCorsHeaders(req, res);
