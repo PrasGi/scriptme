@@ -6,6 +6,9 @@ import { RecordModeModal } from '@/components/script/record-mode-modal';
 import { cn } from '@/lib/utils';
 import { parseTimestampToSeconds } from '@/lib/parse-script';
 
+/** Set to `true` to show Record (camera + screen) in read mode again. */
+const SHOW_RECORD_IN_READ_MODE = false;
+
 export interface ScriptLine {
   startTime: string;
   endTime: string;
@@ -21,7 +24,6 @@ interface ReadModeModalProps {
 }
 
 export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalProps) {
-  const [recordOpen, setRecordOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -151,15 +153,8 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap justify-end">
-              {lines.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setRecordOpen(true)}
-                  className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium bg-white/10 text-white/90 hover:bg-white/15 ring-1 ring-white/10 transition-all"
-                >
-                  <Video size={13} />
-                  Record
-                </button>
+              {SHOW_RECORD_IN_READ_MODE && lines.length > 0 && (
+                <ReadModeRecordControls title={title} lines={lines} />
               )}
               {hasTimestamps && (
                 <>
@@ -328,7 +323,22 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
+function ReadModeRecordControls({ title, lines }: { title: string; lines: ScriptLine[] }) {
+  const [recordOpen, setRecordOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setRecordOpen(true)}
+        className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium bg-white/10 text-white/90 hover:bg-white/15 ring-1 ring-white/10 transition-all"
+      >
+        <Video size={13} />
+        Record
+      </button>
       {recordOpen && (
         <RecordModeModal
           onClose={() => setRecordOpen(false)}
@@ -336,6 +346,6 @@ export function ReadModeModal({ isOpen, onClose, title, lines }: ReadModeModalPr
           lines={lines}
         />
       )}
-    </div>
+    </>
   );
 }

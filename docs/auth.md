@@ -372,8 +372,31 @@ function RegisterForm() {
 |---|---|---|---|
 | `POST` | `/api/auth/[...nextauth]` | No | NextAuth handler (login, OAuth, signout, session) |
 | `POST` | `/api/auth/register` | No | Create a new user account |
+| `POST` | `/api/mobile/login` | No | **Mobile (Flutter)**: JSON `{ email, password }` — sets the same Auth.js session cookie as credentials login |
 | `GET` | `/api/auth/me` | Yes | Returns current user + resolved permissions |
 | `GET` | `/api/auth/permissions` | Yes | List all permissions or check a single one |
+
+### `POST /api/mobile/login`
+
+For native apps that cannot run the browser NextAuth flow. Validates email/password the same way as the credentials provider, issues an encrypted JWT session cookie (`authjs.session-token` or `__Secure-authjs.session-token` on HTTPS).
+
+Request body:
+
+```json
+{ "email": "user@example.com", "password": "Secret@123" }
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "message": "Signed in",
+  "data": { "id": "...", "name": "...", "email": "...", "roleName": "creator" }
+}
+```
+
+Failure: `401` with `{ "success": false, "message": "Invalid email or password" }`.
 
 ### `POST /api/auth/register`
 
