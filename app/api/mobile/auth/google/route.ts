@@ -9,6 +9,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { applyCorsHeaders, handleCorsPreflight, jsonWithCors } from '@/lib/cors';
 import { getUserPermissions } from '@/lib/permissions';
 import { syncGoogleUserFromGoogleAccount } from '@/lib/sync-google-oauth-user';
+import { useSecureSessionCookies } from '@/lib/mobile-session-cookie';
 
 const AUTH_SALT = 'authjs.session-token';
 
@@ -101,9 +102,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const useHttps =
-      process.env.NEXTAUTH_URL?.startsWith('https://') ??
-      (process.env.VERCEL === '1' || process.env.NODE_ENV === 'production');
+    const useHttps = useSecureSessionCookies(req);
     const cookieName = useHttps ? '__Secure-authjs.session-token' : 'authjs.session-token';
 
     const res = NextResponse.json({
