@@ -23,7 +23,7 @@ export async function PATCH(
     const notification = await Notification.findOneAndUpdate(
       { _id: id, userId: session.user.id },
       { $set: { readAt: new Date() } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!notification) return forbidden('Notification not found');

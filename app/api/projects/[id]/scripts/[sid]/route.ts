@@ -71,7 +71,7 @@ export async function PATCH(req: Request, { params }: Params) {
           ...(body.analyzeResult !== undefined && { analyzeResult: body.analyzeResult ?? null }),
         },
       },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!script) return notFound('Script not found');
@@ -96,7 +96,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     const script = await Script.findOneAndUpdate(
       { _id: sid, projectId, userId: session.user.id, deletedAt: null },
       { $set: { deletedAt: new Date() } },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!script) return notFound('Script not found');

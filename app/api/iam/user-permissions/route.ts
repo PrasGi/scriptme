@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     const up = await UserPermission.findOneAndUpdate(
       { userId: new Types.ObjectId(userId), permissionId: new Types.ObjectId(permissionId) },
       { $set: { granted: Boolean(granted) } },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     logger.info('User permission override set', {

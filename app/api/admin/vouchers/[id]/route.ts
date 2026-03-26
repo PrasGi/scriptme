@@ -59,7 +59,7 @@ export async function PUT(req: Request, { params }: Params) {
     if (body.planIds !== undefined) update.planIds = Array.isArray(body.planIds) ? body.planIds.map((x) => new Types.ObjectId(x as string)) : [];
     if (body.isActive !== undefined) update.isActive = Boolean(body.isActive);
 
-    const voucher = await Voucher.findByIdAndUpdate(id, update, { new: true }).lean();
+    const voucher = await Voucher.findByIdAndUpdate(id, update, { returnDocument: 'after' }).lean();
     if (!voucher) return notFound('Voucher not found');
     return ok('Voucher updated', voucher);
   } catch (err) {

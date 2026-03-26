@@ -80,7 +80,7 @@ import('../models/permission.model').then(async ({ default: Permission }) => {
     const perm = await Permission.findOneAndUpdate(
       { resource: def.resource, action: def.action, scope: def.scope },
       { $setOnInsert: def },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
     savedPerms.set(`${def.resource}:${def.action}:${def.scope}`, perm._id);
   }
@@ -102,7 +102,7 @@ import('../models/permission.model').then(async ({ default: Permission }) => {
     const role = await Role.findOneAndUpdate(
       { name: def.name },
       { $setOnInsert: def },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
     savedRoles.set(def.name, role._id);
   }

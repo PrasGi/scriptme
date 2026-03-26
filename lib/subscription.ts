@@ -218,7 +218,7 @@ export async function incrementActionUsage(
   await PlanActionUsage.findOneAndUpdate(
     { userId: new Types.ObjectId(userId as string), period },
     { $inc: { [field]: 1 } },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: 'after' }
   );
 }
 

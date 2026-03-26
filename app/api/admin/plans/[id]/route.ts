@@ -71,7 +71,7 @@ export async function PUT(req: Request, { params }: Params) {
         ...(body.limitReadMode !== undefined && { limitReadMode: body.limitReadMode === null || body.limitReadMode === '' ? null : (Number(body.limitReadMode) || null) }),
         ...(body.limitCharacterCreate !== undefined && { limitCharacterCreate: body.limitCharacterCreate === null || body.limitCharacterCreate === '' ? null : (Number(body.limitCharacterCreate) || null) }),
       },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
     if (!plan) return notFound('Plan not found');
     return ok('Plan updated', plan);

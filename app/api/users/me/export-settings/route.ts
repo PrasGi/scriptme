@@ -77,7 +77,7 @@ export async function PUT(req: Request) {
     const doc = await ExportSettings.findOneAndUpdate(
       { userId: session.user.id },
       { $set: update },
-      { new: true, upsert: true, runValidators: true }
+      { returnDocument: 'after', upsert: true, runValidators: true }
     ).lean();
 
     return ok('Export settings saved', {

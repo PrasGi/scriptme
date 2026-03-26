@@ -24,7 +24,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const feedback = await Feedback.findByIdAndUpdate(
       id,
       { $set: { status: 'read', readAt: new Date() } },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!feedback) return notFound('Feedback not found');

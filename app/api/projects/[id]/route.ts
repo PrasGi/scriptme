@@ -76,7 +76,7 @@ export async function PATCH(req: Request, { params }: Params) {
           ...(body.tags        !== undefined && { tags:        body.tags.map((t) => t.trim()).filter(Boolean) }),
         },
       },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!project) return notFound('Project not found');
@@ -101,7 +101,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     const project = await Project.findOneAndUpdate(
       { _id: id, userId: session.user.id, deletedAt: null },
       { $set: { deletedAt: new Date() } },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!project) return notFound('Project not found');

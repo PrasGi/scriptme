@@ -64,7 +64,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const character = await Character.findOneAndUpdate(
       { _id: id, userId: session.user.id, deletedAt: null },
       { $set: updates },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!character) return notFound('Character not found');
@@ -89,7 +89,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     const character = await Character.findOneAndUpdate(
       { _id: id, userId: session.user.id, deletedAt: null },
       { $set: { deletedAt: new Date() } },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
 
     if (!character) return notFound('Character not found');

@@ -70,6 +70,7 @@ export default async function middleware(req: NextRequest) {
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith('/api/auth') ||
     pathname.startsWith('/api/mobile') ||
+    pathname === '/api/health' ||
     pathname === '/api/plans' ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/public') ||
