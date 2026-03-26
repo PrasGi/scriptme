@@ -1,6 +1,23 @@
 import type { NextRequest } from 'next/server';
 
 /**
+ * Flutter web on `http://localhost:*` calling `https://scriptme.cloud` is **cross-site** (different hostnames).
+ * `SameSite=Lax` does not attach the session cookie on credentialed fetch to another site; use `none` + `Secure`.
+ * Native clients usually omit `Origin` → keep default `lax`.
+ */
+export function needsSameSiteNoneForCredentialSharing(req: NextRequest): boolean {
+  const origin = req.headers.get('origin');
+  if (!origin) return false;
+  try {
+    const o = new URL(origin);
+    const api = new URL(req.url);
+    return o.hostname !== api.hostname;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Whether to emit `__Secure-authjs.session-token` + `Secure` flag (must align with Auth.js `useSecureCookies`).
  *
  * Bug: `NEXTAUTH_URL?.startsWith('https://') ?? production` yields **false** when `NEXTAUTH_URL` is

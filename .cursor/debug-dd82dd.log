@@ -1,3 +1,0 @@
-{"sessionId":"dd82dd","location":"api_client.dart:session","message":"GET /api/auth/session","data":{"statusCode":200,"hasUser":false,"userIdPresent":false,"apiHost":"scriptme.cloud","hypothesisId":"H1"},"timestamp":1774531420508,"hypothesisId":"H1"}
-{"sessionId":"dd82dd","location":"api_client.dart:login","message":"POST /api/mobile/login ok","data":{"statusCode":200,"apiHost":"scriptme.cloud","kIsWeb":true,"hypothesisId":"H3"},"timestamp":1774531434945,"hypothesisId":"H3"}
-{"sessionId":"dd82dd","location":"api_client.dart:session","message":"GET /api/auth/session","data":{"statusCode":200,"hasUser":false,"userIdPresent":false,"apiHost":"scriptme.cloud","hypothesisId":"H1"},"timestamp":1774531435026,"hypothesisId":"H1"}

@@ -12,7 +12,7 @@ import { applyCorsHeaders, handleCorsPreflight, jsonWithCors } from '@/lib/cors'
 import { connectDB } from '@/lib/db';
 import User from '@/models/user.model';
 import { getUserPermissions } from '@/lib/permissions';
-import { useSecureSessionCookies } from '@/lib/mobile-session-cookie';
+import { needsSameSiteNoneForCredentialSharing, useSecureSessionCookies } from '@/lib/mobile-session-cookie';
 
 const AUTH_SALT = 'authjs.session-token';
 
@@ -78,7 +78,11 @@ export async function POST(req: NextRequest) {
     });
 
     const useHttps = useSecureSessionCookies(req);
-    const cookieName = useHttps ? '__Secure-authjs.session-token' : 'authjs.session-token';
+    const crossSite = needsSameSiteNoneForCredentialSharing(req);
+    const useSameSiteNone = crossSite && useHttps;
+    const sameSite: 'lax' | 'none' = useSameSiteNone ? 'none' : 'lax';
+    const secure = useSameSiteNone ? true : useHttps;
+    const cookieName = secure ? '__Secure-authjs.session-token' : 'authjs.session-token';
 
     const res = NextResponse.json({
       success: true,
@@ -95,8 +99,8 @@ export async function POST(req: NextRequest) {
 
     res.cookies.set(cookieName, jwt, {
       httpOnly: true,
-      secure: useHttps,
-      sameSite: 'lax',
+      secure,
+      sameSite,
       path: '/',
       maxAge: 30 * 24 * 60 * 60,
     });
@@ -111,7 +115,9 @@ export async function POST(req: NextRequest) {
         message: 'mobile login Set-Cookie',
         data: {
           cookieName,
-          useHttps,
+          secure,
+          sameSite,
+          crossSite,
           origin: req.headers.get('origin') ?? '',
           hypothesisId: 'H5',
         },

@@ -9,7 +9,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { applyCorsHeaders, handleCorsPreflight, jsonWithCors } from '@/lib/cors';
 import { getUserPermissions } from '@/lib/permissions';
 import { syncGoogleUserFromGoogleAccount } from '@/lib/sync-google-oauth-user';
-import { useSecureSessionCookies } from '@/lib/mobile-session-cookie';
+import { needsSameSiteNoneForCredentialSharing, useSecureSessionCookies } from '@/lib/mobile-session-cookie';
 
 const AUTH_SALT = 'authjs.session-token';
 
@@ -103,7 +103,11 @@ export async function POST(req: NextRequest) {
     });
 
     const useHttps = useSecureSessionCookies(req);
-    const cookieName = useHttps ? '__Secure-authjs.session-token' : 'authjs.session-token';
+    const crossSite = needsSameSiteNoneForCredentialSharing(req);
+    const useSameSiteNone = crossSite && useHttps;
+    const sameSite: 'lax' | 'none' = useSameSiteNone ? 'none' : 'lax';
+    const secure = useSameSiteNone ? true : useHttps;
+    const cookieName = secure ? '__Secure-authjs.session-token' : 'authjs.session-token';
 
     const res = NextResponse.json({
       success: true,
@@ -120,8 +124,8 @@ export async function POST(req: NextRequest) {
 
     res.cookies.set(cookieName, jwt, {
       httpOnly: true,
-      secure: useHttps,
-      sameSite: 'lax',
+      secure,
+      sameSite,
       path: '/',
       maxAge: 30 * 24 * 60 * 60,
     });
