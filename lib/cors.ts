@@ -4,6 +4,14 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 
+/** Optional comma-separated full origins (e.g. `https://app.example.com`) for Flutter web or extra domains on your VPS. */
+const EXTRA_CORS_ORIGINS = new Set(
+  (process.env.CORS_ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+);
+
 /** RFC1918 + loopback — Flutter web often uses http://192.168.x.x:port or http://10.0.2.2 (Android emulator). */
 function isPrivateOrLocalIPv4(hostname: string): boolean {
   const parts = hostname.split('.');
@@ -22,6 +30,7 @@ export function getCorsAllowedOrigin(req: NextRequest): string | null {
   if (!origin) return null;
   try {
     const u = new URL(origin);
+    if (EXTRA_CORS_ORIGINS.has(origin)) return origin;
     if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') return origin;
     if (isPrivateOrLocalIPv4(u.hostname)) return origin;
     const authUrl = process.env.NEXTAUTH_URL || process.env.AUTH_URL;
