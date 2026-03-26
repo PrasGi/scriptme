@@ -4,12 +4,26 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 
+/** RFC1918 + loopback — Flutter web often uses http://192.168.x.x:port or http://10.0.2.2 (Android emulator). */
+function isPrivateOrLocalIPv4(hostname: string): boolean {
+  const parts = hostname.split('.');
+  if (parts.length !== 4) return false;
+  const n = parts.map((p) => Number(p));
+  if (n.some((x) => !Number.isInteger(x) || x < 0 || x > 255)) return false;
+  const [a, b] = n;
+  if (a === 10) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  return false;
+}
+
 export function getCorsAllowedOrigin(req: NextRequest): string | null {
   const origin = req.headers.get('origin');
   if (!origin) return null;
   try {
     const u = new URL(origin);
     if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') return origin;
+    if (isPrivateOrLocalIPv4(u.hostname)) return origin;
     const authUrl = process.env.NEXTAUTH_URL || process.env.AUTH_URL;
     if (authUrl) {
       const app = new URL(authUrl);
