@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { encode } from '@auth/core/jwt';
 import bcrypt from 'bcryptjs';
 import { Types } from 'mongoose';
-import { agentDebugLog } from '@/lib/agent-debug-log';
 import { applyCorsHeaders, handleCorsPreflight, jsonWithCors } from '@/lib/cors';
 import { connectDB } from '@/lib/db';
 import User from '@/models/user.model';
@@ -102,19 +101,6 @@ export async function POST(req: NextRequest) {
       path: '/',
       maxAge: 30 * 24 * 60 * 60,
     });
-
-    // #region agent log
-    agentDebugLog(
-      'app/api/mobile/login/route.ts:POST',
-      'login success, Set-Cookie issued',
-      {
-        origin: req.headers.get('origin') ?? '(none)',
-        cookieName,
-        useHttps,
-      },
-      'H5'
-    );
-    // #endregion
 
     return res;
   } catch (err) {
