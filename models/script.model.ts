@@ -29,6 +29,7 @@ export interface IScript extends Document {
   plainText:       string;
   status:          ScriptStatus;
   analyzeResult:   AnalyzeLine[] | null;
+  shareToken:      string | null;
   deletedAt:       Date | null;
   createdAt:       Date;
   updatedAt:       Date;
@@ -64,6 +65,7 @@ const ScriptSchema = new Schema<IScript>(
       default: 'draft',
     },
     analyzeResult: { type: Schema.Types.Mixed, default: null },
+    shareToken:    { type: String, default: null, unique: true, sparse: true },
     deletedAt:     { type: Date, default: null },
   },
   { timestamps: true }

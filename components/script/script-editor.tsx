@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowLeft, FilePlus, Loader2, Link2, Bot, User, Send, Save, Sparkles,
   Download, ChevronDown, Check, AlertTriangle, X, Trash2, BookOpen, UserCircle2, Undo2, Redo2, Pencil, HelpCircle,
-  FileText, Braces, FileType, FileImage,
+  FileText, Braces, FileType, FileImage, MoreVertical, Share2, LinkIcon, Copy, ExternalLink,
 } from 'lucide-react';
 import { cn, stripHtml } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -47,6 +47,7 @@ interface Script {
   lines: ScriptLine[];
   plainText: string;
   analyzeResult: AnalyzeLine[] | null;
+  shareToken: string | null;
   updatedAt: string;
 }
 
@@ -130,6 +131,16 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
 
   const [showTutorial, setShowTutorial] = useState(false);
   const tutorialChecked = useRef(false);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuDropdownRef = useRef<HTMLDivElement>(null);
+  const [menuDropdownRect, setMenuDropdownRect] = useState<{ top: number; right: number } | null>(null);
+
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   const lastSavedRef = useRef<string | null>(null);
   const actionHandledRef = useRef(false);
@@ -264,13 +275,25 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
   }, [aiMessages, aiLoading, pendingLineEdits]);
 
   useLayoutEffect(() => {
-    if (exportOpen && exportRef.current) {
-      const rect = exportRef.current.getBoundingClientRect();
-      setExportDropdownRect({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+    if (exportOpen) {
+      const el = menuRef.current ?? exportRef.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        setExportDropdownRect({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+      }
     } else {
       setExportDropdownRect(null);
     }
   }, [exportOpen]);
+
+  useLayoutEffect(() => {
+    if (menuOpen && menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      setMenuDropdownRect({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+    } else {
+      setMenuDropdownRect(null);
+    }
+  }, [menuOpen]);
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -281,19 +304,22 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
       const inCharacterTrigger = characterRef.current?.contains(target);
       const inCharacterDropdown = target.closest?.('[data-character-dropdown]');
       if (!inCharacterTrigger && !inCharacterDropdown) setCharacterOpen(false);
+      const inMenuTrigger = menuRef.current?.contains(target);
+      const inMenuDropdown = menuDropdownRef.current?.contains(target);
+      if (!inMenuTrigger && !inMenuDropdown) setMenuOpen(false);
     }
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   function updateCharacterDropdownPosition() {
-    const el = characterRef.current;
+    const el = menuRef.current ?? characterRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     setCharacterDropdownRect({
       top: rect.bottom + 8,
-      left: rect.left,
-      width: rect.width,
+      left: Math.max(8, rect.right - 224),
+      width: 224,
     });
   }
 
@@ -327,6 +353,7 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
         setCharacterId(json.data.characterId ?? null);
         setAnalyzeResult(json.data.analyzeResult ?? null);
         setUsedTiktokUrl(json.data.sourceTiktokUrl ?? '');
+        setShareToken(json.data.shareToken ?? null);
         if (json.data.status === 'analyzing') setAnalyzing(true);
         lastSavedRef.current = JSON.stringify(json.data.lines ?? []);
       })
@@ -1097,6 +1124,53 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
     setReadModeOpen(true);
   }
 
+  async function generateShareLink() {
+    if (isCreate || !scriptId) return;
+    setShareLoading(true);
+    try {
+      const res = await fetch(`/api/projects/${projectId}/scripts/${scriptId}/share`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: true }),
+      });
+      const json = await res.json();
+      if (json.success && json.data?.shareToken) {
+        setShareToken(json.data.shareToken);
+      }
+    } catch {
+      setError('Failed to generate share link');
+    } finally {
+      setShareLoading(false);
+    }
+  }
+
+  async function revokeShareLink() {
+    if (isCreate || !scriptId) return;
+    setShareLoading(true);
+    try {
+      await fetch(`/api/projects/${projectId}/scripts/${scriptId}/share`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: false }),
+      });
+      setShareToken(null);
+      setShareCopied(false);
+    } catch {
+      setError('Failed to revoke share link');
+    } finally {
+      setShareLoading(false);
+    }
+  }
+
+  function copyShareLink() {
+    if (!shareToken) return;
+    const url = `${window.location.origin}/public/scripts/${shareToken}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    });
+  }
+
   const canSave = title.trim() && lines.some((l) => stripHtml(l.text).trim());
   const atCreateScriptLimit = isCreate && createScriptLimit && !createScriptLimit.allowed;
 
@@ -1239,20 +1313,165 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
             </Tooltip>
           )}
 
-          <div id="tour-export-btn" className="relative shrink-0" ref={exportRef}>
-            <Tooltip content="Export" description="Download as TXT, JSON, Word, or PDF" side="bottom">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setExportOpen((v) => !v)}
-                className="gap-1.5 h-9 w-9 sm:w-auto sm:min-w-0 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 px-2 sm:px-3"
-                disabled={isCreate ? saving || !!atCreateScriptLimit : false}
+          <div ref={menuRef} className="relative shrink-0">
+            <Tooltip content="More actions" side="bottom">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((v) => !v)}
+                className={cn(
+                  'p-2 rounded-xl transition-all shrink-0',
+                  menuOpen
+                    ? 'text-[#7C3AED] bg-[#7C3AED]/10'
+                    : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100/80'
+                )}
               >
-                <Download size={13} className="shrink-0" />
-                <ChevronDown size={12} className="hidden sm:block shrink-0" />
-              </Button>
+                <MoreVertical size={18} />
+              </button>
             </Tooltip>
           </div>
+
+          {menuOpen && menuDropdownRect && typeof document !== 'undefined' && createPortal(
+            <div
+              ref={menuDropdownRef}
+              className="fixed w-60 rounded-2xl border border-slate-200/60 bg-white shadow-2xl shadow-slate-300/40 z-[9999] overflow-hidden py-1.5"
+              style={{ top: menuDropdownRect.top, right: menuDropdownRect.right }}
+            >
+              {/* Export submenu trigger */}
+              <div id="tour-export-btn" className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    requestAnimationFrame(() => setExportOpen((v) => !v));
+                  }}
+                  disabled={isCreate ? saving || !!atCreateScriptLimit : false}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors disabled:opacity-40"
+                >
+                  <Download size={15} className="shrink-0 text-slate-500" />
+                  Export
+                  <ChevronDown size={12} className="ml-auto text-slate-400" />
+                </button>
+              </div>
+
+              <div className="h-px bg-slate-100 mx-3 my-1" />
+
+              {/* Character */}
+              <div id="tour-character-select">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    requestAnimationFrame(() => setCharacterOpen(true));
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors"
+                >
+                  <UserCircle2 size={15} className="shrink-0 text-[#7C3AED]" />
+                  <span className="flex-1 min-w-0 truncate">
+                    Character: {characterId ? characters.find((c) => c._id === characterId)?.name ?? 'None' : 'None'}
+                  </span>
+                </button>
+              </div>
+
+              <div className="h-px bg-slate-100 mx-3 my-1" />
+
+              {/* Analyze */}
+              {isCreate ? (
+                <button
+                  id="tour-analyze-btn"
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    ensureSavedAndRedirect('analyze');
+                  }}
+                  disabled={!canSave || saving || lines.length === 0 || !!atCreateScriptLimit}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors disabled:opacity-40"
+                >
+                  <Sparkles size={15} className="shrink-0 text-amber-500" />
+                  Analyze
+                </button>
+              ) : (
+                <button
+                  id="tour-analyze-btn"
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    runAnalyze();
+                  }}
+                  disabled={analyzing || lines.length === 0}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors disabled:opacity-40"
+                >
+                  {analyzing
+                    ? <Loader2 size={15} className="animate-spin shrink-0 text-amber-500" />
+                    : <Sparkles size={15} className="shrink-0 text-amber-500" />
+                  }
+                  Analyze
+                </button>
+              )}
+
+              {/* Fetch TikTok */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setTiktokModalOpen(true);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors"
+              >
+                <Link2 size={15} className="shrink-0 text-slate-500" />
+                Fetch TikTok
+              </button>
+
+              {/* Read mode */}
+              <button
+                id="tour-readmode-btn"
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  openReadMode();
+                }}
+                disabled={lines.length === 0}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors disabled:opacity-40"
+              >
+                <BookOpen size={15} className="shrink-0 text-blue-500" />
+                Read mode
+              </button>
+
+              <div className="h-px bg-slate-100 mx-3 my-1" />
+
+              {/* Share link */}
+              {!isCreate && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setShareModalOpen(true);
+                    if (!shareToken) generateShareLink();
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors"
+                >
+                  <Share2 size={15} className="shrink-0 text-emerald-500" />
+                  Share link
+                </button>
+              )}
+
+              {/* Tutorial */}
+              <button
+                id="tour-help-btn"
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setShowTutorial(true);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50/90 transition-colors"
+              >
+                <HelpCircle size={15} className="shrink-0 text-slate-400" />
+                Tutorial
+              </button>
+            </div>,
+            document.body
+          )}
+
+          {/* Export dropdown (portal, same as before) */}
           {exportOpen && exportDropdownRect && typeof document !== 'undefined' && createPortal(
             <div
               ref={exportDropdownRef}
@@ -1289,163 +1508,61 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
             document.body
           )}
 
-          <div className="h-6 w-px bg-slate-200/80 shrink-0 mx-0.5" aria-hidden />
-
-          <div id="tour-character-select" className="relative" ref={characterRef}>
-            {!characterOpen ? (
-              <Tooltip content="Character" description="Used as context for AI" side="bottom">
+          {/* Character dropdown (portal) */}
+          {characterOpen &&
+            characterDropdownRect &&
+            typeof document !== 'undefined' &&
+            createPortal(
+              <div
+                ref={characterDropdownRef}
+                data-character-dropdown
+                className="fixed w-56 rounded-2xl border border-slate-200/80 bg-white shadow-2xl shadow-slate-400/25 py-1.5 max-h-[min(280px,50vh)] overflow-y-auto"
+                style={{
+                  top: characterDropdownRect.top,
+                  left: characterDropdownRect.left,
+                  zIndex: 9999,
+                }}
+                role="listbox"
+                aria-label="Select character"
+              >
                 <button
                   type="button"
-                  onClick={() => setCharacterOpen(true)}
-                  className="flex items-center gap-1.5 sm:gap-2 h-9 pl-2.5 pr-7 sm:pl-3 sm:pr-8 rounded-xl border border-slate-200/70 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/80 shadow-sm text-sm transition-all min-w-0 max-w-24 sm:max-w-[128px] shrink-0"
-                >
-                  <UserCircle2 size={14} className="text-[#7C3AED] shrink-0" />
-                  <span className="min-w-0 truncate">
-                    {characterId ? characters.find((c) => c._id === characterId)?.name ?? 'None' : 'None'}
-                  </span>
-                  <ChevronDown size={12} className="absolute right-2 sm:right-2.5 text-slate-400 pointer-events-none shrink-0" />
-                </button>
-              </Tooltip>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setCharacterOpen(false)}
-                className={cn(
-                  'flex items-center gap-1.5 sm:gap-2 h-9 pl-2.5 pr-7 sm:pl-3 sm:pr-8 rounded-xl border text-sm transition-all min-w-0 max-w-24 sm:max-w-[128px] shrink-0',
-                  'border-[#7C3AED]/40 bg-[#7C3AED]/5 text-slate-800 shadow-sm'
-                )}
-              >
-                <UserCircle2 size={14} className="text-[#7C3AED] shrink-0" />
-                <span className="min-w-0 truncate">
-                  {characterId ? characters.find((c) => c._id === characterId)?.name ?? 'None' : 'None'}
-                </span>
-                <ChevronDown size={12} className="absolute right-2 sm:right-2.5 text-slate-400 pointer-events-none rotate-180" />
-              </button>
-            )}
-            {characterOpen &&
-              characterDropdownRect &&
-              typeof document !== 'undefined' &&
-              createPortal(
-                <div
-                  ref={characterDropdownRef}
-                  data-character-dropdown
-                  className="fixed w-56 rounded-2xl border border-slate-200/80 bg-white shadow-2xl shadow-slate-400/25 py-1.5 max-h-[min(280px,50vh)] overflow-y-auto"
-                  style={{
-                    top: characterDropdownRect.top,
-                    left: characterDropdownRect.left,
-                    zIndex: 9999,
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onCharacterChange(null);
+                    requestAnimationFrame(() => setCharacterOpen(false));
                   }}
-                  role="listbox"
-                  aria-label="Select character"
+                  className={cn(
+                    'w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center gap-2',
+                    !characterId ? 'bg-[#7C3AED]/10 text-[#7C3AED] font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                  )}
                 >
+                  <UserCircle2 size={14} className="shrink-0 opacity-70" />
+                  None
+                </button>
+                {characters.map((c) => (
                   <button
+                    key={c._id}
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      onCharacterChange(null);
+                      onCharacterChange(c._id);
                       requestAnimationFrame(() => setCharacterOpen(false));
                     }}
                     className={cn(
                       'w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center gap-2',
-                      !characterId ? 'bg-[#7C3AED]/10 text-[#7C3AED] font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                      characterId === c._id ? 'bg-[#7C3AED]/10 text-[#7C3AED] font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
                     )}
                   >
                     <UserCircle2 size={14} className="shrink-0 opacity-70" />
-                    None
+                    <span className="truncate">{c.name}</span>
                   </button>
-                  {characters.map((c) => (
-                    <button
-                      key={c._id}
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onCharacterChange(c._id);
-                        requestAnimationFrame(() => setCharacterOpen(false));
-                      }}
-                      className={cn(
-                        'w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center gap-2',
-                        characterId === c._id ? 'bg-[#7C3AED]/10 text-[#7C3AED] font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
-                      )}
-                    >
-                      <UserCircle2 size={14} className="shrink-0 opacity-70" />
-                      <span className="truncate">{c.name}</span>
-                    </button>
-                  ))}
-                </div>,
-                document.body
-              )}
-          </div>
-
-          <div className="h-6 w-px bg-slate-200/80 shrink-0 mx-0.5" aria-hidden />
-
-          {isCreate ? (
-            <Button
-              id="tour-analyze-btn"
-              variant="ghost"
-              size="sm"
-              onClick={() => ensureSavedAndRedirect('analyze')}
-              disabled={!canSave || saving || lines.length === 0 || !!atCreateScriptLimit}
-              className="gap-1.5 h-9 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 shrink-0 px-2 sm:px-3"
-            >
-              <Sparkles size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Analyze</span>
-            </Button>
-          ) : (
-            <Tooltip content="Analyze" description="Get AI feedback and suggestions for each line" side="bottom">
-              <Button
-                id="tour-analyze-btn"
-                variant="ghost"
-                size="sm"
-                onClick={runAnalyze}
-                disabled={analyzing || lines.length === 0}
-                className="gap-1.5 h-9 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 shrink-0 px-2 sm:px-3"
-              >
-                {analyzing ? <Loader2 size={13} className="animate-spin shrink-0" /> : <Sparkles size={13} className="shrink-0" />}
-                <span className="hidden sm:inline">Analyze</span>
-              </Button>
-            </Tooltip>
-          )}
-
-          <Tooltip content="Fetch TikTok" description="Import transcript from a TikTok video URL" side="bottom">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setTiktokModalOpen(true)}
-              className="gap-1.5 h-9 w-9 sm:w-auto sm:min-w-0 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 shrink-0 px-2 sm:px-3"
-            >
-              <Link2 size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Fetch TikTok</span>
-            </Button>
-          </Tooltip>
-
-          <Tooltip content="Read mode" description="Preview your script in a focused reading view" side="bottom">
-            <Button
-              id="tour-readmode-btn"
-              variant="ghost"
-              size="sm"
-              onClick={openReadMode}
-              disabled={lines.length === 0}
-              className="gap-1.5 h-9 w-9 sm:w-auto sm:min-w-0 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 shrink-0 px-2 sm:px-3"
-            >
-              <BookOpen size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Read mode</span>
-            </Button>
-          </Tooltip>
-
-          <div className="h-6 w-px bg-slate-200/80 shrink-0 mx-0.5" aria-hidden />
-
-          <Tooltip content="Tutorial" description="Replay the guided tour of the editor" side="bottom">
-            <button
-              id="tour-help-btn"
-              type="button"
-              onClick={() => setShowTutorial(true)}
-              className="p-2 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-all shrink-0"
-            >
-              <HelpCircle size={16} />
-            </button>
-          </Tooltip>
+                ))}
+              </div>,
+              document.body
+            )}
         </div>
       </header>
 
@@ -1884,6 +2001,91 @@ export function ScriptEditor({ projectId, scriptId }: ScriptEditorProps) {
         shouldRun={showTutorial}
         onComplete={() => setShowTutorial(false)}
       />
+
+      {shareModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-300/30">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200/50">
+              <h2 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                <Share2 size={15} className="text-emerald-500" />
+                Share Script
+              </h2>
+              <button
+                onClick={() => setShareModalOpen(false)}
+                className="text-slate-500 hover:text-slate-800 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              {shareLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 size={20} className="animate-spin text-[#7C3AED]" />
+                </div>
+              ) : shareToken ? (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Public link
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-10 rounded-xl border border-slate-200/60 bg-slate-50/80 px-3 flex items-center min-w-0">
+                        <LinkIcon size={13} className="text-slate-400 shrink-0 mr-2" />
+                        <span className="text-sm text-slate-600 truncate">
+                          {typeof window !== 'undefined'
+                            ? `${window.location.origin}/public/scripts/${shareToken}`
+                            : `/public/scripts/${shareToken}`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="accent"
+                      size="sm"
+                      onClick={copyShareLink}
+                      className="gap-1.5 flex-1"
+                    >
+                      {shareCopied ? <Check size={14} /> : <Copy size={14} />}
+                      {shareCopied ? 'Copied!' : 'Copy link'}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(`/public/scripts/${shareToken}`, '_blank')}
+                      className="gap-1.5 !text-slate-700 hover:!bg-slate-100/80"
+                    >
+                      <ExternalLink size={14} />
+                      Preview
+                    </Button>
+                  </div>
+                  <div className="pt-2 border-t border-slate-200/50">
+                    <button
+                      type="button"
+                      onClick={revokeShareLink}
+                      className="text-xs text-red-500 hover:text-red-600 transition-colors"
+                    >
+                      Revoke public access
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-6 space-y-3">
+                  <p className="text-sm text-slate-600">Generate a public link to share this script with anyone.</p>
+                  <Button
+                    variant="accent"
+                    onClick={generateShareLink}
+                    className="gap-2"
+                  >
+                    <Share2 size={14} />
+                    Generate link
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {tiktokModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
